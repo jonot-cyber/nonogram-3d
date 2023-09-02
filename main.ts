@@ -1,6 +1,10 @@
-import { BoxGeometry, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import { BoxGeometry, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Raycaster, Scene, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+let click = false;
+const pointer = new Vector2();
+
+const raycaster = new Raycaster();
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 20;
@@ -18,7 +22,6 @@ for (let x = -4; x < 4; x++) {
             const material = new MeshLambertMaterial({ color: 0xffffff });
             const cube = new Mesh(geometry, material);
             cube.position.set(x, y, z);
-            cube.visible = Math.random() > 0.1;
             scene.add(cube);
         }
     }
@@ -42,7 +45,22 @@ directionalLight2.target.position.setZ(0.2);
 
 function animate() {
     requestAnimationFrame(animate);
+    if (click) {
+        raycaster.setFromCamera(pointer, camera);
+
+        const intersects = raycaster.intersectObjects(scene.children);
+        if (intersects.length > 0) {
+            scene.remove(intersects[0].object);
+        }
+        click = false;
+    }
     renderer.render(scene, camera);
 }
+
+window.addEventListener('click', function (ev: MouseEvent) {
+	pointer.x = ( ev.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( ev.clientY / window.innerHeight ) * 2 + 1;
+    click = true;
+})
 
 animate();
