@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "test": "vitest --run",
+    "dev": "vite"
+  },
   "dependencies": {
     "three": "^0.156.0"
   },
