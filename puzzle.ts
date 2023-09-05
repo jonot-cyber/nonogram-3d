@@ -3,21 +3,21 @@
  */
 
 // order: x, y, z
-type Puzzle = boolean[][][];
-type HintType = "normal" | "circle" | "square";
+export type Puzzle = boolean[][][];
+export type HintType = "normal" | "circle" | "square";
 
-interface Hint {
+export interface Hint {
     type: HintType;
     count: number;
 }
 
-interface Hints {
+export interface Hints {
     x: boolean[][];
     y: boolean[][];
     z: boolean[][];
 }
 
-function getSliceX(puzzle: Puzzle, y: number, z: number): boolean[] {
+export function getSliceX(puzzle: Puzzle, y: number, z: number): boolean[] {
     let ret: Array<boolean> = [];
     for (let i = 0; i < puzzle.length; i++) {
         ret.push(puzzle[i][y][z]);
@@ -25,7 +25,7 @@ function getSliceX(puzzle: Puzzle, y: number, z: number): boolean[] {
     return ret;
 }
 
-function getSliceY(puzzle: Puzzle, x: number, z: number): boolean[] {
+export function getSliceY(puzzle: Puzzle, x: number, z: number): boolean[] {
     let ret: Array<boolean> = [];
     for (let i = 0; i < puzzle[0].length; i++) {
         ret.push(puzzle[x][i][z]);
@@ -33,7 +33,7 @@ function getSliceY(puzzle: Puzzle, x: number, z: number): boolean[] {
     return ret;
 }
 
-function getSliceZ(puzzle: Puzzle, x: number, y: number): boolean[] {
+export function getSliceZ(puzzle: Puzzle, x: number, y: number): boolean[] {
     let ret: Array<boolean> = [];
     for (let i = 0; i < puzzle[0][0].length; i++) {
         ret.push(puzzle[x][y][i]);
