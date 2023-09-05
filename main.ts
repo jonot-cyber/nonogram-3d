@@ -2,6 +2,7 @@ import { BoxGeometry, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCa
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 let click = false;
+let moved = false;
 const pointer = new Vector2();
 
 const raycaster = new Raycaster();
@@ -16,7 +17,7 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 for (let x = -4; x < 4; x++) {
-    for (let y = -4; y < 4; y++) { 
+    for (let y = -4; y < 4; y++) {
         for (let z = -4; z < 4; z++) {
             const geometry = new BoxGeometry(1, 1, 1);
             const material = new MeshLambertMaterial({ color: 0xffffff });
@@ -57,9 +58,20 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-window.addEventListener('click', function (ev: MouseEvent) {
-	pointer.x = ( ev.clientX / window.innerWidth ) * 2 - 1;
-	pointer.y = - ( ev.clientY / window.innerHeight ) * 2 + 1;
+window.addEventListener('mousedown', function (ev: MouseEvent) {
+    moved = false;
+})
+
+window.addEventListener('mousemove', function (ev: MouseEvent) {
+    moved = true;
+})
+
+window.addEventListener('mouseup', function (ev: MouseEvent) {
+    if (moved) {
+        return;
+    }
+    pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (ev.clientY / window.innerHeight) * 2 + 1;
     click = true;
 })
 
