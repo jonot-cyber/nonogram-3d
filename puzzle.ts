@@ -12,9 +12,9 @@ export interface Hint {
 }
 
 export interface Hints {
-    x: boolean[][];
-    y: boolean[][];
-    z: boolean[][];
+    x: Hint[][];
+    y: Hint[][];
+    z: Hint[][];
 }
 
 export function getSliceX(puzzle: Puzzle, y: number, z: number): boolean[] {
@@ -39,4 +39,72 @@ export function getSliceZ(puzzle: Puzzle, x: number, y: number): boolean[] {
         ret.push(puzzle[x][y][i]);
     }
     return ret;
+}
+
+function isValid(puzzle: Puzzle): boolean {
+    let xSize = puzzle.length;
+    if (xSize == 0) {
+        return false;
+    }
+    let ySize = puzzle[0].length;
+    if (ySize == 0) {
+        return false;
+    }
+    let zSize = puzzle[0][0].length;
+    if (zSize == 0) {
+        return false;
+    }
+    for (let ix = 0; ix < xSize; ix++) {
+        if (puzzle[ix].length != ySize) {
+            return false;
+        }
+        for (let iy = 0; iy < ySize; iy++) {
+            if (puzzle[ix][iy].length != zSize) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function createSliceHints(puzzle: Puzzle, size1: number, size2: number, method: (p: Puzzle, i: number, j: number) => boolean[]): Hint[][] {
+    let ret: Hint[][] = [];
+    for (let i = 0; i < size1; i++) {
+        let retPart: Hint[] = [];
+        for (let j = 0; j < size2; j++) {
+            let slice = method(puzzle, i, j);
+            retPart.push({
+                count: slice.filter(x => x).length,
+                type: "normal",
+            });
+        }
+        ret.push(retPart);
+    }
+    return ret;
+}
+
+function createXHints(puzzle: Puzzle): Hint[][] {
+    let ySize = puzzle[0].length;
+    let zSize = puzzle[0][0].length;
+    return createSliceHints(puzzle, ySize, zSize, getSliceX);
+}
+
+function createYHints(puzzle: Puzzle): Hint[][] {
+    let xSize = puzzle.length;
+    let zSize = puzzle[0][0].length;
+    return createSliceHints(puzzle, xSize, zSize, getSliceY);
+}
+
+function createZHints(puzzle: Puzzle): Hint[][] {
+    let xSize = puzzle.length;
+    let ySize = puzzle[0].length;
+    return createSliceHints(puzzle, xSize, ySize, getSliceZ);
+}
+
+function createHints(puzzle: Puzzle): Hints {
+    return {
+        x: createXHints(puzzle),
+        y: createYHints(puzzle),
+        z: createZHints(puzzle)
+    };
 }
