@@ -1,5 +1,6 @@
 import { BoxGeometry, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Raycaster, Scene, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Hints, Puzzle, createHints } from './puzzle';
 
 let click = false;
 let moved = false;
@@ -16,9 +17,14 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
-for (let x = -4; x < 4; x++) {
-    for (let y = -4; y < 4; y++) {
-        for (let z = -4; z < 4; z++) {
+const puzzle: Puzzle = [[[true, true], [true, false]], [[true, true], [true, false]]]
+const hints: Hints = createHints(puzzle);
+for (let x = 0; x < puzzle.length; x++) {
+    for (let y = 0; y < puzzle[0].length; y++) {
+        for (let z = 0; z < puzzle[0][0].length; z++) {
+            if (!puzzle[x][y][z]) {
+                continue;
+            }
             const geometry = new BoxGeometry(1, 1, 1);
             const material = new MeshLambertMaterial({ color: 0xffffff });
             const cube = new Mesh(geometry, material);

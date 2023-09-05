@@ -73,9 +73,24 @@ function createSliceHints(puzzle: Puzzle, size1: number, size2: number, method: 
         let retPart: Hint[] = [];
         for (let j = 0; j < size2; j++) {
             let slice = method(puzzle, i, j);
+            let count = slice.filter(x => x).length;
+            let firstIndex = 0;
+            for (let i = 0; i < slice.length; i++) {
+                if (slice[i]) {
+                    firstIndex = i;
+                    break;
+                }
+            }
+            let lastIndex = firstIndex;
+            for (let i = firstIndex; i < slice.length; i++) {
+                if (!slice[i]) {
+                    lastIndex = i - 1;
+                    break;
+                }
+            }
             retPart.push({
-                count: slice.filter(x => x).length,
-                type: "normal",
+                count: count,
+                type: (count == (lastIndex - firstIndex)) ? "normal" : (count == (lastIndex - firstIndex) - 1) ? "circle" : "square",
             });
         }
         ret.push(retPart);
@@ -101,7 +116,7 @@ function createZHints(puzzle: Puzzle): Hint[][] {
     return createSliceHints(puzzle, xSize, ySize, getSliceZ);
 }
 
-function createHints(puzzle: Puzzle): Hints {
+export function createHints(puzzle: Puzzle): Hints {
     return {
         x: createXHints(puzzle),
         y: createYHints(puzzle),
