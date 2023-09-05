@@ -74,23 +74,36 @@ function createSliceHints(puzzle: Puzzle, size1: number, size2: number, method: 
         for (let j = 0; j < size2; j++) {
             let slice = method(puzzle, i, j);
             let count = slice.filter(x => x).length;
-            let firstIndex = 0;
-            for (let i = 0; i < slice.length; i++) {
-                if (slice[i]) {
-                    firstIndex = i;
-                    break;
+            let type: HintType;
+            if (count == 0) {
+                type = "normal"
+            } else {
+                let firstIndex = 0;
+                for (let i = 0; i < slice.length; i++) {
+                    if (slice[i]) {
+                        firstIndex = i;
+                        break;
+                    }
                 }
-            }
-            let lastIndex = firstIndex;
-            for (let i = firstIndex; i < slice.length; i++) {
-                if (!slice[i]) {
-                    lastIndex = i - 1;
-                    break;
+                let lastIndex = firstIndex;
+                for (let i = firstIndex; i < slice.length; i++) {
+                    if (!slice[i]) {
+                        lastIndex = i - 1;
+                        break;
+                    }
+                }
+                let distance = lastIndex - firstIndex;
+                if (count == distance) {
+                    type = "normal";
+                } else if (count == distance - 1) {
+                    type = "circle";
+                } else {
+                    type = "square";
                 }
             }
             retPart.push({
                 count: count,
-                type: (count == (lastIndex - firstIndex)) ? "normal" : (count == (lastIndex - firstIndex) - 1) ? "circle" : "square",
+                type: type,
             });
         }
         ret.push(retPart);
