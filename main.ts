@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, CubeTextureLoader, DirectionalLight, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, PerspectiveCamera, Raycaster, RedFormat, Scene, Texture, TextureLoader, Vector2, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 
@@ -83,6 +83,7 @@ const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].leng
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
 camera.position.z = distance;
 const hints: Hints = createHints(puzzle);
+const cubes: Mesh[] = [];
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
         for (let z = 0; z < puzzleSize.z; z++) {
@@ -99,7 +100,7 @@ for (let x = 0; x < puzzleSize.x; x++) {
             const cube = new Mesh(geometry, materials);
             cube.position.set(x - puzzleSize.x / 2 + 0.5, y - puzzleSize.y / 2 + 0.5, z - puzzleSize.z / 2 + 0.5);
             scene.add(cube);
-
+            cubes.push(cube);
         }
     }
 }
