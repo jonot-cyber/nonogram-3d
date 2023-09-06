@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 import mug from './library/mug';
 import hund from './library/hund';
+import shibaInu from './library/shibaInu';
 
 // Great type name
 type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean };
@@ -75,7 +76,7 @@ directionalLight2.target.position.setY(2);
 directionalLight2.target.position.setZ(0.2);
 
 
-const puzzle: Puzzle = hund;
+const puzzle: Puzzle = shibaInu;
 const loader = new TextureLoader();
 const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].length };
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
@@ -85,6 +86,7 @@ const cubes: Mesh[] = [];
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
         for (let z = 0; z < puzzleSize.z; z++) {
+            if (!puzzle[x][y][z]) { continue; }
             const geometry = new BoxGeometry(1, 1, 1);
             const materials = [
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z])) }), // right
