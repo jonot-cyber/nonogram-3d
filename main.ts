@@ -1,4 +1,4 @@
-import { BoxGeometry, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Raycaster, Scene, Vector2, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, CubeTextureLoader, DirectionalLight, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, PerspectiveCamera, Raycaster, RedFormat, Scene, Texture, TextureLoader, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hints, Puzzle, createHints } from './puzzle';
 
@@ -9,7 +9,7 @@ const pointer = new Vector2();
 const raycaster = new Raycaster();
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 20;
+camera.position.z = 5;
 
 
 const renderer = new WebGLRenderer();
@@ -22,14 +22,20 @@ const hints: Hints = createHints(puzzle);
 for (let x = 0; x < puzzle.length; x++) {
     for (let y = 0; y < puzzle[0].length; y++) {
         for (let z = 0; z < puzzle[0][0].length; z++) {
-            if (!puzzle[x][y][z]) {
-                continue;
-            }
             const geometry = new BoxGeometry(1, 1, 1);
-            const material = new MeshLambertMaterial({ color: 0xffffff });
-            const cube = new Mesh(geometry, material);
+            const loader = new TextureLoader();
+            const materials = [
+                new MeshLambertMaterial({ map: loader.load(`assets/${hints.x[y][z].count}w.png`) }), // right
+                new MeshLambertMaterial({ map: loader.load(`assets/${hints.x[y][z].count}w.png`) }), // left
+                new MeshLambertMaterial({ map: loader.load(`assets/${hints.y[x][z].count}w.png`) }), // top
+                new MeshLambertMaterial({ map: loader.load(`assets/${hints.y[x][z].count}w.png`) }), // bottom
+                new MeshLambertMaterial({ map: loader.load(`assets/${hints.z[x][y].count}w.png`) }), // front
+                new MeshLambertMaterial({ map: loader.load(`assets/${hints.z[x][y].count}w.png`) }), // back
+            ];
+            const cube = new Mesh(geometry, materials);
             cube.position.set(x, y, z);
             scene.add(cube);
+            
         }
     }
 }
