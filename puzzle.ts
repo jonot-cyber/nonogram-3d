@@ -85,14 +85,14 @@ function createSliceHints(puzzle: Puzzle, size1: number, size2: number, method: 
                         break;
                     }
                 }
-                let lastIndex = firstIndex;
+                let lastIndex = slice.length-1;
                 for (let i = firstIndex; i < slice.length; i++) {
                     if (!slice[i]) {
                         lastIndex = i - 1;
                         break;
                     }
                 }
-                let distance = lastIndex - firstIndex;
+                let distance = lastIndex - firstIndex + 1;
                 if (count == distance) {
                     type = "normal";
                 } else if (count == distance - 1) {

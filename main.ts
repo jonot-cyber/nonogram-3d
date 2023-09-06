@@ -1,6 +1,17 @@
 import { BoxGeometry, Color, CubeTextureLoader, DirectionalLight, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, PerspectiveCamera, Raycaster, RedFormat, Scene, Texture, TextureLoader, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Hints, Puzzle, createHints } from './puzzle';
+import { Hint, Hints, Puzzle, createHints } from './puzzle';
+
+function getAssetURL(hint: Hint): string {
+    let number = hint.count.toString();
+    let type = "";
+    if (hint.type == "circle") {
+        type = "c";
+    } else if (hint.type == "square") {
+        type = "s";
+    }
+    return `/assets/${number}${type}w.png`
+}
 
 let click = false;
 let moved = false;
@@ -25,17 +36,17 @@ for (let x = 0; x < puzzle.length; x++) {
             const geometry = new BoxGeometry(1, 1, 1);
             const loader = new TextureLoader();
             const materials = [
-                new MeshLambertMaterial({ map: loader.load(`assets/${hints.x[y][z].count}w.png`) }), // right
-                new MeshLambertMaterial({ map: loader.load(`assets/${hints.x[y][z].count}w.png`) }), // left
-                new MeshLambertMaterial({ map: loader.load(`assets/${hints.y[x][z].count}w.png`) }), // top
-                new MeshLambertMaterial({ map: loader.load(`assets/${hints.y[x][z].count}w.png`) }), // bottom
-                new MeshLambertMaterial({ map: loader.load(`assets/${hints.z[x][y].count}w.png`) }), // front
-                new MeshLambertMaterial({ map: loader.load(`assets/${hints.z[x][y].count}w.png`) }), // back
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z])) }), // right
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z])) }), // left
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z])) }), // top
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z])) }), // bottom
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y])) }), // front
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y])) }), // back
             ];
             const cube = new Mesh(geometry, materials);
             cube.position.set(x, y, z);
             scene.add(cube);
-            
+
         }
     }
 }
