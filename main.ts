@@ -171,10 +171,9 @@ function animate() {
         const intersects = raycaster.intersectObjects(scene.children);
         if (intersects.length > 0) {
             let object: CoolMesh = intersects[0].object as CoolMesh;
-            if (object?.qFlag) {
-                return;
+            if (!object?.qFlag) {
+                scene.remove(intersects[0].object);
             }
-            scene.remove(intersects[0].object);
         }
     }
     if (flag) {
