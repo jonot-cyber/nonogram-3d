@@ -20,7 +20,6 @@ const pointer = new Vector2();
 const raycaster = new Raycaster();
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 5;
 
 
 const renderer = new WebGLRenderer();
@@ -30,46 +29,63 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 const puzzle: Puzzle = [
     [
-        [true, true, true, true, true],
-        [true, true, true, true, false],
-        [true, true, true, false, false],
-        [true, true, false, false, false],
-        [true, false, false, false, false]
+        [false, true, true, true, false],
+        [false, true, true, true, false],
+        [false, true, true, true, false],
+        [false, true, true, true, false],
+        [false, true, true, true, false],
     ],
     [
         [true, true, true, true, true],
-        [true, true, true, true, false],
-        [true, true, true, false, false],
-        [true, true, false, false, false],
-        [true, false, false, false, false]
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
     ],
     [
         [true, true, true, true, true],
-        [true, true, true, true, false],
-        [true, true, true, false, false],
-        [true, true, false, false, false],
-        [true, false, false, false, false]
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
     ],
     [
         [true, true, true, true, true],
-        [true, true, true, true, false],
-        [true, true, true, false, false],
-        [true, true, false, false, false],
-        [true, false, false, false, false]
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
     ],
     [
-        [true, true, true, true, true],
-        [true, true, true, true, false],
-        [true, true, true, false, false],
-        [true, true, false, false, false],
-        [true, false, false, false, false]
+        [false, true, true, true, false],
+        [false, true, true, true, false],
+        [false, true, true, true, false],
+        [false, true, true, true, false],
+        [false, true, true, true, false],
+    ],
+    [
+        [false, false, false, false, false],
+        [false, false, true, false, false],
+        [false, false, false, false, false],
+        [false, false, true, false, false],
+        [false, false, false, false, false],
+    ],
+    [
+        [false, false, false, false, false],
+        [false, false, true, false, false],
+        [false, false, true, false, false],
+        [false, false, true, false, false],
+        [false, false, false, false, false],
     ],
 ];
 const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].length};
+const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
+camera.position.z = distance;
 const hints: Hints = createHints(puzzle);
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
         for (let z = 0; z < puzzleSize.z; z++) {
+            if (!puzzle[x][y][z]) { continue} // for testing
             const geometry = new BoxGeometry(1, 1, 1);
             const loader = new TextureLoader();
             const materials = [
