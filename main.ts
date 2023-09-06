@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 
 interface XRay {
-    direction: "up" | "down" | "left" | "right" | "front" | "back";
+    direction: string;
     count: number;
 }
 
@@ -185,5 +185,34 @@ window.addEventListener('mouseup', function (ev: MouseEvent) {
     pointer.y = - (ev.clientY / window.innerHeight) * 2 + 1;
     click = true;
 })
+
+const cropDir = document.querySelector<HTMLSelectElement>("#crop-dir");
+const cropCount = document.querySelector<HTMLInputElement>("#crop-count");
+
+function changeHandle(e: Event) {
+    xray.direction = cropDir?.value ?? "up";
+    xray.count = Number.parseInt(cropCount?.value ?? "0");
+
+    // Update visibility
+    let x = 0;
+    let y = 0;
+    let z = 0;
+    for (let cube of cubes) {
+        cube.visible = isVisible(xray, x, y, z, puzzleSize.x, puzzleSize.y, puzzleSize.z);
+        z++;
+        if (z == puzzleSize.z) {
+            y++;
+            z = 0;
+            if (y == puzzleSize.y) {
+                x++;
+                y = 0;
+            }
+        }
+    }
+}
+
+cropDir?.addEventListener("change", changeHandle);
+
+cropCount?.addEventListener("change", changeHandle);
 
 animate();
