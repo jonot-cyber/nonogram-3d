@@ -2,6 +2,9 @@ import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, Perspe
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 
+// Great type name
+type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean };
+
 interface XRay {
     direction: string;
     count: number;
@@ -129,7 +132,7 @@ for (let x = 0; x < puzzleSize.x; x++) {
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y])) }), // front
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y])) }), // back
             ];
-            const cube = new Mesh(geometry, materials);
+            const cube: CoolMesh = new Mesh(geometry, materials);
             cube.position.set(x - puzzleSize.x / 2 + 0.5, y - puzzleSize.y / 2 + 0.5, z - puzzleSize.z / 2 + 0.5);
             cube.qX = x;
             cube.qY = y;
@@ -167,7 +170,8 @@ function animate() {
 
         const intersects = raycaster.intersectObjects(scene.children);
         if (intersects.length > 0) {
-            if (intersects[0].object.qFlag) {
+            let object: CoolMesh = intersects[0].object as CoolMesh;
+            if (object?.qFlag) {
                 return;
             }
             scene.remove(intersects[0].object);
@@ -180,11 +184,11 @@ function animate() {
 
         const intersects = raycaster.intersectObjects(scene.children);
         if (intersects.length > 0) {
-            let o: Mesh = intersects[0].object as Mesh;
+            let o: CoolMesh = intersects[0].object as CoolMesh;
             o.qFlag = !o.qFlag;
-            let x: number = o.qX;
-            let y: number = o.qY;
-            let z: number = o.qZ;
+            let x: number = o.qX ?? 0;
+            let y: number = o.qY ?? 0;
+            let z: number = o.qZ ?? 0;
             o.material = [
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], o.qFlag)) }),
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], o.qFlag)) }),
