@@ -139,8 +139,39 @@ const cropDir = document.querySelector<HTMLSelectElement>("#crop-dir");
 const cropCount = document.querySelector<HTMLInputElement>("#crop-count");
 
 function changeHandle(e: Event) {
-    xray.direction = cropDir?.value ?? "up";
-    xray.count = Number.parseInt(cropCount?.value ?? "0");
+    if (cropCount == null || cropDir == null) {
+        return;
+    }
+    xray.direction = cropDir.value;
+    let count = Number.parseInt(cropCount.value);
+    if (count < 0) {
+        count = 0;
+        cropCount.value = "0";
+    }
+    switch (xray.direction) {
+        case "up":
+        case "down":
+            if (count >= puzzleSize.y) {
+                count = puzzleSize.y - 1;
+                cropCount.value = count.toString();
+            }
+            break;
+        case "left":
+        case "right":
+            if (count >= puzzleSize.x) {
+                count = puzzleSize.x - 1;
+                cropCount.value = count.toString();
+            }
+            break;
+        case "front":
+        case "back":
+            if (count >= puzzleSize.z) {
+                count = puzzleSize.z - 1;
+                cropCount.value = count.toString();
+            }
+            break;
+    }
+    xray.count = count;
 
     // Update visibility
     let x = 0;
