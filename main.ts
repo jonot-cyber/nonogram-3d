@@ -38,13 +38,7 @@ function isVisible(xray: XRay, x: number, y: number, z: number, maxX: number, ma
 
 function getAssetURL(hint: Hint, painted: boolean = false): string {
     let number = hint.count.toString();
-    let type = "";
-    if (hint.type == "circle") {
-        type = "c";
-    } else if (hint.type == "square") {
-        type = "s";
-    }
-    return `/assets/${number}${type}${painted ? "p" : "w"}.png`
+    return `/assets/${painted ? "cyan" : "white"}/${hint.type}/${hint.count}.png`
 }
 
 let click = false;
@@ -62,6 +56,22 @@ const renderer = new WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
+
+// I create two lights in opposite directions to make it so you can look at any angle, and it still looks good.
+const directionalLight = new DirectionalLight(0xffffff, 1);
+scene.add(directionalLight);
+scene.add(directionalLight.target);
+directionalLight.target.position.setX(0.5);
+directionalLight.target.position.setY(0);
+directionalLight.target.position.setZ(-0.2);
+
+const directionalLight2 = new DirectionalLight(0xffffff, 1);
+scene.add(directionalLight2);
+scene.add(directionalLight2.target);
+directionalLight2.target.position.setX(-0.5);
+directionalLight2.target.position.setY(2);
+directionalLight2.target.position.setZ(0.2);
+
 
 const puzzle: Puzzle = [
     [
@@ -145,62 +155,6 @@ for (let x = 0; x < puzzleSize.x; x++) {
     }
 }
 
-// I create two lights in opposite directions to make it so you can look at any angle, and it still looks good.
-const directionalLight = new DirectionalLight(0xffffff, 1);
-scene.add(directionalLight);
-scene.add(directionalLight.target);
-directionalLight.target.position.setX(0.5);
-directionalLight.target.position.setY(0);
-directionalLight.target.position.setZ(-0.2);
-
-const directionalLight2 = new DirectionalLight(0xffffff, 1);
-scene.add(directionalLight2);
-scene.add(directionalLight2.target);
-directionalLight2.target.position.setX(-0.5);
-directionalLight2.target.position.setY(2);
-directionalLight2.target.position.setZ(0.2);
-
-
-function animate() {
-    requestAnimationFrame(animate);
-    if (click) {
-        click = false;
-        raycaster.setFromCamera(pointer, camera);
-        raycaster.layers.set(0);
-
-        const intersects = raycaster.intersectObjects(scene.children);
-        if (intersects.length > 0) {
-            let object: CoolMesh = intersects[0].object as CoolMesh;
-            if (!object?.qFlag) {
-                scene.remove(intersects[0].object);
-            }
-        }
-    }
-    if (flag) {
-        flag = false;
-        raycaster.setFromCamera(pointer, camera);
-        raycaster.layers.set(0);
-
-        const intersects = raycaster.intersectObjects(scene.children);
-        if (intersects.length > 0) {
-            let o: CoolMesh = intersects[0].object as CoolMesh;
-            o.qFlag = !o.qFlag;
-            let x: number = o.qX ?? 0;
-            let y: number = o.qY ?? 0;
-            let z: number = o.qZ ?? 0;
-            o.material = [
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], o.qFlag)) }),
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], o.qFlag)) }),
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], o.qFlag)) }),
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], o.qFlag)) }),
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], o.qFlag)) }),
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], o.qFlag)) }),
-            ];
-        }
-    }
-    renderer.render(scene, camera);
-}
-
 window.addEventListener("mousedown", function (ev: MouseEvent) {
     moved = false;
 })
@@ -261,5 +215,46 @@ function changeHandle(e: Event) {
 cropDir?.addEventListener("change", changeHandle);
 
 cropCount?.addEventListener("change", changeHandle);
+
+function animate() {
+    requestAnimationFrame(animate);
+    if (click) {
+        click = false;
+        raycaster.setFromCamera(pointer, camera);
+        raycaster.layers.set(0);
+
+        const intersects = raycaster.intersectObjects(scene.children);
+        if (intersects.length > 0) {
+            let object: CoolMesh = intersects[0].object as CoolMesh;
+            if (!object?.qFlag) {
+                scene.remove(intersects[0].object);
+            }
+        }
+    }
+    if (flag) {
+        flag = false;
+        raycaster.setFromCamera(pointer, camera);
+        raycaster.layers.set(0);
+
+        const intersects = raycaster.intersectObjects(scene.children);
+        if (intersects.length > 0) {
+            let o: CoolMesh = intersects[0].object as CoolMesh;
+            o.qFlag = !o.qFlag;
+            let x: number = o.qX ?? 0;
+            let y: number = o.qY ?? 0;
+            let z: number = o.qZ ?? 0;
+            o.material = [
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], o.qFlag)) }),
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], o.qFlag)) }),
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], o.qFlag)) }),
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], o.qFlag)) }),
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], o.qFlag)) }),
+                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], o.qFlag)) }),
+            ];
+        }
+    }
+    renderer.render(scene, camera);
+}
+
 
 animate();
