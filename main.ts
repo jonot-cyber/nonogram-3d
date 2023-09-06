@@ -86,7 +86,7 @@ const cubes: Mesh[] = [];
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
         for (let z = 0; z < puzzleSize.z; z++) {
-            if (!puzzle[x][y][z]) { continue; }
+            // if (!puzzle[x][y][z]) { continue; }
             const geometry = new BoxGeometry(1, 1, 1);
             const materials = [
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z])) }), // right
