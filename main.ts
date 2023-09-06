@@ -19,6 +19,7 @@ const pointer = new Vector2();
 
 const raycaster = new Raycaster();
 const scene = new Scene();
+scene.background = new Color(240, 240, 240);
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
