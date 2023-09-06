@@ -28,11 +28,48 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const puzzle: Puzzle = [[[true, true], [true, false]], [[true, true], [true, false]]]
+const puzzle: Puzzle = [
+    [
+        [true, true, true, true, true],
+        [true, true, true, true, false],
+        [true, true, true, false, false],
+        [true, true, false, false, false],
+        [true, false, false, false, false]
+    ],
+    [
+        [true, true, true, true, true],
+        [true, true, true, true, false],
+        [true, true, true, false, false],
+        [true, true, false, false, false],
+        [true, false, false, false, false]
+    ],
+    [
+        [true, true, true, true, true],
+        [true, true, true, true, false],
+        [true, true, true, false, false],
+        [true, true, false, false, false],
+        [true, false, false, false, false]
+    ],
+    [
+        [true, true, true, true, true],
+        [true, true, true, true, false],
+        [true, true, true, false, false],
+        [true, true, false, false, false],
+        [true, false, false, false, false]
+    ],
+    [
+        [true, true, true, true, true],
+        [true, true, true, true, false],
+        [true, true, true, false, false],
+        [true, true, false, false, false],
+        [true, false, false, false, false]
+    ],
+];
+const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].length};
 const hints: Hints = createHints(puzzle);
-for (let x = 0; x < puzzle.length; x++) {
-    for (let y = 0; y < puzzle[0].length; y++) {
-        for (let z = 0; z < puzzle[0][0].length; z++) {
+for (let x = 0; x < puzzleSize.x; x++) {
+    for (let y = 0; y < puzzleSize.y; y++) {
+        for (let z = 0; z < puzzleSize.z; z++) {
             const geometry = new BoxGeometry(1, 1, 1);
             const loader = new TextureLoader();
             const materials = [
@@ -44,7 +81,7 @@ for (let x = 0; x < puzzle.length; x++) {
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y])) }), // back
             ];
             const cube = new Mesh(geometry, materials);
-            cube.position.set(x, y, z);
+            cube.position.set(x - puzzleSize.x / 2 + 0.5, y - puzzleSize.y / 2 + 0.5, z - puzzleSize.z / 2 + 0.5);
             scene.add(cube);
 
         }
