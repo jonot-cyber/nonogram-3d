@@ -29,28 +29,14 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 const puzzle: Puzzle = [
     [
-        [false, true, true, true, false],
+        [false, false, false, false, false],
         [false, true, true, true, false],
         [false, true, true, true, false],
         [false, true, true, true, false],
         [false, true, true, true, false],
     ],
     [
-        [true, true, true, true, true],
-        [true, false, false, false, true],
-        [true, false, false, false, true],
-        [true, false, false, false, true],
-        [true, false, false, false, true],
-    ],
-    [
-        [true, true, true, true, true],
-        [true, false, false, false, true],
-        [true, false, false, false, true],
-        [true, false, false, false, true],
-        [true, false, false, false, true],
-    ],
-    [
-        [true, true, true, true, true],
+        [false, true, true, true, false],
         [true, false, false, false, true],
         [true, false, false, false, true],
         [true, false, false, false, true],
@@ -58,6 +44,20 @@ const puzzle: Puzzle = [
     ],
     [
         [false, true, true, true, false],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+    ],
+    [
+        [false, true, true, true, false],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+        [true, false, false, false, true],
+    ],
+    [
+        [false, false, false, false, false],
         [false, true, true, true, false],
         [false, true, true, true, false],
         [false, true, true, true, false],
@@ -85,7 +85,6 @@ const hints: Hints = createHints(puzzle);
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
         for (let z = 0; z < puzzleSize.z; z++) {
-            if (!puzzle[x][y][z]) { continue} // for testing
             const geometry = new BoxGeometry(1, 1, 1);
             const loader = new TextureLoader();
             const materials = [
