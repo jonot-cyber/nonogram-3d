@@ -2,6 +2,37 @@ import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, Perspe
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 
+interface XRay {
+    direction: "up" | "down" | "left" | "right" | "front" | "back";
+    count: number;
+}
+
+let xray: XRay = {
+    direction: "up",
+    count: 0,
+};
+
+function isVisible(xray: XRay, x: number, y: number, z: number, maxX: number, maxY: number, maxZ: number): boolean {
+    if (xray.count == 0) {
+        return true;
+    }
+    switch (xray.direction) {
+        case "up":
+            return maxY - y > xray.count;
+        case "down":
+            return y >= xray.count;
+        case "left":
+            return x >= xray.count;
+        case "right":
+            return maxX - x > xray.count;
+        case "front":
+            return maxZ - z > xray.count;
+        case "back":
+            return z >= xray.count;
+    }
+    return true;
+}
+
 function getAssetURL(hint: Hint): string {
     let number = hint.count.toString();
     let type = "";
@@ -87,6 +118,9 @@ const cubes: Mesh[] = [];
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
         for (let z = 0; z < puzzleSize.z; z++) {
+            if (!isVisible(xray, x, y, z, puzzleSize.x, puzzleSize.y, puzzleSize.z)) {
+                continue;
+            }
             const geometry = new BoxGeometry(1, 1, 1);
             const loader = new TextureLoader();
             const materials = [
