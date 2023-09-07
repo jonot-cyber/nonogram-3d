@@ -47,7 +47,6 @@ function getAssetURL(hint: Hint, painted: boolean = false): string {
             return "/assets/blank.png";
         }
     }
-    let number = hint.count.toString();
     return `/assets/${painted ? "cyan" : "white"}/${hint.type}/${hint.count}.png`
 }
 
