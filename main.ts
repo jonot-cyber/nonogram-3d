@@ -40,6 +40,13 @@ function isVisible(xray: XRay, x: number, y: number, z: number, maxX: number, ma
 }
 
 function getAssetURL(hint: Hint, painted: boolean = false): string {
+    if (hint.type == "none") {
+        if (painted) {
+            return "/assets/cyan.png";
+        } else {
+            return "/assets/blank.png";
+        }
+    }
     let number = hint.count.toString();
     return `/assets/${painted ? "cyan" : "white"}/${hint.type}/${hint.count}.png`
 }

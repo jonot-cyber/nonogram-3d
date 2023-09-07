@@ -4,7 +4,7 @@
 
 // order: x, y, z
 export type Puzzle = boolean[][][];
-export type HintType = "normal" | "circle" | "square";
+export type HintType = "normal" | "circle" | "square" | "none";
 
 export interface Hint {
     type: HintType;
