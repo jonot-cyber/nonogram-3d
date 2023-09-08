@@ -1,9 +1,6 @@
 import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
-import mug from './library/mug';
-import hund from './library/hund';
-import shibaInu from './library/shibaInu';
 
 // Great type name
 type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean };
@@ -84,11 +81,13 @@ directionalLight2.target.position.setZ(0.2);
 const urlParams = new URLSearchParams(window.location.search);
 let puzzleName = urlParams.get("puzzle");
 const puzzleTable = {
-    "mug": mug,
-    "hund": hund,
-    "shibainu": shibaInu,
+    "mug": "/library/mug.json",
+    "hund": "/library/hund.json",
+    "shibainu": "/library/shibaInu.json",
 }
-const puzzle: Puzzle = puzzleTable[puzzleName ?? "mug"];
+let response = await fetch(puzzleTable[puzzleName ?? ""]);
+let json = await response.json();
+const puzzle: Puzzle = json.puzzle;
 const loader = new TextureLoader();
 const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].length };
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
