@@ -81,8 +81,14 @@ directionalLight2.target.position.setX(-0.5);
 directionalLight2.target.position.setY(2);
 directionalLight2.target.position.setZ(0.2);
 
-
-const puzzle: Puzzle = shibaInu;
+const urlParams = new URLSearchParams(window.location.search);
+let puzzleName = urlParams.get("puzzle");
+const puzzleTable = {
+    "mug": mug,
+    "hund": hund,
+    "shibainu": shibaInu,
+}
+const puzzle: Puzzle = puzzleTable[puzzleName ?? "mug"];
 const loader = new TextureLoader();
 const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].length };
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
