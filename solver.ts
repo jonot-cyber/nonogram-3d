@@ -3,6 +3,12 @@ import { Hint, Hints, Puzzle, createSliceHint, getSliceX } from "./puzzle";
 // Too tired to come up with a good type name
 type St = "yes" | "no" | "maybe";
 
+/**
+ * Take a slice, and find all solutions that would satisfy it.
+ * @param slice A slice of blocks
+ * @param hint The hint for that slice
+ * @returns All of the solutions that are possible.
+ */
 function findSolutions(slice: St[], hint: Hint): St[][] {
     let rowSolutions: St[][] = []
     let rowSolution: St[] = Array(slice.length).fill("no");
@@ -38,6 +44,11 @@ function findSolutions(slice: St[], hint: Hint): St[][] {
     return rowSolutions;
 }
 
+/**
+ * Go through possible solutions and find overlap
+ * @param solutions A list of solutions
+ * @returns The overlap
+ */
 function findGuaranteedBlocks(solutions: St[][]): St[] {
     let guaranteed = solutions[0];
     for (let rowSolution of solutions) {
@@ -53,6 +64,14 @@ function findGuaranteedBlocks(solutions: St[][]): St[] {
     return guaranteed;
 }
 
+/**
+ * Solve a picross-3d puzzle
+ * 
+ * The algorithm:
+ * 
+ * @param hints The hints for a puzzle 
+ * @returns The solutions
+ */
 export function solve(hints: Hints): Puzzle {
     let xSize = hints.y.length;
     let ySize = hints.x.length;

@@ -1,6 +1,7 @@
 import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
+import { removeHints } from './reduce';
 
 // Great type name
 type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean };
@@ -93,6 +94,8 @@ const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].leng
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
 camera.position.z = distance;
 const hints: Hints = createHints(puzzle);
+removeHints(puzzle, hints);
+console.log(JSON.stringify(hints));
 const cubes: Mesh[] = [];
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
