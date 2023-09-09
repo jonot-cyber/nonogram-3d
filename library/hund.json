@@ -96,5 +96,223 @@
                 false
             ]
         ]
-    ]
+    ],
+    "hund": {
+        "x": [
+            [
+                {
+                    "type": "circle",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                }
+            ]
+        ],
+        "y": [
+            [
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                }
+            ]
+        ],
+        "z": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ]
+        ]
+    }
 }

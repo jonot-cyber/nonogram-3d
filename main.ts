@@ -3,6 +3,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 
+const debug = {
+    showShape: false,
+    createHints: true,
+    reduceHints: true,
+};
+
 // Great type name
 type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean };
 
@@ -85,6 +91,11 @@ const puzzleTable = {
     "mug": "/library/mug.json",
     "hund": "/library/hund.json",
     "shibainu": "/library/shibaInu.json",
+    "note": "/library/note.json",
+    "flag": "/library/flag.json",
+    "palmTree": "/library/palmTree.json",
+    "hand": "/library/hand.json",
+    "youtube": "/library/youtube.json",
 }
 let response = await fetch(puzzleTable[puzzleName ?? ""]);
 let json = await response.json();
@@ -93,14 +104,18 @@ const loader = new TextureLoader();
 const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].length };
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
 camera.position.z = distance;
-const hints: Hints = createHints(puzzle);
-removeHints(puzzle, hints);
-console.log(JSON.stringify(hints));
+const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
+if (debug.reduceHints) {
+    removeHints(puzzle, hints);
+    console.log(JSON.stringify(hints));
+}
 const cubes: Mesh[] = [];
 for (let x = 0; x < puzzleSize.x; x++) {
     for (let y = 0; y < puzzleSize.y; y++) {
         for (let z = 0; z < puzzleSize.z; z++) {
-            // if (!puzzle[x][y][z]) { continue; }
+            if (!puzzle[x][y][z] && debug.showShape) {
+                continue;
+            }
             const geometry = new BoxGeometry(1, 1, 1);
             const materials = [
                 new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z])) }), // right

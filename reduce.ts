@@ -8,8 +8,14 @@ interface HintContainer {
     v: number,
 }
 
-function scoreHint(hint: Hint): number {
-    return hint.count;
+function scoreHint(hint: Hint, size: number): number {
+    let count = hint.count;
+    if (hint.type == "circle") {
+        count++;
+    } else if (hint.type == "square") {
+        count += 2;
+    }
+    return count / size;
 }
 
 export function removeHints(puzzle: Puzzle, hints: Hints) {
@@ -54,7 +60,7 @@ export function removeHints(puzzle: Puzzle, hints: Hints) {
     }
 
     hintCollection.sort((a, b) => {
-        return scoreHint(b.hint) - scoreHint(a.hint) 
+        return scoreHint(b.hint, b.direction == "x" ? xSize : b.direction == "y" ? ySize : zSize) - scoreHint(a.hint, a.direction == "x" ? xSize : a.direction == "y" ? ySize : zSize) 
     });
 
     for (let i = 0; i < Math.min(hintCollection.length, 128); i++) {
