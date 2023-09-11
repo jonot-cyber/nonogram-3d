@@ -428,58 +428,16 @@
         "x": [
             [
                 {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
                     "type": "normal",
-                    "count": 0
-                },
-                {
-                    "count": 0,
-                    "type": "none"
+                    "count": 1
                 },
                 {
                     "type": "normal",
-                    "count": 0
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "count": 0,
-                    "type": "none"
+                    "count": 1
                 },
                 {
                     "type": "normal",
-                    "count": 0
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 0
+                    "count": 1
                 }
             ],
             [
@@ -530,8 +488,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "square",
+                    "count": 5
                 },
                 {
                     "count": 0,
@@ -544,8 +502,50 @@
                     "type": "none"
                 },
                 {
+                    "type": "square",
+                    "count": 5
+                },
+                {
                     "count": 0,
                     "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "square",
+                    "count": 5
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "square",
+                    "count": 5
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "square",
+                    "count": 5
                 },
                 {
                     "count": 0,
@@ -570,12 +570,54 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "normal",
-                    "count": 0
+                    "count": 5
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "count": 0,
@@ -585,11 +627,11 @@
             [
                 {
                     "type": "normal",
-                    "count": 0
+                    "count": 5
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "count": 0,
@@ -599,29 +641,15 @@
             [
                 {
                     "type": "normal",
-                    "count": 0
+                    "count": 5
                 },
                 {
                     "count": 0,
                     "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
                     "count": 0,
                     "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 0
                 }
             ],
             [
@@ -630,12 +658,12 @@
                     "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 }
             ],
             [
@@ -644,40 +672,12 @@
                     "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "type": "normal",
-                    "count": 0
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
                     "count": 0,
                     "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
                     "count": 0,
                     "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 0
                 }
             ]
         ],
@@ -688,18 +688,6 @@
                     "count": 3
                 },
                 {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
                     "type": "normal",
                     "count": 1
                 },
@@ -710,32 +698,6 @@
                 {
                     "type": "normal",
                     "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
                 },
                 {
                     "type": "normal",
@@ -760,46 +722,8 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
                     "count": 0,
                     "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
                 },
                 {
                     "type": "normal",
@@ -836,8 +760,8 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "normal",
@@ -874,84 +798,8 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
                     "count": 0,
                     "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 0
                 },
                 {
                     "type": "normal",
@@ -988,8 +836,160 @@
             ],
             [
                 {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
                     "type": "normal",
                     "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "normal",

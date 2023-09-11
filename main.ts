@@ -5,8 +5,8 @@ import { removeHints } from './reduce';
 
 const debug = {
     showShape: false,
-    createHints: true,
-    reduceHints: true,
+    createHints: false,
+    reduceHints: false,
 };
 
 // Great type name

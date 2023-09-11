@@ -264,136 +264,136 @@
         "x": [
             [
                 {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
                     "type": "normal",
-                    "count": 0
+                    "count": 3
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 2
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 4
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 2
                 },
                 {
                     "type": "normal",
-                    "count": 0
+                    "count": 3
                 }
             ],
             [
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 3
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 2
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "square",
+                    "count": 3
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 2
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 3
                 }
             ],
             [
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 3
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 2
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 4
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 2
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 3
                 }
             ],
             [
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "circle",
+                    "count": 2
                 },
                 {
                     "count": 0,
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 2
                 },
                 {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 3
                 }
             ]
         ],
         "y": [
             [
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
                     "count": 0,
                     "type": "none"
                 },
                 {
                     "type": "normal",
-                    "count": 0
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 }
             ],
             [
@@ -464,56 +464,52 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
                     "count": 0,
                     "type": "none"
                 },
                 {
                     "type": "normal",
-                    "count": 0
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 }
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "count": 0,
                     "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "type": "circle",
+                    "count": 2
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 }
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "count": 0,
@@ -521,11 +517,15 @@
                 },
                 {
                     "type": "normal",
-                    "count": 0
+                    "count": 3
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 }
             ]
         ],
@@ -536,16 +536,16 @@
                     "count": 0
                 },
                 {
-                    "type": "normal",
-                    "count": 3
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 3
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 3
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "normal",
@@ -562,34 +562,12 @@
                     "count": 2
                 },
                 {
-                    "type": "circle",
-                    "count": 2
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "circle",
-                    "count": 2
-                },
-                {
-                    "type": "circle",
-                    "count": 2
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 3
-                },
-                {
-                    "type": "circle",
-                    "count": 2
-                },
-                {
-                    "type": "circle",
-                    "count": 2
-                },
-                {
-                    "type": "circle",
-                    "count": 2
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "circle",
@@ -602,16 +580,38 @@
                     "count": 3
                 },
                 {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
                     "type": "circle",
                     "count": 2
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
                 },
                 {
                     "type": "circle",
                     "count": 2
                 },
                 {
-                    "type": "circle",
-                    "count": 2
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "circle",
@@ -624,16 +624,16 @@
                     "count": 0
                 },
                 {
-                    "type": "normal",
-                    "count": 3
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 3
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 3
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "normal",
@@ -646,20 +646,20 @@
                     "count": 0
                 },
                 {
-                    "type": "normal",
-                    "count": 1
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 1
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 }
             ],
             [
@@ -668,20 +668,20 @@
                     "count": 0
                 },
                 {
-                    "type": "normal",
-                    "count": 1
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 1
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 1
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 0
+                    "count": 0,
+                    "type": "none"
                 }
             ]
         ]

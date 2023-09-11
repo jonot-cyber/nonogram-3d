@@ -289,8 +289,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 8
                 }
             ],
             [
@@ -299,8 +299,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 7
                 }
             ],
             [
@@ -309,8 +309,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 6
                 }
             ],
             [
@@ -319,8 +319,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 7
                 }
             ],
             [
@@ -329,8 +329,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "circle",
+                    "count": 8
                 }
             ],
             [
@@ -347,42 +347,52 @@
         "y": [
             [
                 {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
                     "type": "normal",
-                    "count": 5
+                    "count": 7
                 },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
                 {
                     "type": "normal",
-                    "count": 5
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
+                    "count": 7
                 },
                 {
                     "count": 0,
                     "type": "none"
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "circle",
-                    "count": 2
                 }
             ],
             [
@@ -397,16 +407,6 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 7
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
                     "count": 0,
                     "type": "none"
                 },
@@ -427,198 +427,18 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 5
+                    "count": 0,
+                    "type": "none"
                 },
                 {
-                    "type": "normal",
-                    "count": 5
+                    "count": 0,
+                    "type": "none"
                 }
             ]
         ],
         "z": [
             [
                 {
-                    "type": "normal",
-                    "count": 0
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 0
-                }
-            ],
-            [
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
-                    "count": 0,
-                    "type": "none"
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 1
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "type": "normal",
-                    "count": 2
-                },
-                {
-                    "count": 0,
-                    "type": "none"
-                }
-            ],
-            [
-                {
                     "count": 0,
                     "type": "none"
                 },
@@ -679,8 +499,68 @@
             ],
             [
                 {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
                     "type": "normal",
-                    "count": 0
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
                 },
                 {
                     "type": "normal",
@@ -703,8 +583,128 @@
                     "count": 2
                 },
                 {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
                     "type": "normal",
-                    "count": 0
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
                 }
             ]
         ]

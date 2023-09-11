@@ -114,8 +114,8 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 5
+                    "count": 0,
+                    "type": "none"
                 }
             ]
         ],
@@ -170,8 +170,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 1
                 }
             ],
             [
@@ -192,8 +192,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 1
                 }
             ],
             [
@@ -214,8 +214,8 @@
                     "count": 1
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 1
                 }
             ],
             [
@@ -236,8 +236,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 1
                 }
             ],
             [
@@ -258,8 +258,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 1
                 }
             ]
         ]

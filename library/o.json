@@ -90,18 +90,6 @@
         "x": [
             [
                 {
-                    "type": "normal",
-                    "count": 3
-                }
-            ],
-            [
-                {
-                    "type": "circle",
-                    "count": 4
-                }
-            ],
-            [
-                {
                     "count": 0,
                     "type": "none"
                 }
@@ -114,8 +102,20 @@
             ],
             [
                 {
-                    "type": "normal",
-                    "count": 3
+                    "type": "circle",
+                    "count": 4
+                }
+            ],
+            [
+                {
+                    "type": "circle",
+                    "count": 4
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
                 }
             ]
         ],
@@ -134,8 +134,8 @@
             ],
             [
                 {
-                    "type": "circle",
-                    "count": 2
+                    "count": 0,
+                    "type": "none"
                 }
             ],
             [
@@ -198,8 +198,8 @@
             ],
             [
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 1
                 },
                 {
                     "count": 0,
@@ -214,8 +214,8 @@
                     "type": "none"
                 },
                 {
-                    "count": 0,
-                    "type": "none"
+                    "type": "normal",
+                    "count": 1
                 }
             ],
             [
