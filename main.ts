@@ -96,6 +96,11 @@ const puzzleTable = {
     "palmTree": "/library/palmTree.json",
     "hand": "/library/hand.json",
     "youtube": "/library/youtube.json",
+    "j": "/library/j.json",
+    "o": "/library/o.json",
+    "e": "/library/e.json",
+    "t": "/library/t.json",
+    "worm": "/library/worm.json",
 }
 let response = await fetch(puzzleTable[puzzleName ?? ""]);
 let json = await response.json();

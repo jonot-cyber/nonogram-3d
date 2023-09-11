@@ -1,0 +1,267 @@
+{
+    "puzzle": [
+        [
+            [
+                true
+            ],
+            [
+                true
+            ],
+            [
+                true
+            ],
+            [
+                true
+            ],
+            [
+                true
+            ]
+        ],
+        [
+            [
+                true
+            ],
+            [
+                true
+            ],
+            [
+                true
+            ],
+            [
+                true
+            ],
+            [
+                true
+            ]
+        ],
+        [
+            [
+                true
+            ],
+            [
+                false
+            ],
+            [
+                true
+            ],
+            [
+                false
+            ],
+            [
+                true
+            ]
+        ],
+        [
+            [
+                true
+            ],
+            [
+                false
+            ],
+            [
+                true
+            ],
+            [
+                false
+            ],
+            [
+                true
+            ]
+        ],
+        [
+            [
+                true
+            ],
+            [
+                false
+            ],
+            [
+                false
+            ],
+            [
+                false
+            ],
+            [
+                true
+            ]
+        ]
+    ],
+    "hints": {
+        "x": [
+            [
+                {
+                    "type": "normal",
+                    "count": 5
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 5
+                }
+            ]
+        ],
+        "y": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "square",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "type": "square",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "type": "circle",
+                    "count": 2
+                }
+            ]
+        ],
+        "z": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ]
+    }
+}

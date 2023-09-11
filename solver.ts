@@ -124,6 +124,9 @@ export function solve(hints: Hints): Puzzle {
                     if (guaranteed[ix] == "maybe") {
                         continue;
                     }
+                    if (solution[ix][iy][iz] == guaranteed[ix]) {
+                        continue;
+                    }
                     solution[ix][iy][iz] = guaranteed[ix];
                     clears++;
                 }
@@ -160,6 +163,9 @@ export function solve(hints: Hints): Puzzle {
                 // Apply guaranteed blocks
                 for (let iy = 0; iy < guaranteed.length; iy++) {
                     if (guaranteed[iy] == "maybe") {
+                        continue;
+                    }
+                    if (solution[ix][iy][iz] == guaranteed[iy]) {
                         continue;
                     }
                     solution[ix][iy][iz] = guaranteed[iy];
@@ -201,13 +207,16 @@ export function solve(hints: Hints): Puzzle {
                     if (guaranteed[iz] == "maybe") {
                         continue;
                     }
+                    if (solution[ix][iy][iz] == guaranteed[iz]) {
+                        continue;
+                    }
                     solution[ix][iy][iz] = guaranteed[iz];
                     clears++;
                 }
             }
         }
 
-        if (clears > 0) {
+        if (clears == 0) {
             break;
         }
     }

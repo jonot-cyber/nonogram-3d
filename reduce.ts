@@ -15,7 +15,7 @@ function scoreHint(hint: Hint, size: number): number {
     } else if (hint.type == "square") {
         count += 2;
     }
-    return count / size;
+    return -count / size;
 }
 
 export function removeHints(puzzle: Puzzle, hints: Hints) {
