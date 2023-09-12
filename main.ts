@@ -7,8 +7,8 @@ import { clamp } from 'three/src/math/MathUtils';
 
 const debug = {
     showShape: false,
-    createHints: false,
-    reduceHints: false,
+    createHints: true,
+    reduceHints: true,
 };
 
 // Great type name

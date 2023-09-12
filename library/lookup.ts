@@ -12,4 +12,5 @@ export const puzzleTable = {
     "e": "/library/e.json",
     "t": "/library/t.json",
     "worm": "/library/worm.json",
+    "among": "/library/among.json"
 }
