@@ -147,22 +147,13 @@ for (let x = 0; x < puzzleSize.x; x++) {
 }
 
 window.addEventListener("mousedown", function (ev: MouseEvent) {
-    moved = false;
-})
-
-window.addEventListener("mousemove", function (ev: MouseEvent) {
-    moved = true;
-    pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = - (ev.clientY / window.innerHeight) * 2 + 1;
-})
-
-window.addEventListener("mouseup", function (ev: MouseEvent) {
-    if (moved) {
-        return;
-    }
     pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
     pointer.y = - (ev.clientY / window.innerHeight) * 2 + 1;
     click = true;
+})
+
+renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
+    ev.preventDefault();
 })
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
@@ -279,6 +270,8 @@ function animate() {
                     scene.remove(intersects[0].object);
                 }
             }
+        } else {
+            console.log("No hit")
         }
     }
     renderer.render(scene, camera);
