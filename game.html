@@ -11,6 +11,9 @@
         .crop {
             position: absolute;
         }
+        #mistakes-count {
+            user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -24,6 +27,7 @@
             <option value="back">Back</option>
         </select>
         <input type="number" name="count" id="crop-count" value="0">
+        <p>Mistakes: <span id="mistakes-count">0</span></p>
     </div>
     <script type="module" src="/main.ts"></script>
 </body>

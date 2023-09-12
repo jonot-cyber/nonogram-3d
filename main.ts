@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
@@ -21,6 +21,21 @@ let xray: XRay = {
     direction: "up",
     count: 0,
 };
+
+function updateMaterial(mesh: CoolMesh) {
+    let x = mesh.qX ?? 0;
+    let y = mesh.qY ?? 0;
+    let z = mesh.qZ ?? 0;
+    mesh.material = [
+        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], mesh.qFlag)) }),
+        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], mesh.qFlag)) }),
+        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], mesh.qFlag)) }),
+        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], mesh.qFlag)) }),
+        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], mesh.qFlag)) }),
+        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], mesh.qFlag)) }),
+    ];
+
+}
 
 function isVisible(xray: XRay, x: number, y: number, z: number, maxX: number, maxY: number, maxZ: number): boolean {
     if (xray.count == 0) {
@@ -57,8 +72,11 @@ function getAssetURL(hint: Hint, painted: boolean = false): string {
 let click = false;
 let flag = false;
 let remove = false;
-let moved = false;
+let mouseOnHandle: "x" | "z" | null = null;
+let mistakeCount = 0;
+
 const pointer = new Vector2();
+const startPosition = new Vector2();
 
 const raycaster = new Raycaster();
 const scene = new Scene();
@@ -125,15 +143,7 @@ for (let x = 0; x < puzzleSize.x; x++) {
                 continue;
             }
             const geometry = new BoxGeometry(1, 1, 1);
-            const materials = [
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z])) }), // right
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z])) }), // left
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z])) }), // top
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z])) }), // bottom
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y])) }), // front
-                new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y])) }), // back
-            ];
-            const cube: CoolMesh = new Mesh(geometry, materials);
+            const cube: CoolMesh = new Mesh(geometry);
             cube.position.set(x - puzzleSize.x / 2 + 0.5, y - puzzleSize.y / 2 + 0.5, z - puzzleSize.z / 2 + 0.5);
             cube.qX = x;
             cube.qY = y;
@@ -141,22 +151,48 @@ for (let x = 0; x < puzzleSize.x; x++) {
             cube.qFlag = false;
             cube.layers.enable(0);
             scene.add(cube);
+            updateMaterial(cube);
             cubes.push(cube);
         }
     }
 }
 
-window.addEventListener("mousedown", function (ev: MouseEvent) {
+const handleGeometry = new OctahedronGeometry(0.25);
+const xHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xff00ff, opacity: 0.5, transparent: true }));
+scene.add(xHandleMesh);
+xHandleMesh.position.set(-puzzleSize.x / 2 - 1, -puzzleSize.y / 2, -puzzleSize.z / 2);
+xHandleMesh.scale.set(2, 1, 1);
+let xOriginalPosition: Vector3 = new Vector3(xHandleMesh.position.x, xHandleMesh.position.y, xHandleMesh.position.z);
+
+const zHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xffff00, opacity: 0.5, transparent: true }));
+scene.add(zHandleMesh);
+zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, -puzzleSize.z / 2 - 1);
+zHandleMesh.scale.set(1, 1, 2);
+let zOriginalPosition: Vector3 = new Vector3(zHandleMesh.position.x, zHandleMesh.position.y, zHandleMesh.position.z);
+
+renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
     pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
     pointer.y = - (ev.clientY / window.innerHeight) * 2 + 1;
+})
+
+renderer.domElement.addEventListener("mousedown", function (ev: MouseEvent) {
     click = true;
 })
 
 renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
+    if (mouseOnHandle != null) {
+        controls.enableRotate = true;
+        xHandleMesh.material.opacity = 0.5;
+        zHandleMesh.material.opacity = 0.5;
+    }
+    mouseOnHandle = null;
     ev.preventDefault();
 })
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
+    if (mouseOnHandle) {
+        return;
+    }
     if (ev.key == "f") {
         flag = true;
         controls.enableRotate = false;
@@ -167,6 +203,9 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
 })
 
 window.addEventListener("keyup", function (ev: KeyboardEvent) {
+    if (mouseOnHandle) {
+        return;
+    }
     if (ev.key == "f") {
         flag = false;
         controls.enableRotate = true;
@@ -215,6 +254,10 @@ function changeHandle(e: Event) {
     xray.count = count;
 
     // Update visibility
+    updateVisibility();
+}
+
+function updateVisibility() {
     let x = 0;
     let y = 0;
     let z = 0;
@@ -244,34 +287,80 @@ cropCount?.addEventListener("change", changeHandle);
 
 function animate() {
     requestAnimationFrame(animate);
-    if (click) {
-        click = false;
+
+    if (mouseOnHandle == "x") {
+        const minX = -puzzleSize.x / 2 - 1;
+        const maxX = minX + puzzleSize.x - 1;
+        const distance = 10 * (pointer.x - startPosition.x);
+        const newPosition = xOriginalPosition.x + distance - (distance % 1);
+        const clampedPosition = Math.max(minX, Math.min(newPosition, maxX));
+        
+        if (clampedPosition != xHandleMesh.position.x) {
+            xray.direction = "left";
+            xray.count = clampedPosition - xOriginalPosition.x;
+            updateVisibility();
+        }
+        xHandleMesh.position.setX(clampedPosition);
+    } else if (mouseOnHandle == "z") {
+        const minZ = -puzzleSize.z / 2 - 1;
+        const maxZ = minZ + puzzleSize.z - 1;
+        const distance = 10 * (pointer.x - startPosition.x);
+        const newPosition = zOriginalPosition.z + distance - (distance % 1);
+        const clampedPosition = Math.max(minZ, Math.min(newPosition, maxZ));
+        
+        if (clampedPosition != zHandleMesh.position.z) {
+            xray.direction = "back";
+            xray.count = clampedPosition - zOriginalPosition.z;
+            updateVisibility();
+        }
+        
+        zHandleMesh.position.setZ(clampedPosition);
+    } else {
         raycaster.setFromCamera(pointer, camera);
         raycaster.layers.set(0);
 
         const intersects = raycaster.intersectObjects(scene.children);
         if (intersects.length > 0) {
-            let object: CoolMesh = intersects[0].object as CoolMesh;
-            if (flag) {
+            if (intersects[0].object == xHandleMesh) {
+                xHandleMesh.material.opacity = 1;
+            } else if (intersects[0].object == zHandleMesh) {
+                zHandleMesh.material.opacity = 1;
+            }
+            if (click) {
+                let object: CoolMesh = intersects[0].object as CoolMesh;
+                if (!flag && !remove && (object == xHandleMesh || object == zHandleMesh)) {
+                    mouseOnHandle = object == xHandleMesh ? "x" : "z";
+                    xOriginalPosition.set(xHandleMesh.position.x, xHandleMesh.position.y, xHandleMesh.position.z);
+                    zOriginalPosition.set(zHandleMesh.position.x, zHandleMesh.position.y, zHandleMesh.position.z);
+                    startPosition.set(pointer.x, pointer.y);
+                    controls.enableRotate = false;
+                }
                 let x: number = object.qX ?? 0;
                 let y: number = object.qY ?? 0;
                 let z: number = object.qZ ?? 0;
-                object.qFlag = !object.qFlag;
-                object.material = [
-                    new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], object.qFlag)) }),
-                    new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], object.qFlag)) }),
-                    new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], object.qFlag)) }),
-                    new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], object.qFlag)) }),
-                    new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], object.qFlag)) }),
-                    new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], object.qFlag)) }),
-                ];
-            } else if (remove) {
-                if (!object?.qFlag) {
-                    scene.remove(intersects[0].object);
+                click = false;
+                if (flag) {
+                    object.qFlag = !object.qFlag;
+                    updateMaterial(object);
+                } else if (remove) {
+                    if (!object?.qFlag) {
+                        if (puzzle[x][y][z]) {
+                            mistakeCount++;
+                            const counter = document.querySelector<HTMLSpanElement>("#mistakes-count");
+                            if (counter) {
+                                counter.textContent = mistakeCount.toString();
+                            }
+                            object.qFlag = true;
+                            updateMaterial(object);
+                        } else {
+                            scene.remove(object);
+                        }
+                    }
                 }
             }
         } else {
-            console.log("No hit")
+            xHandleMesh.material.opacity = 0.5;
+            zHandleMesh.material.opacity = 0.5;
         }
     }
     renderer.render(scene, camera);
