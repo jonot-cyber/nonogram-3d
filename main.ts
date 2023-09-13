@@ -12,7 +12,7 @@ const debug = {
 };
 
 // Great type name
-type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean };
+type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean, qDestroy?: boolean };
 
 interface XRay {
     direction: string;
@@ -124,7 +124,7 @@ if (debug.reduceHints) {
     removeHints(puzzle, hints);
     console.log(JSON.stringify(hints));
 }
-const cubes: Mesh[] = [];
+const cubes: CoolMesh[] = [];
 
 function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) {
     for (let x = 0; x < size.x; x++) {
@@ -140,6 +140,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cube.qY = y;
                 cube.qZ = z;
                 cube.qFlag = false;
+                cube.qDestroy = false;
                 cube.layers.enable(0);
                 scene.add(cube);
                 updateMaterial(cube, loader, hints);
@@ -238,6 +239,18 @@ function updateVisibility(xray: XRay) {
     }
 }
 
+function checkDone() {
+    for (const cube of cubes) {
+        if (cube.qDestroy) {
+            continue;
+        }
+        if (!puzzle[cube.qX ?? -1][cube.qY ?? -1][cube.qZ ?? -1]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function animate() {
     requestAnimationFrame(animate);
 
@@ -296,7 +309,12 @@ function animate() {
                             object.qFlag = true;
                             updateMaterial(object, loader, hints);
                         } else {
+                            object.qDestroy = true;
                             scene.remove(object);
+                            let result = checkDone();
+                            if (result) {
+                                alert("WOW. U DID IT! I DI O")
+                            }
                         }
                     }
                 } else if (object == xHandleMesh || object == zHandleMesh) {
