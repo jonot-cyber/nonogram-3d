@@ -153,7 +153,7 @@ createCubes(puzzleSize, puzzle);
 const handleMinX = -puzzleSize.x / 2 - 1;
 const handleMaxX = handleMinX + puzzleSize.x - 1;
 const handleMinZ = -puzzleSize.z / 2 - 1;
-const handleMaxZ = handleMinX + puzzleSize.z - 1;
+const handleMaxZ = handleMinZ + puzzleSize.z - 1;
 
 const handleGeometry = new OctahedronGeometry(0.25);
 const xHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xff00ff, opacity: 0.5, transparent: true }));
@@ -248,7 +248,7 @@ function animate() {
         const clampedPosition = clamp(newPosition, handleMinX, handleMaxX);
 
         if (clampedPosition != xHandleMesh.position.x) {
-            updateVisibility({ direction: "left", count: clampedPosition - xOriginalPosition });
+            updateVisibility({ direction: "left", count: clampedPosition - handleMinX });
         }
 
         xHandleMesh.position.setX(clampedPosition);
@@ -257,7 +257,7 @@ function animate() {
         const clampedPosition = clamp(newPosition, handleMinZ, handleMaxZ);
 
         if (clampedPosition != zHandleMesh.position.z) {
-            updateVisibility({ direction: "back", count: clampedPosition - zOriginalPosition });
+            updateVisibility({ direction: "back", count: clampedPosition - handleMinZ });
         }
 
         zHandleMesh.position.setZ(clampedPosition);
@@ -282,7 +282,6 @@ function animate() {
                 let x: number = object.qX ?? 0;
                 let y: number = object.qY ?? 0;
                 let z: number = object.qZ ?? 0;
-                click = false;
                 if (flag) {
                     object.qFlag = !object.qFlag;
                     updateMaterial(object, loader, hints);
@@ -313,6 +312,7 @@ function animate() {
             zHandleMesh.material.opacity = 0.5;
         }
     }
+    click = false;
     renderer.render(scene, camera);
 }
 
