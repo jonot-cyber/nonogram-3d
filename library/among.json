@@ -1,25 +1,478 @@
 {
     "puzzle": [
         [
-            [false, false, true, false, false],
-            [false, true, true, true, false],
-            [true, true, true, true, false],
-            [true, true, true, true, true],
-            [false, true, true, true, false]
+            [
+                false,
+                false,
+                true,
+                false,
+                false
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                true
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false
+            ]
         ],
         [
-            [false, false, false, false, false],
-            [false, true, true, true, false],
-            [true, true, true, true, false],
-            [true, true, true, true, true],
-            [false, true, true, true, false]
+            [
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                true
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false
+            ]
         ],
         [
-            [false, false, true, false, false],
-            [false, true, true, true, false],
-            [true, true, true, true, false],
-            [true, true, true, true, true],
-            [false, true, true, true, false]
+            [
+                false,
+                false,
+                true,
+                false,
+                false
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                true
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false
+            ]
+        ]
+    ],
+    "hints": {
+        "x": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ],
+        "y": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ],
+        "z": [
+            [
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ]
+        ]
+    },
+    "color": [
+        [
+            [
+                0,
+                0,
+                1,
+                0,
+                0
+            ],
+            [
+                0,
+                1,
+                1,
+                1,
+                0
+            ],
+            [
+                1,
+                1,
+                1,
+                1,
+                0
+            ],
+            [
+                1,
+                1,
+                1,
+                1,
+                2
+            ],
+            [
+                0,
+                1,
+                1,
+                1,
+                0
+            ]
+        ],
+        [
+            [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                1,
+                1,
+                1,
+                0
+            ],
+            [
+                1,
+                1,
+                1,
+                1,
+                0
+            ],
+            [
+                1,
+                1,
+                1,
+                1,
+                2
+            ],
+            [
+                0,
+                1,
+                1,
+                1,
+                0
+            ]
+        ],
+        [
+            [
+                0,
+                0,
+                1,
+                0,
+                0
+            ],
+            [
+                0,
+                1,
+                1,
+                1,
+                0
+            ],
+            [
+                1,
+                1,
+                1,
+                1,
+                0
+            ],
+            [
+                1,
+                1,
+                1,
+                1,
+                2
+            ],
+            [
+                0,
+                1,
+                1,
+                1,
+                0
+            ]
         ]
     ]
 }

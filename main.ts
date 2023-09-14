@@ -7,8 +7,8 @@ import { clamp } from 'three/src/math/MathUtils';
 
 const debug = {
     showShape: false,
-    createHints: true,
-    reduceHints: true,
+    createHints: false,
+    reduceHints: false,
 };
 
 // Great type name
@@ -251,6 +251,13 @@ function checkDone() {
     return true;
 }
 
+function colorCubes() {
+    for (const cube of cubes) {
+        const color = json.color[cube.qX ?? -1][cube.qY ?? -1][cube.qZ ?? -1];
+        cube.material = new MeshLambertMaterial({ color: [0x000000, 0xff0000, 0x00ffff][color] });
+    }
+}
+
 function animate() {
     requestAnimationFrame(animate);
 
@@ -313,7 +320,7 @@ function animate() {
                             scene.remove(object);
                             let result = checkDone();
                             if (result) {
-                                alert("WOW. U DID IT! I DI O")
+                                colorCubes();
                             }
                         }
                     }
