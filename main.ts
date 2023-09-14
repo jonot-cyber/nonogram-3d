@@ -95,14 +95,14 @@ controls.enableZoom = false;
 
 // I create two lights in opposite directions to make it so you can look at any angle, and it still looks good.
 function createLights() {
-    const directionalLight = new DirectionalLight(0xffffff, 1);
+    const directionalLight = new DirectionalLight(0xffffff, 2);
     scene.add(directionalLight);
     scene.add(directionalLight.target);
     directionalLight.target.position.setX(0.5);
     directionalLight.target.position.setY(0);
     directionalLight.target.position.setZ(-0.2);
     
-    const directionalLight2 = new DirectionalLight(0xffffff, 1);
+    const directionalLight2 = new DirectionalLight(0xffffff, 2);
     scene.add(directionalLight2);
     scene.add(directionalLight2.target);
     directionalLight2.target.position.setX(-0.5);
@@ -147,6 +147,9 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cubes.push(cube);
             }
         }
+    }
+    if (debug.showShape) {
+        colorCubes();
     }
 }
 createCubes(puzzleSize, puzzle);
@@ -239,6 +242,18 @@ function updateVisibility(xray: XRay) {
     }
 }
 
+document.querySelector<HTMLButtonElement>("#clear-zeroes")?.addEventListener("click", function (ev: MouseEvent) {
+    for (const cube of cubes) {
+        const x = cube.qX ?? -1;
+        const y = cube.qY ?? -1;
+        const z = cube.qZ ?? -1;
+        if (hints.x[y][z].count == 0 && hints.x[y][z].type != "none" || hints.y[x][z].count == 0 && hints.y[x][z].type != "none" || hints.z[x][y].count == 0 && hints.z[x][y].type != "none") {
+            scene.remove(cube);
+            cube.qDestroy = true;
+        }
+    }
+})
+
 function checkDone() {
     for (const cube of cubes) {
         if (cube.qDestroy) {
@@ -252,9 +267,26 @@ function checkDone() {
 }
 
 function colorCubes() {
+    const colors = [
+        0x000000, /* 0: black */
+        0xff0000, /* 1: red */
+        0x80cfcf, /* 2: cyan */
+        0x00ff00, /* 3: green */
+        0x793f16, /* 4: brown */
+        0xffffff, /* 5: white */
+        0xfa9312, /* 6: dog1 */
+        0xeee6a5, /* 7: dog2 */
+        0xff9100, /* 8: hund orange */
+        0x0000ff, /* 9: blue */
+        0x9999ff, /* 10: light blue */
+        0xff9999, /* 11: worm pink */
+    ]
     for (const cube of cubes) {
+        if (cube.qDestroy) {
+            continue;
+        }
         const color = json.color[cube.qX ?? -1][cube.qY ?? -1][cube.qZ ?? -1];
-        cube.material = new MeshLambertMaterial({ color: [0x000000, 0xff0000, 0x00ffff][color] });
+        cube.material = new MeshLambertMaterial({ color: colors[color] });
     }
 }
 
