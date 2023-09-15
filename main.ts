@@ -242,7 +242,19 @@ function updateVisibility(xray: XRay) {
     }
 }
 
-document.querySelector<HTMLButtonElement>("#clear-zeroes")?.addEventListener("click", function (ev: MouseEvent) {
+function areZeroes() {
+    for (const cube of cubes) {
+        const x = cube.qX ?? -1;
+        const y = cube.qY ?? -1;
+        const z = cube.qZ ?? -1;
+        if (hints.x[y][z].count == 0 && hints.x[y][z].type != "none" || hints.y[x][z].count == 0 && hints.y[x][z].type != "none" || hints.z[x][y].count == 0 && hints.z[x][y].type != "none") {
+            return true;
+        }
+    }
+    return false;
+}
+
+function clearZeroes() {
     for (const cube of cubes) {
         const x = cube.qX ?? -1;
         const y = cube.qY ?? -1;
@@ -252,6 +264,15 @@ document.querySelector<HTMLButtonElement>("#clear-zeroes")?.addEventListener("cl
             cube.qDestroy = true;
         }
     }
+}
+
+const button: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
+if (button) {
+    button.disabled = !areZeroes();
+}
+button?.addEventListener("click", function (ev: MouseEvent) {
+    clearZeroes();
+    button.disabled = true;
 })
 
 function checkDone() {
