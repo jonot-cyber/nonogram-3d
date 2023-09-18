@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, MixOperation, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, Shader, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
@@ -22,16 +22,22 @@ interface XRay {
 const loader = new TextureLoader();
 
 function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints: Hints) {
-    let x = mesh.qX ?? 0;
-    let y = mesh.qY ?? 0;
-    let z = mesh.qZ ?? 0;
+    const onBeforeCompile = (shader: Shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+            "#include <alphatest_fragment>",
+            `float a = 1.0 - diffuseColor.a; diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);`);
+    }
+    const x = mesh.qX ?? 0;
+    const y = mesh.qY ?? 0;
+    const z = mesh.qZ ?? 0;
+    const color: number = mesh.qFlag ? 0x00ffff : 0xffffff
     mesh.material = [
-        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], mesh.qFlag)) }),
-        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.x[y][z], mesh.qFlag)) }),
-        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], mesh.qFlag)) }),
-        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.y[x][z], mesh.qFlag)) }),
-        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], mesh.qFlag)) }),
-        new MeshLambertMaterial({ map: loader.load(getAssetURL(hints.z[x][y], mesh.qFlag)) }),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile}),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile}),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile}),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile}),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile}),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile}),
     ];
 
 }
@@ -68,7 +74,7 @@ function getAssetURL(hint: Hint, painted: boolean = false): string {
             return "/assets/blank.png";
         }
     }
-    return `/assets/${painted ? "cyan" : "white"}/${hint.type}/${hint.count}.png`
+    return `/assets/${painted ? "cyan" : "blank"}/${hint.type}/${hint.count}.png`
 }
 
 let click = false;
