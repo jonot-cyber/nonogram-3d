@@ -461,13 +461,14 @@ function animate() {
                 xHandleMesh.material.opacity = 0.5;
                 zHandleMesh.material.opacity = 0.5;
             }
+            let object: CoolMesh = intersects[0].object as CoolMesh;
             if (lastChange != null) {
-                let object: CoolMesh = intersects[0].object as CoolMesh;
-                object.qFlag = lastChange == "flag";
-                updateMaterial(object, loader, hints);
+                if (object.qFlag != (lastChange == "flag")) {
+                    object.qFlag = lastChange == "flag";
+                    updateMaterial(object, loader, hints);
+                }
             }
             if (click) {
-                let object: CoolMesh = intersects[0].object as CoolMesh;
                 let x: number = object.qX ?? 0;
                 let y: number = object.qY ?? 0;
                 let z: number = object.qZ ?? 0;
