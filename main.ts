@@ -1,9 +1,9 @@
-import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, MixOperation, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, Shader, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, MixOperation, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, Shader, TextureLoader, Vector2, Vector3, Vector3Tuple, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hint, Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 import { puzzleTable } from './library/lookup';
-import { clamp } from 'three/src/math/MathUtils';
+import { clamp, lerp } from 'three/src/math/MathUtils';
 
 const debug = {
     showShape: false,
@@ -66,15 +66,11 @@ function isVisible(xray: XRay, cube: CoolMesh, maxX: number, maxY: number, maxZ:
     return true;
 }
 
-function getAssetURL(hint: Hint, painted: boolean = false): string {
+function getAssetURL(hint: Hint): string {
     if (hint.type == "none") {
-        if (painted) {
-            return "/assets/cyan.png";
-        } else {
-            return "/assets/blank.png";
-        }
+        return "/assets/blank.png"
     }
-    return `/assets/${painted ? "cyan" : "blank"}/${hint.type}/${hint.count}.png`
+    return `/assets/numbers/${hint.type}/${hint.count}.png`
 }
 
 let click = false;
@@ -317,30 +313,110 @@ function colorCubes() {
     }
 }
 
+function resetXHandle() {
+    if (camera.position.x > 0) {
+        xHandleMesh.position.setX(puzzleSize.x / 2 + 1);
+    } else {
+        xHandleMesh.position.setX(handleMinX);
+    }
+}
+
+function resetZHandle() {
+    if (camera.position.z > 0) {
+        zHandleMesh.position.setZ(puzzleSize.z / 2 + 1);
+    } else {
+        zHandleMesh.position.setZ(handleMinZ);
+    }
+}
+
+function facingX(): number {
+    let cameraVector: Vector2 = new Vector2(camera.position.x, camera.position.z);
+    cameraVector.normalize();
+    return Math.abs(cameraVector.dot(new Vector2(1, 0)));
+}
+
+let xray: XRay = { direction: "right", count: 0 }
+let handlePositionToCamera: Vector3 = new Vector3();
 function animate() {
     requestAnimationFrame(animate);
 
-    const dragSpeed = 10;
-    const distance = dragSpeed * (pointer.x - startPosition.x);
+    const dragSpeed = 5;
+    const xDistance = pointer.x - startPosition.x;
+    const yDistance = pointer.y - startPosition.y;
     if (mouseOnHandle == "x") {
-        const newPosition = xOriginalPosition + Math.floor(distance);
-        const clampedPosition = clamp(newPosition, handleMinX, handleMaxX);
-
-        if (clampedPosition != xHandleMesh.position.x) {
-            updateVisibility({ direction: "left", count: clampedPosition - handleMinX });
+        /* Note to my future self: I have absolutely no clue how or why any of the distance
+           calculation code works. I spent an hour writing code until it all worked. If there
+           is some bug in this code, I would recommend giving up and rewriting this into something
+           better. */
+        let localXDistance = xDistance;
+        let localYDistance = yDistance;
+        if (camera.position.x > 0) {
+            localYDistance = -localYDistance;
         }
+        if (camera.position.z < 0) {
+            localXDistance = -localXDistance;
+        }
+        if (camera.position.y < 0) {
+            localYDistance = -localYDistance;
+        }
+        
+        const distance = dragSpeed * lerp(localXDistance, localYDistance, facingX())
+        const newPosition = xOriginalPosition + Math.floor(distance);
+        let clampedPosition = 0;
+        if (camera.position.x > 0) {
+            clampedPosition = clamp(newPosition, puzzleSize.x / 2 + 2 - puzzleSize.x, puzzleSize.x / 2 + 1);
 
+            if (clampedPosition != xHandleMesh.position.x) {
+                xray = { direction: "right", count: puzzleSize.x / 2 + 1 - clampedPosition};
+                updateVisibility(xray);
+            }
+        } else {
+            clampedPosition = clamp(newPosition, handleMinX, handleMaxX);
+
+            if (clampedPosition != xHandleMesh.position.x) {
+                xray = { direction: "left", count: clampedPosition - handleMinX };
+                updateVisibility(xray);
+            }
+        }
         xHandleMesh.position.setX(clampedPosition);
     } else if (mouseOnHandle == "z") {
-        const newPosition = zOriginalPosition + Math.floor(distance);
-        const clampedPosition = clamp(newPosition, handleMinZ, handleMaxZ);
+        let localXDistance = xDistance;
+        let localYDistance = yDistance;
+        if (camera.position.x > 0) {
+            localXDistance = -localXDistance;
+        }
+        if (camera.position.z > 0) {
+            localYDistance = -localYDistance;
+        }
+        if (camera.position.y < 0) {
+            localYDistance = -localYDistance;
+        }
 
-        if (clampedPosition != zHandleMesh.position.z) {
-            updateVisibility({ direction: "back", count: clampedPosition - handleMinZ });
+        let distance = dragSpeed * lerp(localYDistance, localXDistance, facingX());
+        const newPosition = zOriginalPosition + Math.floor(distance);
+        let clampedPosition = 0;
+        if (camera.position.z > 0) {
+            clampedPosition = clamp(newPosition, -puzzleSize.z / 2 + 2, puzzleSize.z / 2 + 1);
+
+            if (clampedPosition != zHandleMesh.position.z) {
+                xray = { direction: "front", count: puzzleSize.z / 2 + 1 - clampedPosition };
+                updateVisibility(xray);
+            }
+        } else {
+            clampedPosition = clamp(newPosition, handleMinZ, handleMaxZ)
+
+            if (clampedPosition != zHandleMesh.position.z) {
+                xray = { direction: "back", count: clampedPosition - handleMinZ };
+                updateVisibility(xray);
+            }
         }
 
         zHandleMesh.position.setZ(clampedPosition);
-    } else { 
+    } else {
+        if (xray.count == 0) {
+            resetXHandle();
+            resetZHandle();
+        }
         raycaster.setFromCamera(pointer, camera);
         raycaster.layers.set(0);
 
@@ -377,18 +453,26 @@ function animate() {
                         } else {
                             object.qDestroy = true;
                             scene.remove(object);
-                            let result = checkDone();
-                            if (result) {
+                            let isDone = checkDone();
+                            if (isDone) {
                                 colorCubes();
+                                updateVisibility({ direction: "right", count: 0 })
                             }
                         }
                     }
-                } else if (object == xHandleMesh || object == zHandleMesh) {
-                    mouseOnHandle = object == xHandleMesh ? "x" : "z";
+                } else if (object == xHandleMesh) {
+                    mouseOnHandle = "x";
                     xOriginalPosition = xHandleMesh.position.x;
+                    startPosition.set(pointer.x, pointer.y);
+                    controls.enableRotate = false;
+                    handlePositionToCamera = xHandleMesh.position.clone().project(camera);
+                    resetZHandle();
+                } else if (object == zHandleMesh) {
+                    mouseOnHandle = "z";
                     zOriginalPosition = zHandleMesh.position.z;
                     startPosition.set(pointer.x, pointer.y);
                     controls.enableRotate = false;
+                    resetXHandle();
                 }
             }
         } else {
