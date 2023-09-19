@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,20 +8,57 @@
     <style>
         body {
             margin: 0;
+            box-sizing: border-box;
         }
+
         .crop {
             position: absolute;
         }
+
         #mistakes-count {
             user-select: none;
         }
+
+        .key {
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.459);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding-top: 4px;
+        }
+
+        .key-holder {
+            margin: 2px;
+            padding: 0px;
+            display: flex;
+            column-gap: 2px;
+        }
+
+        #d-indicator.enabled {
+            background: rgb(223, 23, 23);
+        }
+
+        #f-indicator.enabled {
+            background: rgb(20, 219, 20);
+        }
     </style>
 </head>
+
 <body>
     <div class="crop">
         <p>Mistakes: <span id="mistakes-count">0</span></p>
         <button id="clear-zeroes">Clear all Zeroes</button>
+        <div class="key-holder">
+            <div class="key a">A</div>
+            <div class="key s">S</div>
+            <div class="key d" id="d-indicator">D</div>
+            <div class="key f" id="f-indicator">F</div>
+        </div>
     </div>
     <script type="module" src="/main.ts"></script>
 </body>
+
 </html>

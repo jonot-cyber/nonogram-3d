@@ -79,6 +79,36 @@ let remove = false;
 let mouseOnHandle: "x" | "z" | null = null;
 let mistakeCount = 0;
 
+function enableFlag() {
+    if (remove) {
+        return;
+    }
+    flag = true;
+    document.querySelector<HTMLDivElement>("#f-indicator")?.classList.add("enabled")
+    controls.enableRotate = false;
+}
+
+function disableFlag() {
+    flag = false;
+    document.querySelector<HTMLDivElement>("#f-indicator")?.classList.remove("enabled");
+    controls.enableRotate = true;
+}
+
+function enableRemove() {
+    if (flag) {
+        return;
+    }
+    remove = true;
+    document.querySelector<HTMLDivElement>("#d-indicator")?.classList.add("enabled");
+    controls.enableRotate = false;
+}
+
+function disableRemove() {
+    remove = false;
+    document.querySelector<HTMLDivElement>("#d-indicator")?.classList.remove("enabled");
+    controls.enableRotate = true;
+}
+
 const pointer = new Vector2();
 const startPosition = new Vector2();
 
@@ -199,11 +229,9 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
         return;
     }
     if (ev.key == "f") {
-        flag = true;
-        controls.enableRotate = false;
+        enableFlag();
     } else if (ev.key == "d") {
-        remove = true;
-        controls.enableRotate = false;
+        enableRemove();
     }
 })
 
@@ -212,11 +240,9 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
         return;
     }
     if (ev.key == "f") {
-        flag = false;
-        controls.enableRotate = true;
+        disableFlag();
     } else if (ev.key == "d") {
-        remove = false;
-        controls.enableRotate = true;
+        disableRemove();
     }
 })
 
