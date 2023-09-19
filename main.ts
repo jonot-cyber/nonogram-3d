@@ -75,6 +75,7 @@ function getAssetURL(hint: Hint): string {
 
 let click = false;
 let flag = false;
+let lastChange: "flag" | "unflag" | null = null;
 let remove = false;
 let mouseOnHandle: "x" | "z" | null = null;
 let mistakeCount = 0;
@@ -89,6 +90,7 @@ function enableFlag() {
 }
 
 function disableFlag() {
+    lastChange = null;
     flag = false;
     document.querySelector<HTMLDivElement>("#f-indicator")?.classList.remove("enabled");
     controls.enableRotate = true;
@@ -215,6 +217,7 @@ renderer.domElement.addEventListener("mousedown", function (ev: MouseEvent) {
 
 renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     ev.preventDefault();
+    lastChange = null;
     if (mouseOnHandle == null) {
         return;
     }
@@ -458,6 +461,11 @@ function animate() {
                 xHandleMesh.material.opacity = 0.5;
                 zHandleMesh.material.opacity = 0.5;
             }
+            if (lastChange != null) {
+                let object: CoolMesh = intersects[0].object as CoolMesh;
+                object.qFlag = lastChange == "flag";
+                updateMaterial(object, loader, hints);
+            }
             if (click) {
                 let object: CoolMesh = intersects[0].object as CoolMesh;
                 let x: number = object.qX ?? 0;
@@ -466,6 +474,11 @@ function animate() {
                 if (flag) {
                     object.qFlag = !object.qFlag;
                     updateMaterial(object, loader, hints);
+                    if (object.qFlag) {
+                        lastChange = "flag"
+                    } else {
+                        lastChange = "unflag";
+                    }
                 } else if (remove) {
                     if (!object?.qFlag) {
                         if (puzzle[x][y][z]) {
