@@ -1,20 +1,23 @@
-import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, MixOperation, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, Shader, TextureLoader, Vector2, Vector3, Vector3Tuple, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Hint, Hints, Puzzle, createHints } from './puzzle';
+import { Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 import { puzzleTable } from './library/lookup';
 import { clamp, lerp } from 'three/src/math/MathUtils';
+import { State, CoolMesh, XRay } from './types';
+import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
+
+// HTML elements that matter
+const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
+const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#d-indicator");
+const mistakeCounter: HTMLSpanElement | null = document.querySelector<HTMLSpanElement>("#mistakes-count");
+const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
 
 const debug = {
     showShape: false,
     createHints: false,
     reduceHints: false,
 };
-
-// Great type name
-type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean, qDestroy?: boolean };
-
-type State = "orbit" | "flag" | "continueFlag" | "remove" | "dragX" | "dragZ";
 
 let state = "orbit";
 
@@ -29,13 +32,13 @@ function setState(newState: State) {
             controls.enableRotate = false;
             break;
         case "flag":
-            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.remove("enabled");
+            flagIndicator?.classList.remove("enabled");
             break;
         case "continueFlag":
-            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.remove("enabled");
+            flagIndicator?.classList.remove("enabled");
             break;
         case "remove":
-            document.querySelector<HTMLDivElement>("#d-indicator")?.classList.remove("enabled");
+            removeIndicator?.classList.remove("enabled");
             break;
         case "dragX":
             break;
@@ -45,13 +48,13 @@ function setState(newState: State) {
 
     switch (newState) {
         case "flag":
-            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.add("enabled");
+            flagIndicator?.classList.add("enabled");
             break;
         case "continueFlag":
-            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.add("enabled");
+            flagIndicator?.classList.add("enabled");
             break;
         case "remove":
-            document.querySelector<HTMLDivElement>("#d-indicator")?.classList.add("enabled");
+            removeIndicator?.classList.add("enabled");
             break;
         case "orbit":
             controls.enableRotate = true;
@@ -59,86 +62,29 @@ function setState(newState: State) {
         case "dragX":
             handleOriginalPosition = xHandleMesh.position.x;
             startPosition.set(pointer.x, pointer.y);
-            resetZHandle();
+            resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
             break;
         case "dragZ":
             handleOriginalPosition = zHandleMesh.position.z;
             startPosition.set(pointer.x, pointer.y);
-            resetXHandle();
+            resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
             break;
     }
     state = newState;
 }
 
-interface XRay {
-    direction: string;
-    count: number;
-}
-
 const loader = new TextureLoader();
-
-function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints: Hints) {
-    const onBeforeCompile = (shader: Shader) => {
-        shader.fragmentShader = shader.fragmentShader.replace(
-            "#include <alphatest_fragment>",
-            `float a = 1.0 - diffuseColor.a; diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);`);
-    }
-    const x = mesh.qX ?? 0;
-    const y = mesh.qY ?? 0;
-    const z = mesh.qZ ?? 0;
-    const color: number = mesh.qFlag ? 0x00ffff : 0xffffff
-    mesh.material = [
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile }),
-    ];
-
-}
-
-function isVisible(xray: XRay, cube: CoolMesh, maxX: number, maxY: number, maxZ: number): boolean {
-    if (xray.count == 0) {
-        return true;
-    }
-    const x = cube.qX ?? 0;
-    const y = cube.qY ?? 0;
-    const z = cube.qZ ?? 0;
-    switch (xray.direction) {
-        case "up":
-            return maxY - y > xray.count;
-        case "down":
-            return y >= xray.count;
-        case "left":
-            return x >= xray.count;
-        case "right":
-            return maxX - x > xray.count;
-        case "front":
-            return maxZ - z > xray.count;
-        case "back":
-            return z >= xray.count;
-    }
-    return true;
-}
-
-function getAssetURL(hint: Hint): string {
-    if (hint.type == "none") {
-        return "/assets/blank.png"
-    }
-    return `/assets/numbers/${hint.type}/${hint.count}.png`
-}
 
 let click: boolean = false;
 let lastChange: boolean = false;
 let mistakeCount = 0;
 let handleOriginalPosition: number = 0;
+let xray: XRay = { direction: "right", count: 0 };
 
 function addMistake() {
     mistakeCount++;
-    const counter = document.querySelector<HTMLSpanElement>("#mistakes-count");
-    if (counter) {
-        counter.textContent = mistakeCount.toString();
+    if (mistakeCounter) {
+        mistakeCounter.textContent = mistakeCount.toString();
     }
 }
 
@@ -181,7 +127,7 @@ let puzzleName = urlParams.get("puzzle");
 let response = await fetch(puzzleTable[puzzleName ?? ""]);
 let json = await response.json();
 const puzzle: Puzzle = json.puzzle;
-const puzzleSize = { x: puzzle.length, y: puzzle[0].length, z: puzzle[0][0].length };
+const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
 camera.position.z = distance;
 const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
@@ -214,7 +160,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
         }
     }
     if (debug.showShape) {
-        colorCubes();
+        colorCubes(cubes, json.color);
     }
 }
 createCubes(puzzleSize, puzzle);
@@ -233,7 +179,7 @@ const handleMaxZ = puzzleSize.z / 2 - 2;
 
 // Minimum and maximum positions of inverted Z slider
 const handleMinNZ = -puzzleSize.z / 2 + 2;
-const handleMazNZ = puzzleSize.z / 2 + 1;
+const handleMaxNZ = puzzleSize.z / 2 + 1;
 
 const handleGeometry = new OctahedronGeometry(0.25);
 const xHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xff00ff, opacity: 0.5, transparent: true }));
@@ -282,110 +228,13 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
     }
 })
 
-function updateVisibility(xray: XRay) {
-    for (let cube of cubes) {
-        if (isVisible(xray, cube, puzzleSize.x, puzzleSize.y, puzzleSize.z)) {
-            cube.visible = true;
-            cube.layers.enable(0);
-        } else {
-            cube.visible = false;
-            cube.layers.disable(0);
-        }
-    }
-}
-
-function areZeroes() {
-    for (const cube of cubes) {
-        const x = cube.qX ?? -1;
-        const y = cube.qY ?? -1;
-        const z = cube.qZ ?? -1;
-        if (hints.x[y][z].count == 0 && hints.x[y][z].type != "none" || hints.y[x][z].count == 0 && hints.y[x][z].type != "none" || hints.z[x][y].count == 0 && hints.z[x][y].type != "none") {
-            return true;
-        }
-    }
-    return false;
-}
-
-function clearZeroes() {
-    for (const cube of cubes) {
-        const x = cube.qX ?? -1;
-        const y = cube.qY ?? -1;
-        const z = cube.qZ ?? -1;
-        if (hints.x[y][z].count == 0 && hints.x[y][z].type != "none" || hints.y[x][z].count == 0 && hints.y[x][z].type != "none" || hints.z[x][y].count == 0 && hints.z[x][y].type != "none") {
-            scene.remove(cube);
-            cube.qDestroy = true;
-        }
-    }
-}
-
-const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
 if (clearZeroesButton) {
-    clearZeroesButton.disabled = !areZeroes();
+    clearZeroesButton.disabled = !areZeroes(cubes, hints);
 }
 clearZeroesButton?.addEventListener("click", function (ev: MouseEvent) {
-    clearZeroes();
+    clearZeroes(cubes, hints, scene);
     clearZeroesButton.disabled = true;
 })
-
-function checkDone() {
-    for (const cube of cubes) {
-        if (cube.qDestroy) {
-            continue;
-        }
-        if (!puzzle[cube.qX ?? -1][cube.qY ?? -1][cube.qZ ?? -1]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function colorCubes() {
-    const colors = [
-        0x000000, /* 0: black */
-        0xff0000, /* 1: red */
-        0x80cfcf, /* 2: cyan */
-        0x00ff00, /* 3: green */
-        0x793f16, /* 4: brown */
-        0xffffff, /* 5: white */
-        0xfa9312, /* 6: dog1 */
-        0xeee6a5, /* 7: dog2 */
-        0xff9100, /* 8: hund orange */
-        0x0000ff, /* 9: blue */
-        0x9999ff, /* 10: light blue */
-        0xff9999, /* 11: worm pink */
-    ]
-    for (const cube of cubes) {
-        if (cube.qDestroy) {
-            continue;
-        }
-        const color = json.color[cube.qX ?? -1][cube.qY ?? -1][cube.qZ ?? -1];
-        cube.material = new MeshLambertMaterial({ color: colors[color] });
-    }
-}
-
-function resetXHandle() {
-    if (camera.position.x > 0) {
-        xHandleMesh.position.setX(puzzleSize.x / 2 + 1);
-    } else {
-        xHandleMesh.position.setX(handleMinX);
-    }
-}
-
-function resetZHandle() {
-    if (camera.position.z > 0) {
-        zHandleMesh.position.setZ(puzzleSize.z / 2 + 1);
-    } else {
-        zHandleMesh.position.setZ(handleMinZ);
-    }
-}
-
-function facingX(): number {
-    let cameraVector: Vector2 = new Vector2(camera.position.x, camera.position.z);
-    cameraVector.normalize();
-    return Math.abs(cameraVector.dot(new Vector2(1, 0)));
-}
-
-let xray: XRay = { direction: "right", count: 0 };
 
 // Actions when in standard orbit mode
 function orbit() {
@@ -394,8 +243,8 @@ function orbit() {
 
     // If you aren't using xray, reset the handles. Needed because the positions can change
     if (xray.count == 0) {
-        resetXHandle();
-        resetZHandle();
+        resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
+        resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
     }
 
     // Do raycast
@@ -449,7 +298,7 @@ function dragX() {
     }
 
     // Make influence of distance proportional to direction facing
-    const distance = dragSpeed * lerp(localXDistance, localYDistance, facingX())
+    const distance = dragSpeed * lerp(localXDistance, localYDistance, facingX(camera))
 
     // Set new position to snapped distance
     const newPosition = handleOriginalPosition + Math.floor(distance);
@@ -461,14 +310,14 @@ function dragX() {
 
         if (clampedPosition != xHandleMesh.position.x) {
             xray = { direction: "right", count: handleMaxNX - clampedPosition };
-            updateVisibility(xray);
+            updateVisibility(xray, cubes, puzzleSize);
         }
     } else {
         clampedPosition = clamp(newPosition, handleMinX, handleMaxX);
 
         if (clampedPosition != xHandleMesh.position.x) {
             xray = { direction: "left", count: clampedPosition - handleMinX };
-            updateVisibility(xray);
+            updateVisibility(xray, cubes, puzzleSize);
         }
     }
 
@@ -494,22 +343,22 @@ function dragZ() {
         localYDistance = -localYDistance;
     }
 
-    let distance = dragSpeed * lerp(localYDistance, localXDistance, facingX());
+    let distance = dragSpeed * lerp(localYDistance, localXDistance, facingX(camera));
     const newPosition = handleOriginalPosition + Math.floor(distance);
     let clampedPosition = 0;
     if (camera.position.z > 0) {
-        clampedPosition = clamp(newPosition, handleMinNZ, handleMazNZ);
+        clampedPosition = clamp(newPosition, handleMinNZ, handleMaxNZ);
 
         if (clampedPosition != zHandleMesh.position.z) {
-            xray = { direction: "front", count: handleMazNZ - clampedPosition };
-            updateVisibility(xray);
+            xray = { direction: "front", count: handleMaxNZ - clampedPosition };
+            updateVisibility(xray, cubes, puzzleSize);
         }
     } else {
         clampedPosition = clamp(newPosition, handleMinZ, handleMaxZ)
 
         if (clampedPosition != zHandleMesh.position.z) {
             xray = { direction: "back", count: clampedPosition - handleMinZ };
-            updateVisibility(xray);
+            updateVisibility(xray, cubes, puzzleSize);
         }
     }
 
@@ -594,13 +443,17 @@ function remove() {
         object.qDestroy = true;
         scene.remove(object);
 
+        // Check for zeroes
+        if (clearZeroesButton) {
+            clearZeroesButton.disabled = !areZeroes(cubes, hints);
+        }
+
         // Check if the puzzle is complete
-        let isDone = checkDone();
-        if (isDone) {
+        if (checkDone(cubes, puzzle)) {
             // Color the cubes and disable xray
-            colorCubes();
+            colorCubes(cubes, json.color);
             xray.count = 0;
-            updateVisibility(xray);
+            updateVisibility(xray, cubes, puzzleSize);
         }
     }
 }
