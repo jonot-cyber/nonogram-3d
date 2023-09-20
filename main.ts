@@ -14,6 +14,62 @@ const debug = {
 // Great type name
 type CoolMesh = Mesh & { qX?: number, qY?: number, qZ?: number, qFlag?: boolean, qDestroy?: boolean };
 
+type State = "orbit" | "flag" | "continueFlag" | "remove" | "dragX" | "dragZ";
+
+let state = "orbit";
+
+function setState(newState: State) {
+    if (newState == state) {
+        return;
+    }
+
+    // Disable state
+    switch (state) {
+        case "orbit":
+            controls.enableRotate = false;
+            break;
+        case "flag":
+            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.remove("enabled");
+            break;
+        case "continueFlag":
+            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.remove("enabled");
+            break;
+        case "remove":
+            document.querySelector<HTMLDivElement>("#d-indicator")?.classList.remove("enabled");
+            break;
+        case "dragX":
+            break;
+        case "dragZ":
+            break;
+    }
+
+    switch (newState) {
+        case "flag":
+            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.add("enabled");
+            break;
+        case "continueFlag":
+            document.querySelector<HTMLDivElement>("#f-indicator")?.classList.add("enabled");
+            break;
+        case "remove":
+            document.querySelector<HTMLDivElement>("#d-indicator")?.classList.add("enabled");
+            break;
+        case "orbit":
+            controls.enableRotate = true;
+            break;
+        case "dragX":
+            handleOriginalPosition = xHandleMesh.position.x;
+            startPosition.set(pointer.x, pointer.y);
+            resetZHandle();
+            break;
+        case "dragZ":
+            handleOriginalPosition = zHandleMesh.position.z;
+            startPosition.set(pointer.x, pointer.y);
+            resetXHandle();
+            break;
+    }
+    state = newState;
+}
+
 interface XRay {
     direction: string;
     count: number;
@@ -32,12 +88,12 @@ function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints: Hints) {
     const z = mesh.qZ ?? 0;
     const color: number = mesh.qFlag ? 0x00ffff : 0xffffff
     mesh.material = [
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile}),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile}),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile}),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile}),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile}),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile}),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile }),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile }),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile }),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile }),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile }),
+        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile }),
     ];
 
 }
@@ -73,42 +129,17 @@ function getAssetURL(hint: Hint): string {
     return `/assets/numbers/${hint.type}/${hint.count}.png`
 }
 
-let click = false;
-let flag = false;
-let lastChange: "flag" | "unflag" | null = null;
-let remove = false;
-let mouseOnHandle: "x" | "z" | null = null;
+let click: boolean = false;
+let lastChange: boolean = false;
 let mistakeCount = 0;
+let handleOriginalPosition: number = 0;
 
-function enableFlag() {
-    if (remove) {
-        return;
+function addMistake() {
+    mistakeCount++;
+    const counter = document.querySelector<HTMLSpanElement>("#mistakes-count");
+    if (counter) {
+        counter.textContent = mistakeCount.toString();
     }
-    flag = true;
-    document.querySelector<HTMLDivElement>("#f-indicator")?.classList.add("enabled")
-    controls.enableRotate = false;
-}
-
-function disableFlag() {
-    lastChange = null;
-    flag = false;
-    document.querySelector<HTMLDivElement>("#f-indicator")?.classList.remove("enabled");
-    controls.enableRotate = true;
-}
-
-function enableRemove() {
-    if (flag) {
-        return;
-    }
-    remove = true;
-    document.querySelector<HTMLDivElement>("#d-indicator")?.classList.add("enabled");
-    controls.enableRotate = false;
-}
-
-function disableRemove() {
-    remove = false;
-    document.querySelector<HTMLDivElement>("#d-indicator")?.classList.remove("enabled");
-    controls.enableRotate = true;
 }
 
 const pointer = new Vector2();
@@ -119,10 +150,10 @@ const scene = new Scene();
 scene.background = new Color(240, 240, 240);
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enablePan = false;
 controls.enableZoom = false;
@@ -135,7 +166,7 @@ function createLights() {
     directionalLight.target.position.setX(0.5);
     directionalLight.target.position.setY(0);
     directionalLight.target.position.setZ(-0.2);
-    
+
     const directionalLight2 = new DirectionalLight(0xffffff, 2);
     scene.add(directionalLight2);
     scene.add(directionalLight2.target);
@@ -188,23 +219,32 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
 }
 createCubes(puzzleSize, puzzle);
 
+// Minimum and maximum positions of X slider
 const handleMinX = -puzzleSize.x / 2 - 1;
-const handleMaxX = handleMinX + puzzleSize.x - 1;
+const handleMaxX = puzzleSize.x / 2 - 2;
+
+// Minimum and maximum positions of inverted X slider
+const handleMinNX = -puzzleSize.x / 2 + 2;
+const handleMaxNX = puzzleSize.x / 2 + 1;
+
+// Minimum and maximum positions of Z slider
 const handleMinZ = -puzzleSize.z / 2 - 1;
-const handleMaxZ = handleMinZ + puzzleSize.z - 1;
+const handleMaxZ = puzzleSize.z / 2 - 2;
+
+// Minimum and maximum positions of inverted Z slider
+const handleMinNZ = -puzzleSize.z / 2 + 2;
+const handleMazNZ = puzzleSize.z / 2 + 1;
 
 const handleGeometry = new OctahedronGeometry(0.25);
 const xHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xff00ff, opacity: 0.5, transparent: true }));
 scene.add(xHandleMesh);
 xHandleMesh.position.set(handleMinX, -puzzleSize.y / 2, -puzzleSize.z / 2);
 xHandleMesh.scale.set(2, 1, 1);
-let xOriginalPosition = xHandleMesh.position.x;
 
 const zHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xffff00, opacity: 0.5, transparent: true }));
 scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
-let zOriginalPosition = zHandleMesh.position.z;
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
     pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
@@ -217,42 +257,32 @@ renderer.domElement.addEventListener("mousedown", function (ev: MouseEvent) {
 
 renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     ev.preventDefault();
-    lastChange = null;
-    if (mouseOnHandle == null) {
-        return;
+    if (state == "continueFlag") {
+        setState("flag")
+    } else if (state == "dragX" || state == "dragZ") {
+        setState("orbit");
+        xHandleMesh.material.opacity = 0.5;
+        zHandleMesh.material.opacity = 0.5;
     }
-    controls.enableRotate = true;
-    xHandleMesh.material.opacity = 0.5;
-    zHandleMesh.material.opacity = 0.5;
-    mouseOnHandle = null;
 })
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
-    if (mouseOnHandle) {
-        return;
-    }
-    if (ev.key == "f") {
-        enableFlag();
-    } else if (ev.key == "d") {
-        enableRemove();
+    if (ev.key == "f" && state == "orbit") {
+        setState("flag");
+    } else if (ev.key == "d" && state == "orbit") {
+        setState("remove");
     }
 })
 
 window.addEventListener("keyup", function (ev: KeyboardEvent) {
-    if (mouseOnHandle) {
-        return;
-    }
-    if (ev.key == "f") {
-        disableFlag();
-    } else if (ev.key == "d") {
-        disableRemove();
+    if (ev.key == "f" && state == "flag" || state == "continueFlag") {
+        setState("orbit");
+    } else if (ev.key == "d" && state == "remove") {
+        setState("orbit");
     }
 })
 
 function updateVisibility(xray: XRay) {
-    let x = 0;
-    let y = 0;
-    let z = 0;
     for (let cube of cubes) {
         if (isVisible(xray, cube, puzzleSize.x, puzzleSize.y, puzzleSize.z)) {
             cube.visible = true;
@@ -260,15 +290,6 @@ function updateVisibility(xray: XRay) {
         } else {
             cube.visible = false;
             cube.layers.disable(0);
-        }
-        z++;
-        if (z == puzzleSize.z) {
-            y++;
-            z = 0;
-            if (y == puzzleSize.y) {
-                x++;
-                y = 0;
-            }
         }
     }
 }
@@ -297,13 +318,13 @@ function clearZeroes() {
     }
 }
 
-const button: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
-if (button) {
-    button.disabled = !areZeroes();
+const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
+if (clearZeroesButton) {
+    clearZeroesButton.disabled = !areZeroes();
 }
-button?.addEventListener("click", function (ev: MouseEvent) {
+clearZeroesButton?.addEventListener("click", function (ev: MouseEvent) {
     clearZeroes();
-    button.disabled = true;
+    clearZeroesButton.disabled = true;
 })
 
 function checkDone() {
@@ -364,163 +385,250 @@ function facingX(): number {
     return Math.abs(cameraVector.dot(new Vector2(1, 0)));
 }
 
-let xray: XRay = { direction: "right", count: 0 }
-let handlePositionToCamera: Vector3 = new Vector3();
+let xray: XRay = { direction: "right", count: 0 };
+
+// Actions when in standard orbit mode
+function orbit() {
+    let intersectXHandle = false;
+    let intersectZHandle = false;
+
+    // If you aren't using xray, reset the handles. Needed because the positions can change
+    if (xray.count == 0) {
+        resetXHandle();
+        resetZHandle();
+    }
+
+    // Do raycast
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.layers.set(0);
+
+    const intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length > 0) {
+        // Check if you are hovering over a handle to highlight that it can be acted on
+        if (intersects[0].object == xHandleMesh) {
+            intersectXHandle = true;
+        } else if (intersects[0].object == zHandleMesh) {
+            intersectZHandle = true;
+        }
+
+        let object: CoolMesh = intersects[0].object as CoolMesh;
+        // If you click one of the handles, switch to a drag mode
+        if (click) {
+            if (object == xHandleMesh) {
+                setState("dragX");
+            } else if (object == zHandleMesh) {
+                setState("dragZ");
+            }
+        }
+    }
+    xHandleMesh.material.opacity = intersectXHandle ? 1 : 0.5;
+    zHandleMesh.material.opacity = intersectZHandle ? 1 : 0.5;
+    click = false;
+}
+
+// Actions when dragging the X handle
+function dragX() {
+    // How much dragging affects the position
+    const dragSpeed = 5;
+
+    // The x and the Y motion
+    const xDistance = pointer.x - startPosition.x;
+    const yDistance = pointer.y - startPosition.y;
+
+    // Modifications I don't really understand
+    let localXDistance = xDistance;
+    let localYDistance = yDistance;
+    if (camera.position.x > 0) {
+        localYDistance = -localYDistance;
+    }
+    if (camera.position.z < 0) {
+        localXDistance = -localXDistance;
+    }
+    if (camera.position.y < 0) {
+        localYDistance = -localYDistance;
+    }
+
+    // Make influence of distance proportional to direction facing
+    const distance = dragSpeed * lerp(localXDistance, localYDistance, facingX())
+
+    // Set new position to snapped distance
+    const newPosition = handleOriginalPosition + Math.floor(distance);
+
+    // Clamp the position based on variables and position.
+    let clampedPosition = 0;
+    if (camera.position.x > 0) {
+        clampedPosition = clamp(newPosition, handleMinNX, handleMaxNX);
+
+        if (clampedPosition != xHandleMesh.position.x) {
+            xray = { direction: "right", count: handleMaxNX - clampedPosition };
+            updateVisibility(xray);
+        }
+    } else {
+        clampedPosition = clamp(newPosition, handleMinX, handleMaxX);
+
+        if (clampedPosition != xHandleMesh.position.x) {
+            xray = { direction: "left", count: clampedPosition - handleMinX };
+            updateVisibility(xray);
+        }
+    }
+
+    // Set the new position
+    xHandleMesh.position.setX(clampedPosition);
+}
+
+// Actions when dragging the Z handle. see dragX() for explanations.
+function dragZ() {
+    const dragSpeed = 5
+    const xDistance = pointer.x - startPosition.x;
+    const yDistance = pointer.y - startPosition.y;
+
+    let localXDistance = xDistance;
+    let localYDistance = yDistance;
+    if (camera.position.x > 0) {
+        localXDistance = -localXDistance;
+    }
+    if (camera.position.z > 0) {
+        localYDistance = -localYDistance;
+    }
+    if (camera.position.y < 0) {
+        localYDistance = -localYDistance;
+    }
+
+    let distance = dragSpeed * lerp(localYDistance, localXDistance, facingX());
+    const newPosition = handleOriginalPosition + Math.floor(distance);
+    let clampedPosition = 0;
+    if (camera.position.z > 0) {
+        clampedPosition = clamp(newPosition, handleMinNZ, handleMazNZ);
+
+        if (clampedPosition != zHandleMesh.position.z) {
+            xray = { direction: "front", count: handleMazNZ - clampedPosition };
+            updateVisibility(xray);
+        }
+    } else {
+        clampedPosition = clamp(newPosition, handleMinZ, handleMaxZ)
+
+        if (clampedPosition != zHandleMesh.position.z) {
+            xray = { direction: "back", count: clampedPosition - handleMinZ };
+            updateVisibility(xray);
+        }
+    }
+
+    zHandleMesh.position.setZ(clampedPosition);
+}
+
+// Actions when in flagging mode
+function flag() {
+    // Nothing happens if not clicking
+    if (!click) {
+        return;
+    }
+    click = false;
+
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.layers.set(0);
+
+    const intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length == 0) {
+        return;
+    }
+
+    // If you click on a cube, it switches its flag, and
+    // switches to continueFlag state for click-drag
+    let object: CoolMesh = intersects[0].object as CoolMesh;
+    object.qFlag = !object.qFlag;
+    updateMaterial(object, loader, hints);
+    lastChange = object.qFlag;
+    setState("continueFlag");
+}
+
+// Actions when flagging and dragging
+function continueFlag() {
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.layers.set(0);
+
+    const intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length == 0) {
+        return;
+    }
+
+    // Continue the flag
+    let object: CoolMesh = intersects[0].object as CoolMesh;
+    if (object.qFlag != lastChange) {
+        object.qFlag = lastChange;
+        updateMaterial(object, loader, hints);
+    }
+}
+
+// Actions when deleting
+function remove() {
+    if (!click) {
+        return;
+    }
+    click = false;
+
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.layers.set(0);
+
+    const intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length == 0) {
+        return;
+    }
+
+    let object: CoolMesh = intersects[0].object as CoolMesh;
+    let x: number = object.qX ?? 0;
+    let y: number = object.qY ?? 0;
+    let z: number = object.qZ ?? 0;
+
+    // You can't delete a flagged cube
+    if (object.qFlag) {
+        return;
+    }
+
+    // If the cube is part of the solution, count it as a mistake.
+    if (puzzle[x][y][z]) {
+        addMistake();
+        object.qFlag = true;
+        updateMaterial(object, loader, hints);
+    } else {
+        // Destroy the cube
+        object.qDestroy = true;
+        scene.remove(object);
+
+        // Check if the puzzle is complete
+        let isDone = checkDone();
+        if (isDone) {
+            // Color the cubes and disable xray
+            colorCubes();
+            xray.count = 0;
+            updateVisibility(xray);
+        }
+    }
+}
+
+// Main method
 function animate() {
     requestAnimationFrame(animate);
 
-    const dragSpeed = 5;
-    const xDistance = pointer.x - startPosition.x;
-    const yDistance = pointer.y - startPosition.y;
-    if (mouseOnHandle == "x") {
-        /* Note to my future self: I have absolutely no clue how or why any of the distance
-           calculation code works. I spent an hour writing code until it all worked. If there
-           is some bug in this code, I would recommend giving up and rewriting this into something
-           better. */
-        let localXDistance = xDistance;
-        let localYDistance = yDistance;
-        if (camera.position.x > 0) {
-            localYDistance = -localYDistance;
-        }
-        if (camera.position.z < 0) {
-            localXDistance = -localXDistance;
-        }
-        if (camera.position.y < 0) {
-            localYDistance = -localYDistance;
-        }
-        
-        const distance = dragSpeed * lerp(localXDistance, localYDistance, facingX())
-        const newPosition = xOriginalPosition + Math.floor(distance);
-        let clampedPosition = 0;
-        if (camera.position.x > 0) {
-            clampedPosition = clamp(newPosition, puzzleSize.x / 2 + 2 - puzzleSize.x, puzzleSize.x / 2 + 1);
-
-            if (clampedPosition != xHandleMesh.position.x) {
-                xray = { direction: "right", count: puzzleSize.x / 2 + 1 - clampedPosition};
-                updateVisibility(xray);
-            }
-        } else {
-            clampedPosition = clamp(newPosition, handleMinX, handleMaxX);
-
-            if (clampedPosition != xHandleMesh.position.x) {
-                xray = { direction: "left", count: clampedPosition - handleMinX };
-                updateVisibility(xray);
-            }
-        }
-        xHandleMesh.position.setX(clampedPosition);
-    } else if (mouseOnHandle == "z") {
-        let localXDistance = xDistance;
-        let localYDistance = yDistance;
-        if (camera.position.x > 0) {
-            localXDistance = -localXDistance;
-        }
-        if (camera.position.z > 0) {
-            localYDistance = -localYDistance;
-        }
-        if (camera.position.y < 0) {
-            localYDistance = -localYDistance;
-        }
-
-        let distance = dragSpeed * lerp(localYDistance, localXDistance, facingX());
-        const newPosition = zOriginalPosition + Math.floor(distance);
-        let clampedPosition = 0;
-        if (camera.position.z > 0) {
-            clampedPosition = clamp(newPosition, -puzzleSize.z / 2 + 2, puzzleSize.z / 2 + 1);
-
-            if (clampedPosition != zHandleMesh.position.z) {
-                xray = { direction: "front", count: puzzleSize.z / 2 + 1 - clampedPosition };
-                updateVisibility(xray);
-            }
-        } else {
-            clampedPosition = clamp(newPosition, handleMinZ, handleMaxZ)
-
-            if (clampedPosition != zHandleMesh.position.z) {
-                xray = { direction: "back", count: clampedPosition - handleMinZ };
-                updateVisibility(xray);
-            }
-        }
-
-        zHandleMesh.position.setZ(clampedPosition);
-    } else {
-        if (xray.count == 0) {
-            resetXHandle();
-            resetZHandle();
-        }
-        raycaster.setFromCamera(pointer, camera);
-        raycaster.layers.set(0);
-
-        const intersects = raycaster.intersectObjects(scene.children);
-        if (intersects.length > 0) {
-            if (intersects[0].object == xHandleMesh) {
-                xHandleMesh.material.opacity = 1;
-                zHandleMesh.material.opacity = 0.5;
-            } else if (intersects[0].object == zHandleMesh) {
-                zHandleMesh.material.opacity = 1;
-                xHandleMesh.material.opacity = 0.5;
-            } else {
-                xHandleMesh.material.opacity = 0.5;
-                zHandleMesh.material.opacity = 0.5;
-            }
-            let object: CoolMesh = intersects[0].object as CoolMesh;
-            if (lastChange != null) {
-                if (object.qFlag != (lastChange == "flag")) {
-                    object.qFlag = lastChange == "flag";
-                    updateMaterial(object, loader, hints);
-                }
-            }
-            if (click) {
-                let x: number = object.qX ?? 0;
-                let y: number = object.qY ?? 0;
-                let z: number = object.qZ ?? 0;
-                if (flag) {
-                    object.qFlag = !object.qFlag;
-                    updateMaterial(object, loader, hints);
-                    if (object.qFlag) {
-                        lastChange = "flag"
-                    } else {
-                        lastChange = "unflag";
-                    }
-                } else if (remove) {
-                    if (!object?.qFlag) {
-                        if (puzzle[x][y][z]) {
-                            mistakeCount++;
-                            const counter = document.querySelector<HTMLSpanElement>("#mistakes-count");
-                            if (counter) {
-                                counter.textContent = mistakeCount.toString();
-                            }
-                            object.qFlag = true;
-                            updateMaterial(object, loader, hints);
-                        } else {
-                            object.qDestroy = true;
-                            scene.remove(object);
-                            let isDone = checkDone();
-                            if (isDone) {
-                                colorCubes();
-                                updateVisibility({ direction: "right", count: 0 })
-                            }
-                        }
-                    }
-                } else if (object == xHandleMesh) {
-                    mouseOnHandle = "x";
-                    xOriginalPosition = xHandleMesh.position.x;
-                    startPosition.set(pointer.x, pointer.y);
-                    controls.enableRotate = false;
-                    handlePositionToCamera = xHandleMesh.position.clone().project(camera);
-                    resetZHandle();
-                } else if (object == zHandleMesh) {
-                    mouseOnHandle = "z";
-                    zOriginalPosition = zHandleMesh.position.z;
-                    startPosition.set(pointer.x, pointer.y);
-                    controls.enableRotate = false;
-                    resetXHandle();
-                }
-            }
-        } else {
-            xHandleMesh.material.opacity = 0.5;
-            zHandleMesh.material.opacity = 0.5;
-        }
+    switch (state) {
+        case "orbit":
+            orbit();
+            break;
+        case "dragX":
+            dragX();
+            break;
+        case "dragZ":
+            dragZ();
+            break;
+        case "continueFlag":
+            continueFlag();
+            break;
+        case "flag":
+            flag();
+            break;
+        case "remove":
+            remove();
+            break;
     }
-    click = false;
     renderer.render(scene, camera);
 }
 
