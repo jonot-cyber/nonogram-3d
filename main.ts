@@ -70,6 +70,12 @@ function setState(newState: State) {
             startPosition.set(pointer.x, pointer.y);
             resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
             break;
+        case "end":
+            xHandleMesh.visible = false;
+            zHandleMesh.visible = false;
+            xray.count = 0;
+            updateVisibility(xray, cubes, puzzleSize);
+            document.querySelector(".crop")?.setAttribute("style", "display:none")
     }
     state = newState;
 }
@@ -86,6 +92,9 @@ function addMistake() {
     mistakeCount++;
     if (mistakeCounter) {
         mistakeCounter.textContent = mistakeCount.toString();
+    }
+    if (mistakeCount == 5) {
+        setState("end");
     }
 }
 
@@ -193,8 +202,8 @@ scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
 
-enableClock(1*60, function() {
-    console.log("test");
+enableClock(10*60, function() {
+    setState("end");
 });
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
@@ -457,8 +466,7 @@ function remove() {
         if (checkDone(cubes, puzzle)) {
             // Color the cubes and disable xray
             colorCubes(cubes, json.color);
-            xray.count = 0;
-            updateVisibility(xray, cubes, puzzleSize);
+            setState("end");
         }
     }
 }

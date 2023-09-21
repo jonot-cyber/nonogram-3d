@@ -2,8 +2,20 @@ const clock = document.querySelector<SVGElement>("#clock");
 const clockCircle = document.querySelector<SVGCircleElement>("#clock-circle");
 const clockAnimation = document.querySelector<SVGAnimateElement>("#clock-animation");
 
+let clockEnabled = false;
+
 export function enableClock(seconds: number, callback: () => void) {
-    setTimeout(callback, seconds * 1000);
+    clockEnabled = true;
+    setTimeout(function () {
+        if (clockEnabled) {
+            callback();
+        }
+    }, seconds * 1000);
     clockAnimation?.setAttribute("dur", seconds.toString() + "s");
     clockAnimation?.beginElement();
+}
+
+export function disableClock() {
+    clockEnabled = false;
+    clockAnimation?.endElement();
 }
