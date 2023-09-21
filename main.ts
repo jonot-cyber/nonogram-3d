@@ -6,6 +6,7 @@ import { puzzleTable } from './library/lookup';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay } from './types';
 import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
+import { enableClock } from './clock';
 
 // HTML elements that matter
 const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
@@ -191,6 +192,10 @@ const zHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0x
 scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
+
+enableClock(1*60, function() {
+    console.log("test");
+});
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
     pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
@@ -484,6 +489,5 @@ function animate() {
     }
     renderer.render(scene, camera);
 }
-
 
 animate();

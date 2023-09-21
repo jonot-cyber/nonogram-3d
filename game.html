@@ -57,6 +57,16 @@
             <div class="key d" id="d-indicator">D</div>
             <div class="key f" id="f-indicator">F</div>
         </div>
+        <svg id="clock" viewbox="0 0 16 16" width="128px" height="128px" fill="none">
+
+            <circle id="clock-circle" fill="none" cx="8" cy="8" r="4" stroke="#000000c0" data-fallback="edge" stroke-width="0.5px"
+                transform="rotate(-90, 8, 8)" stroke-dasharray="0 100">
+
+                <animate dur="60s" id="clock-animation" attributeName="stroke-dasharray" to="26 100" fill="freeze" />
+
+            </circle>
+
+        </svg>
     </div>
     <script type="module" src="/main.ts"></script>
 </body>
