@@ -11,14 +11,6 @@ import { enableClock } from './clock';
 // HTML elements that matter
 const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
 const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#d-indicator");
-const mistakeCounter: HTMLSpanElement | null = document.querySelector<HTMLSpanElement>("#mistakes-count");
-const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
-
-const debug = {
-    showShape: false,
-    createHints: false,
-    reduceHints: false,
-};
 
 let state = "orbit";
 
@@ -75,7 +67,7 @@ function setState(newState: State) {
             zHandleMesh.visible = false;
             xray.count = 0;
             updateVisibility(xray, cubes, puzzleSize);
-            document.querySelector(".crop")?.setAttribute("style", "display:none")
+            document.querySelector(".crop")?.setAttribute("style", "display:none");
     }
     state = newState;
 }
@@ -87,16 +79,6 @@ let lastChange: boolean = false;
 let mistakeCount = 0;
 let handleOriginalPosition: number = 0;
 let xray: XRay = { direction: "right", count: 0 };
-
-function addMistake() {
-    mistakeCount++;
-    if (mistakeCounter) {
-        mistakeCounter.textContent = mistakeCount.toString();
-    }
-    if (mistakeCount == 5) {
-        setState("end");
-    }
-}
 
 const pointer = new Vector2();
 const startPosition = new Vector2();
@@ -132,46 +114,19 @@ function createLights() {
 }
 createLights();
 
-const urlParams = new URLSearchParams(window.location.search);
-let puzzleName = urlParams.get("puzzle");
-let response = await fetch(puzzleTable[puzzleName ?? ""]);
-let json = await response.json();
-const puzzle: Puzzle = json.puzzle;
-const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
+let puzzleSize = new Vector3(1, 1, 1);
 const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
 camera.position.z = distance;
-const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
-if (debug.reduceHints) {
-    removeHints(puzzle, hints);
-    console.log(JSON.stringify(hints));
-}
 const cubes: CoolMesh[] = [];
-
-function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) {
-    for (let x = 0; x < size.x; x++) {
-        for (let y = 0; y < size.y; y++) {
-            for (let z = 0; z < size.z; z++) {
-                if (!puzzle[x][y][z] && debug.showShape) {
-                    continue;
-                }
-                const geometry = new BoxGeometry(1, 1, 1);
-                const cube: CoolMesh = new Mesh(geometry);
-                cube.position.set(x - puzzleSize.x / 2 + 0.5, y - puzzleSize.y / 2 + 0.5, z - puzzleSize.z / 2 + 0.5);
-                cube.qPos = new Vector3(x, y, z);
-                cube.qFlag = false;
-                cube.qDestroy = false;
-                cube.layers.enable(0);
-                scene.add(cube);
-                updateMaterial(cube, loader, hints);
-                cubes.push(cube);
-            }
-        }
-    }
-    if (debug.showShape) {
-        colorCubes(cubes, json.color);
-    }
-}
-createCubes(puzzleSize, puzzle);
+const geometry = new BoxGeometry(1, 1, 1);
+const cube: CoolMesh = new Mesh(geometry);
+cube.position.set(0, 0, 0);
+cube.qPos = new Vector3(0,0,0);
+cube.qFlag = false;
+cube.qDestroy = false;
+cube.layers.enable(0);
+scene.add(cube);
+updateMaterial(cube, loader);
 
 // Minimum and maximum positions of X slider
 const handleMinX = -puzzleSize.x / 2 - 1;
@@ -225,10 +180,15 @@ renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
 })
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
-    if (ev.key == "f" && state == "orbit") {
+    if (state != "orbit") {
+        return;
+    }
+    if (ev.key == "f") {
         setState("flag");
-    } else if (ev.key == "d" && state == "orbit") {
+    } else if (ev.key == "d") {
         setState("remove");
+    } else if (ev.key == "s") {
+        setState("place");
     }
 })
 
@@ -237,15 +197,9 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
         setState("orbit");
     } else if (ev.key == "d" && state == "remove") {
         setState("orbit");
+    } else if (ev.key == "s" && state == "place") {
+        setState("orbit");
     }
-})
-
-if (clearZeroesButton) {
-    clearZeroesButton.disabled = !areZeroes(cubes, hints);
-}
-clearZeroesButton?.addEventListener("click", function (ev: MouseEvent) {
-    clearZeroes(cubes, hints, scene);
-    clearZeroesButton.disabled = true;
 })
 
 // Actions when in standard orbit mode
@@ -397,7 +351,7 @@ function flag() {
     // switches to continueFlag state for click-drag
     let object: CoolMesh = intersects[0].object as CoolMesh;
     object.qFlag = !object.qFlag;
-    updateMaterial(object, loader, hints);
+    updateMaterial(object, loader);
     lastChange = object.qFlag;
     setState("continueFlag");
 }
@@ -416,7 +370,7 @@ function continueFlag() {
     let object: CoolMesh = intersects[0].object as CoolMesh;
     if (object.qFlag != lastChange) {
         object.qFlag = lastChange;
-        updateMaterial(object, loader, hints);
+        updateMaterial(object, loader);
     }
 }
 
@@ -436,35 +390,47 @@ function remove() {
     }
 
     let object: CoolMesh = intersects[0].object as CoolMesh;
-    let objectPosition: Vector3 = object.qPos ?? new Vector3();
 
-    // You can't delete a flagged cube
-    if (object.qFlag) {
+    // Destroy the cube
+    object.qDestroy = true;
+    scene.remove(object);
+}
+
+function place() {
+    // This code decides not to work if you click on the edge of a block. I do not know why.
+    if (!click) {
         return;
     }
+    click = false;
 
-    // If the cube is part of the solution, count it as a mistake.
-    if (puzzle[objectPosition.x][objectPosition.y][objectPosition.z]) {
-        addMistake();
-        object.qFlag = true;
-        updateMaterial(object, loader, hints);
-    } else {
-        // Destroy the cube
-        object.qDestroy = true;
-        scene.remove(object);
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.layers.set(0);
 
-        // Check for zeroes
-        if (clearZeroesButton) {
-            clearZeroesButton.disabled = !areZeroes(cubes, hints);
-        }
-
-        // Check if the puzzle is complete
-        if (checkDone(cubes, puzzle)) {
-            // Color the cubes and disable xray
-            colorCubes(cubes, json.color);
-            setState("end");
-        }
+    const intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length == 0) {
+        return;
     }
+    console.table(intersects);
+
+    let object: CoolMesh = intersects.filter(i => i.object != xHandleMesh && i.object != zHandleMesh)[0].object as CoolMesh;
+
+    let newCube: CoolMesh = new Mesh(new BoxGeometry(1, 1, 1));
+    let normal = intersects[0].normal;
+    if (!normal) {
+        return;
+    }
+    if (!object.qPos) {
+        return;
+    }
+    newCube.position.set(object.position.x, object.position.y, object.position.z);
+    newCube.position.add(normal);
+    newCube.layers.set(0);
+    newCube.qPos = new Vector3(newCube.position.x, newCube.position.y, newCube.position.z);
+    updateMaterial(newCube, loader);
+    puzzleSize.add(normal);
+    const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
+    camera.position.normalize().multiplyScalar(distance);
+    scene.add(newCube);
 }
 
 // Main method
@@ -489,6 +455,9 @@ function animate() {
             break;
         case "remove":
             remove();
+            break;
+        case "place":
+            place();
             break;
     }
     renderer.render(scene, camera);

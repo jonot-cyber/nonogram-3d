@@ -9,46 +9,54 @@ function getAssetURL(hint: Hint): string {
     return `/assets/numbers/${hint.type}/${hint.count}.png`
 }
 
-export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints: Hints) {
+export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints?: Hints) {
     const onBeforeCompile = (shader: Shader) => {
         shader.fragmentShader = shader.fragmentShader.replace(
             "#include <alphatest_fragment>",
             `float a = 1.0 - diffuseColor.a; diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);`);
     }
-    const x = mesh.qX ?? 0;
-    const y = mesh.qY ?? 0;
-    const z = mesh.qZ ?? 0;
-    const color: number = mesh.qFlag ? 0x00ffff : 0xffffff
-    mesh.material = [
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[y][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[x][z])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile }),
-        new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[x][y])), onBeforeCompile: onBeforeCompile }),
-    ];
+    const meshPosition = mesh.qPos ?? new Vector3(0, 0, 0);
+    const color: number = mesh.qFlag ? 0x00ffff : 0xffffff;
+    if (hints) {
+        mesh.material = [
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: onBeforeCompile }),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: onBeforeCompile }),
+        ];
+    } else {
+        mesh.material = [
+            new MeshLambertMaterial({ color: color }),
+            new MeshLambertMaterial({ color: color }),
+            new MeshLambertMaterial({ color: color }),
+            new MeshLambertMaterial({ color: color }),
+            new MeshLambertMaterial({ color: color }),
+            new MeshLambertMaterial({ color: color }),
+        ];
+
+    }
 }
 
 export function isVisible(xray: XRay, cube: CoolMesh, size: Vector3): boolean {
     if (xray.count == 0) {
         return true;
     }
-    const x = cube.qX ?? 0;
-    const y = cube.qY ?? 0;
-    const z = cube.qZ ?? 0;
+    const cubePosition = cube.qPos ?? new Vector3(0, 0, 0);
     switch (xray.direction) {
         case "up":
-            return size.y - y > xray.count;
+            return size.y - cubePosition.y > xray.count;
         case "down":
-            return y >= xray.count;
+            return cubePosition.y >= xray.count;
         case "left":
-            return x >= xray.count;
+            return cubePosition.x >= xray.count;
         case "right":
-            return size.x - x > xray.count;
+            return size.x - cubePosition.x > xray.count;
         case "front":
-            return size.z - z > xray.count;
+            return size.z - cubePosition.z > xray.count;
         case "back":
-            return z >= xray.count;
+            return cubePosition.z >= xray.count;
     }
     return true;
 }
@@ -70,9 +78,10 @@ export function areZeroes(cubes: CoolMesh[], hints: Hints): boolean {
         if (cube.qDestroy) {
             continue;
         }
-        const x = cube.qX ?? -1;
-        const y = cube.qY ?? -1;
-        const z = cube.qZ ?? -1;
+        const cubePosition = cube.qPos;
+        const x = cubePosition?.x ?? -1;
+        const y = cubePosition?.y ?? -1;
+        const z = cubePosition?.z ?? -1;
         if (hints.x[y][z].count == 0 && hints.x[y][z].type != "none" || hints.y[x][z].count == 0 && hints.y[x][z].type != "none" || hints.z[x][y].count == 0 && hints.z[x][y].type != "none") {
             return true;
         }
@@ -82,9 +91,10 @@ export function areZeroes(cubes: CoolMesh[], hints: Hints): boolean {
 
 export function clearZeroes(cubes: CoolMesh[], hints: Hints, scene: Scene) {
     for (const cube of cubes) {
-        const x = cube.qX ?? -1;
-        const y = cube.qY ?? -1;
-        const z = cube.qZ ?? -1;
+        const cubePosition = cube.qPos;
+        const x = cubePosition?.x ?? -1;
+        const y = cubePosition?.y ?? -1;
+        const z = cubePosition?.y ?? -1;
         if (hints.x[y][z].count == 0 && hints.x[y][z].type != "none" || hints.y[x][z].count == 0 && hints.y[x][z].type != "none" || hints.z[x][y].count == 0 && hints.z[x][y].type != "none") {
             scene.remove(cube);
             cube.qDestroy = true;
@@ -97,7 +107,7 @@ export function checkDone(cubes: CoolMesh[], puzzle: Puzzle): boolean {
         if (cube.qDestroy) {
             continue;
         }
-        if (!puzzle[cube.qX ?? -1][cube.qY ?? -1][cube.qZ ?? -1]) {
+        if (!puzzle[cube.qPos?.x ?? -1][cube.qPos?.y ?? -1][cube.qPos?.z ?? -1]) {
             return false;
         }
     }
@@ -123,7 +133,7 @@ export function colorCubes(cubes: CoolMesh[], puzzleColors: number[][][]) {
         if (cube.qDestroy) {
             continue;
         }
-        const color = puzzleColors[cube.qX ?? -1][cube.qY ?? -1][cube.qZ ?? -1];
+        const color = puzzleColors[cube.qPos?.x ?? -1][cube.qPos?.y ?? -1][cube.qPos?.z ?? -1];
         cube.material = new MeshLambertMaterial({ color: colors[color] });
     }
 }
