@@ -1,12 +1,8 @@
-import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, ReverseSubtractEquation, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Hints, Puzzle, createHints } from './puzzle';
-import { removeHints } from './reduce';
-import { puzzleTable } from './library/lookup';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay } from './types';
-import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
-import { enableClock } from './clock';
+import { facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
 
 // HTML elements that matter
 const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
@@ -130,20 +126,20 @@ scene.add(cube);
 updateMaterial(cube, loader);
 
 // Minimum and maximum positions of X slider
-const handleMinX = -puzzleSize.x / 2 - 1;
-const handleMaxX = puzzleSize.x / 2 - 2;
+let handleMinX = -puzzleSize.x / 2 - 1;
+let handleMaxX = puzzleSize.x / 2 - 2;
 
 // Minimum and maximum positions of inverted X slider
-const handleMinNX = -puzzleSize.x / 2 + 2;
-const handleMaxNX = puzzleSize.x / 2 + 1;
+let handleMinNX = -puzzleSize.x / 2 + 2;
+let handleMaxNX = puzzleSize.x / 2 + 1;
 
 // Minimum and maximum positions of Z slider
-const handleMinZ = -puzzleSize.z / 2 - 1;
-const handleMaxZ = puzzleSize.z / 2 - 2;
+let handleMinZ = -puzzleSize.z / 2 - 1;
+let handleMaxZ = puzzleSize.z / 2 - 2;
 
 // Minimum and maximum positions of inverted Z slider
-const handleMinNZ = -puzzleSize.z / 2 + 2;
-const handleMaxNZ = puzzleSize.z / 2 + 1;
+let handleMinNZ = -puzzleSize.z / 2 + 2;
+let handleMaxNZ = puzzleSize.z / 2 + 1;
 
 const handleGeometry = new OctahedronGeometry(0.25);
 const xHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xff00ff, opacity: 0.5, transparent: true }));
@@ -155,6 +151,20 @@ const zHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0x
 scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
+
+function updateHandles() {
+    handleMinX = -puzzleSize.x / 2 - 1;
+    handleMaxX = puzzleSize.x / 2 - 2;
+    
+    handleMinNX = -puzzleSize.x / 2 + 2;
+    handleMaxNX = puzzleSize.x / 2 + 1;
+    
+    handleMinZ = -puzzleSize.z / 2 - 1;
+    handleMaxZ = puzzleSize.z / 2 - 2;
+    
+    handleMinNZ = -puzzleSize.z / 2 + 2;
+    handleMaxNZ = puzzleSize.z / 2 + 1;
+}
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
     pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
@@ -436,7 +446,6 @@ function place() {
         }
         puzzleSize.setX(puzzleSize.x + 1);
         for (const cube of cubes) {
-            cube.position.setX(cube.position.x + 1);
             cube.qPos?.setX(cube.qPos.x + 1);
         }
     } else if (normal.y == 1) {
@@ -452,7 +461,6 @@ function place() {
         }
         puzzleSize.setY(puzzleSize.y + 1);
         for (const cube of cubes) {
-            cube.position.setY(cube.position.y + 1);
             cube.qPos?.setY(cube.qPos.y + 1);
         }
     } else if (normal.z == 1) {
@@ -468,7 +476,6 @@ function place() {
         }
         puzzleSize.setZ(puzzleSize.z + 1);
         for (const cube of cubes) {
-            cube.position.setZ(cube.position.z + 1);
             cube.qPos?.setZ(cube.qPos.z + 1);
         }
     }
@@ -483,6 +490,7 @@ function place() {
         cube.position.set(cube.qPos.x - puzzleSize.x / 2 + 0.5, cube.qPos.y - puzzleSize.y / 2 + 0.5, cube.qPos.z - puzzleSize.z / 2 + 0.5);
     }
     camera.position.normalize().multiplyScalar(puzzleSize.length());
+    updateHandles();
 }
 
 // Main method
