@@ -474,6 +474,14 @@ function place() {
     }
     cubes.push(newCube);
     updateMaterial(newCube, loader);
+
+    // Fix the puzzle positions :)
+    for (const cube of cubes) {
+        if (!cube.qPos) {
+            continue;
+        }
+        cube.position.set(cube.qPos.x - puzzleSize.x / 2 + 0.5, cube.qPos.y - puzzleSize.y / 2 + 0.5, cube.qPos.z - puzzleSize.z / 2 + 0.5);
+    }
     camera.position.normalize().multiplyScalar(puzzleSize.length());
 }
 
