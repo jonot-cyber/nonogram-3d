@@ -387,12 +387,14 @@ function remove() {
         return;
     }
     click = false;
+    if (puzzleSize.x == 1 && puzzleSize.y == 1 && puzzleSize.z == 1) { // Don't remove the last cube >:(
+        return;
+    }
 
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
     const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
-    console.table(intersects);
     if (intersects.length == 0) {
         return;
     }
@@ -412,7 +414,7 @@ function remove() {
     // Check if things need to be realigned
     for (const cube of cubes) {
         if (cube.qDestroy) {
-            return;
+            continue;
         }
         if (cube.qPos?.x == 0) {
             minX = true;
@@ -440,6 +442,24 @@ function remove() {
         puzzleSize.setY(puzzleSize.y - 1);
     }
     if (!maxZ) {
+        puzzleSize.setZ(puzzleSize.z - 1);
+    }
+    if (!minX) {
+        for (const cube of cubes) {
+            cube.qPos?.setX(cube.qPos.x - 1);
+        }
+        puzzleSize.setX(puzzleSize.x - 1);
+    }
+    if (!minY) {
+        for (const cube of cubes) {
+            cube.qPos?.setY(cube.qPos.y - 1);
+        }
+        puzzleSize.setY(puzzleSize.y - 1);
+    }
+    if (!minZ) {
+        for (const cube of cubes) {
+            cube.qPos?.setZ(cube.qPos.z - 1);
+        }
         puzzleSize.setZ(puzzleSize.z - 1);
     }
 
