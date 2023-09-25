@@ -132,15 +132,27 @@ function createLights() {
 }
 createLights();
 
-const urlParams = new URLSearchParams(window.location.search);
-let puzzleName = urlParams.get("puzzle");
-let response = await fetch(puzzleTable[puzzleName ?? ""]);
-let json = await response.json();
-const puzzle: Puzzle = json.puzzle;
+async function createPuzzle(): Promise<{puzzle: Puzzle, hints: Hints, color: number[][][]}> {
+    console.log("TEST")
+    const urlParams = new URLSearchParams(window.location.search);
+    const puzzleName = urlParams.get("puzzle");
+    if (puzzleName) {
+        const response = await fetch(puzzleTable[puzzleName ?? ""]);
+        const json = await response.json();
+        const puzzle: Puzzle = json.puzzle;
+        const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
+        return {puzzle, hints, color: []};
+    } else {
+        const puzzleData = urlParams.get("puzzleData");
+        const json = JSON.parse(puzzleData ?? "");
+        return {puzzle: json.puzzle, hints: json.hints, color: json.color};
+    }
+}
+
+const {puzzle, hints, color} = await createPuzzle();
 const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
 const distance = puzzleSize.length();
 camera.position.z = distance;
-const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
 if (debug.reduceHints) {
     removeHints(puzzle, hints);
     console.log(JSON.stringify(hints));
@@ -168,7 +180,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
         }
     }
     if (debug.showShape) {
-        colorCubes(cubes, json.color);
+        colorCubes(cubes, color);
     }
 }
 createCubes(puzzleSize, puzzle);
@@ -461,7 +473,7 @@ function remove() {
         // Check if the puzzle is complete
         if (checkDone(cubes, puzzle)) {
             // Color the cubes and disable xray
-            colorCubes(cubes, json.color);
+            colorCubes(cubes, color);
             setState("end");
         }
     }

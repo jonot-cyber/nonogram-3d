@@ -94,7 +94,10 @@ export function clearZeroes(cubes: CoolMesh[], hints: Hints, scene: Scene) {
         const cubePosition = cube.qPos;
         const x = cubePosition?.x ?? -1;
         const y = cubePosition?.y ?? -1;
-        const z = cubePosition?.y ?? -1;
+        const z = cubePosition?.z ?? -1;
+        if (hints.x[y][z] === undefined) {
+            debugger;
+        }
         if (hints.x[y][z].count == 0 && hints.x[y][z].type != "none" || hints.y[x][z].count == 0 && hints.y[x][z].type != "none" || hints.z[x][y].count == 0 && hints.z[x][y].type != "none") {
             scene.remove(cube);
             cube.qDestroy = true;

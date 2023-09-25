@@ -13,5 +13,6 @@ export const puzzleTable = {
     "t": "/library/t.json",
     "worm": "/library/worm.json",
     "among": "/library/among.json",
-    "headphones": "/library/headphones.json"
+    "headphones": "/library/headphones.json",
+    "test": "/library/test.json",
 }

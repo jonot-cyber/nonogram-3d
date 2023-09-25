@@ -3,10 +3,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay } from './types';
 import { facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
+import { createHints } from './puzzle';
+import { removeHints } from './reduce';
 
 // HTML elements that matter
 const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
 const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#d-indicator");
+const createPuzzleButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#create-puzzle");
 
 let state = "orbit";
 
@@ -164,16 +167,19 @@ function updateHandles() {
     
     handleMinNZ = -puzzleSize.z / 2 + 2;
     handleMaxNZ = puzzleSize.z / 2 + 1;
+
+    resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
+    resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
 }
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
     pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
     pointer.y = - (ev.clientY / window.innerHeight) * 2 + 1;
-})
+});
 
 renderer.domElement.addEventListener("mousedown", function (ev: MouseEvent) {
     click = true;
-})
+});
 
 renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     ev.preventDefault();
@@ -184,7 +190,7 @@ renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
         xHandleMesh.material.opacity = 0.5;
         zHandleMesh.material.opacity = 0.5;
     }
-})
+});
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
     if (state != "orbit") {
@@ -197,7 +203,7 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
     } else if (ev.key == "s") {
         setState("place");
     }
-})
+});
 
 window.addEventListener("keyup", function (ev: KeyboardEvent) {
     if (ev.key == "f" && state == "flag" || state == "continueFlag") {
@@ -207,6 +213,39 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
     } else if (ev.key == "s" && state == "place") {
         setState("orbit");
     }
+});
+
+createPuzzleButton?.addEventListener("click", function() {
+    const puzzle: boolean[][][] = [];
+    for (let ix = 0; ix < puzzleSize.x; ix++) {
+        const part1: boolean[][] = [];
+        for (let iy = 0; iy < puzzleSize.y; iy++) {
+            const part2: boolean[] = []
+            for (let iz = 0; iz < puzzleSize.z; iz++) {
+                part2.push(false);
+            }
+            part1.push(part2);
+        }
+        puzzle.push(part1);
+    }
+
+    for (const cube of cubes) {
+        if (cube.qDestroy) {
+            continue;
+        }
+        if (!cube.qPos) {
+            continue;
+        } 
+        puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
+    }
+
+    const hints = createHints(puzzle);
+    removeHints(puzzle, hints);
+
+    window.open("/game.html?puzzleData=" + JSON.stringify({
+        puzzle: puzzle,
+        hints: hints,
+    }));
 })
 
 // Actions when in standard orbit mode
@@ -502,7 +541,7 @@ function place() {
     newCube.qDestroy = false;
     newCube.qFlag = false;
     if (normal.x == 1) {
-        if (puzzleSize.x == 10) {
+        if (puzzleSize.x == 12) {
             return;
         }
         newCube.qPos.setX(newCube.qPos.x + 1);
@@ -510,7 +549,7 @@ function place() {
             puzzleSize.setX(puzzleSize.x + 1);
         }
     } else if (normal.x == -1) {
-        if (puzzleSize.x == 10) {
+        if (puzzleSize.x == 12) {
             return;
         }
         if (newCube.qPos.x == 0) {
@@ -522,7 +561,7 @@ function place() {
             newCube.qPos.setX(newCube.qPos.x - 1);
         }
     } else if (normal.y == 1) {
-        if (puzzleSize.y == 10) {
+        if (puzzleSize.y == 12) {
             return;
         }
         newCube.qPos.setY(newCube.qPos.y + 1);
@@ -530,7 +569,7 @@ function place() {
             puzzleSize.setY(puzzleSize.y + 1);
         }
     } else if (normal.y == -1) {
-        if (puzzleSize.y == 10) {
+        if (puzzleSize.y == 12) {
             return;
         }
         if (newCube.qPos.y == 0) {
@@ -542,7 +581,7 @@ function place() {
             newCube.qPos.setY(newCube.qPos.y - 1);
         }
     } else if (normal.z == 1) {
-        if (puzzleSize.z == 10) {
+        if (puzzleSize.z == 12) {
             return;
         }
         newCube.qPos.setZ(newCube.qPos.z + 1);
@@ -550,7 +589,7 @@ function place() {
             puzzleSize.setZ(puzzleSize.z + 1);
         }
     } else if (normal.z == -1) {
-        if (puzzleSize.z == 10) {
+        if (puzzleSize.z == 12) {
             return;
         }
         if (newCube.qPos.z == 0) {
