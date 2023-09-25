@@ -402,6 +402,56 @@ function remove() {
     // Destroy the cube
     object.qDestroy = true;
     scene.remove(object);
+
+    let minX = false;
+    let minY = false;
+    let minZ = false;
+    let maxX = false;
+    let maxY = false;
+    let maxZ = false;
+    // Check if things need to be realigned
+    for (const cube of cubes) {
+        if (cube.qDestroy) {
+            return;
+        }
+        if (cube.qPos?.x == 0) {
+            minX = true;
+        }
+        if (cube.qPos?.y == 0) {
+            minY = true;
+        }
+        if (cube.qPos?.z == 0) {
+            minZ = true;
+        }
+        if (cube.qPos?.x == puzzleSize.x - 1) {
+            maxX = true;
+        }
+        if (cube.qPos?.y == puzzleSize.y - 1) {
+            maxY = true;
+        }
+        if (cube.qPos?.z == puzzleSize.z - 1) {
+            maxZ = true;
+        }
+    }
+    if (!maxX) {
+        puzzleSize.setX(puzzleSize.x - 1);
+    }
+    if (!maxY) {
+        puzzleSize.setY(puzzleSize.y - 1);
+    }
+    if (!maxZ) {
+        puzzleSize.setZ(puzzleSize.z - 1);
+    }
+
+    // Fix the puzzle positions :)
+    for (const cube of cubes) {
+        if (!cube.qPos) {
+            continue;
+        }
+        cube.position.set(cube.qPos.x - puzzleSize.x / 2 + 0.5, cube.qPos.y - puzzleSize.y / 2 + 0.5, cube.qPos.z - puzzleSize.z / 2 + 0.5);
+    }
+    camera.position.normalize().multiplyScalar(puzzleSize.length());
+    updateHandles();
 }
 
 function place() {
@@ -428,57 +478,71 @@ function place() {
         return;
     }
     const newCube: CoolMesh = new Mesh(new BoxGeometry(1, 1, 1));
-    newCube.position.set(object.position.x, object.position.y, object.position.z);
     newCube.qPos = new Vector3(object.qPos.x, object.qPos.y, object.qPos.z);
-    scene.add(newCube);
     newCube.qDestroy = false;
     newCube.qFlag = false;
     if (normal.x == 1) {
         if (puzzleSize.x == 10) {
             return;
         }
-        puzzleSize.setX(puzzleSize.x + 1);
-        newCube.position.setX(newCube.position.x + 1);
         newCube.qPos.setX(newCube.qPos.x + 1);
+        if (newCube.qPos.x == puzzleSize.x) {
+            puzzleSize.setX(puzzleSize.x + 1);
+        }
     } else if (normal.x == -1) {
         if (puzzleSize.x == 10) {
             return;
         }
-        puzzleSize.setX(puzzleSize.x + 1);
-        for (const cube of cubes) {
-            cube.qPos?.setX(cube.qPos.x + 1);
+        if (newCube.qPos.x == 0) {
+            puzzleSize.setX(puzzleSize.x + 1);
+            for (const cube of cubes) {
+                cube.qPos?.setX(cube.qPos.x + 1);
+            }
+        } else {
+            newCube.qPos.setX(newCube.qPos.x - 1);
         }
     } else if (normal.y == 1) {
         if (puzzleSize.y == 10) {
             return;
         }
-        puzzleSize.setY(puzzleSize.y + 1);
-        newCube.position.setY(newCube.position.y + 1);
         newCube.qPos.setY(newCube.qPos.y + 1);
+        if (newCube.qPos.y == puzzleSize.y) {
+            puzzleSize.setY(puzzleSize.y + 1);
+        }
     } else if (normal.y == -1) {
         if (puzzleSize.y == 10) {
             return;
         }
-        puzzleSize.setY(puzzleSize.y + 1);
-        for (const cube of cubes) {
-            cube.qPos?.setY(cube.qPos.y + 1);
+        if (newCube.qPos.y == 0) {
+            puzzleSize.setY(puzzleSize.y + 1);
+            for (const cube of cubes) {
+                cube.qPos?.setY(cube.qPos.y + 1);
+            }
+        } else {
+            newCube.qPos.setY(newCube.qPos.y - 1);
         }
     } else if (normal.z == 1) {
         if (puzzleSize.z == 10) {
             return;
         }
-        puzzleSize.setZ(puzzleSize.z + 1);
-        newCube.position.setZ(newCube.position.z + 1);
         newCube.qPos.setZ(newCube.qPos.z + 1);
+        if (newCube.qPos.z == puzzleSize.z) {
+            puzzleSize.setZ(puzzleSize.z + 1);
+        }
     } else if (normal.z == -1) {
         if (puzzleSize.z == 10) {
             return;
         }
-        puzzleSize.setZ(puzzleSize.z + 1);
-        for (const cube of cubes) {
-            cube.qPos?.setZ(cube.qPos.z + 1);
+        if (newCube.qPos.z == 0) {
+            puzzleSize.setZ(puzzleSize.z + 1);
+            for (const cube of cubes) {
+                cube.qPos?.setZ(cube.qPos.z + 1);
+            }
+        } else {
+            newCube.qPos.setZ(newCube.qPos.z - 1);
         }
     }
+    scene.add(newCube);
     cubes.push(newCube);
     updateMaterial(newCube, loader);
 
