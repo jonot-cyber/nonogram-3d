@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
+import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, ReverseSubtractEquation, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
@@ -125,6 +125,7 @@ cube.qPos = new Vector3(0,0,0);
 cube.qFlag = false;
 cube.qDestroy = false;
 cube.layers.enable(0);
+cubes.push(cube);
 scene.add(cube);
 updateMaterial(cube, loader);
 
@@ -154,10 +155,6 @@ const zHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0x
 scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
-
-enableClock(10*60, function() {
-    setState("end");
-});
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
     pointer.x = (ev.clientX / window.innerWidth) * 2 - 1;
@@ -384,7 +381,8 @@ function remove() {
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
+    console.table(intersects);
     if (intersects.length == 0) {
         return;
     }
@@ -406,31 +404,77 @@ function place() {
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
     if (intersects.length == 0) {
         return;
     }
-    console.table(intersects);
+    let object: CoolMesh = intersects[0].object as CoolMesh;
+    if (!object.qPos) {
+        return;
+    }
 
-    let object: CoolMesh = intersects.filter(i => i.object != xHandleMesh && i.object != zHandleMesh)[0].object as CoolMesh;
-
-    let newCube: CoolMesh = new Mesh(new BoxGeometry(1, 1, 1));
     let normal = intersects[0].normal;
     if (!normal) {
         return;
     }
-    if (!object.qPos) {
-        return;
-    }
+    const newCube: CoolMesh = new Mesh(new BoxGeometry(1, 1, 1));
     newCube.position.set(object.position.x, object.position.y, object.position.z);
-    newCube.position.add(normal);
-    newCube.layers.set(0);
-    newCube.qPos = new Vector3(newCube.position.x, newCube.position.y, newCube.position.z);
-    updateMaterial(newCube, loader);
-    puzzleSize.add(normal);
-    const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
-    camera.position.normalize().multiplyScalar(distance);
+    newCube.qPos = new Vector3(object.qPos.x, object.qPos.y, object.qPos.z);
     scene.add(newCube);
+    newCube.qDestroy = false;
+    newCube.qFlag = false;
+    if (normal.x == 1) {
+        if (puzzleSize.x == 10) {
+            return;
+        }
+        puzzleSize.setX(puzzleSize.x + 1);
+        newCube.position.setX(newCube.position.x + 1);
+        newCube.qPos.setX(newCube.qPos.x + 1);
+    } else if (normal.x == -1) {
+        if (puzzleSize.x == 10) {
+            return;
+        }
+        puzzleSize.setX(puzzleSize.x + 1);
+        for (const cube of cubes) {
+            cube.position.setX(cube.position.x + 1);
+            cube.qPos?.setX(cube.qPos.x + 1);
+        }
+    } else if (normal.y == 1) {
+        if (puzzleSize.y == 10) {
+            return;
+        }
+        puzzleSize.setY(puzzleSize.y + 1);
+        newCube.position.setY(newCube.position.y + 1);
+        newCube.qPos.setY(newCube.qPos.y + 1);
+    } else if (normal.y == -1) {
+        if (puzzleSize.y == 10) {
+            return;
+        }
+        puzzleSize.setY(puzzleSize.y + 1);
+        for (const cube of cubes) {
+            cube.position.setY(cube.position.y + 1);
+            cube.qPos?.setY(cube.qPos.y + 1);
+        }
+    } else if (normal.z == 1) {
+        if (puzzleSize.z == 10) {
+            return;
+        }
+        puzzleSize.setZ(puzzleSize.z + 1);
+        newCube.position.setZ(newCube.position.z + 1);
+        newCube.qPos.setZ(newCube.qPos.z + 1);
+    } else if (normal.z == -1) {
+        if (puzzleSize.z == 10) {
+            return;
+        }
+        puzzleSize.setZ(puzzleSize.z + 1);
+        for (const cube of cubes) {
+            cube.position.setZ(cube.position.z + 1);
+            cube.qPos?.setZ(cube.qPos.z + 1);
+        }
+    }
+    cubes.push(newCube);
+    updateMaterial(newCube, loader);
+    camera.position.normalize().multiplyScalar(puzzleSize.length());
 }
 
 // Main method

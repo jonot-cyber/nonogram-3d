@@ -138,7 +138,7 @@ let response = await fetch(puzzleTable[puzzleName ?? ""]);
 let json = await response.json();
 const puzzle: Puzzle = json.puzzle;
 const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
-const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
+const distance = puzzleSize.length();
 camera.position.z = distance;
 const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
 if (debug.reduceHints) {
@@ -388,7 +388,7 @@ function flag() {
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
     if (intersects.length == 0) {
         return;
     }
@@ -407,7 +407,7 @@ function continueFlag() {
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
     if (intersects.length == 0) {
         return;
     }
@@ -430,7 +430,7 @@ function remove() {
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
     if (intersects.length == 0) {
         return;
     }

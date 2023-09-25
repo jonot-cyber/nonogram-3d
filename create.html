@@ -10,6 +10,86 @@
             margin: 0;
             box-sizing: border-box;
         }
+
+        .crop {
+            position: absolute;
+        }
+
+        #mistakes-count {
+            user-select: none;
+        }
+
+        .key {
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.459);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding-top: 4px;
+        }
+
+        .key-holder {
+            margin: 2px;
+            padding: 0px;
+            display: flex;
+            column-gap: 2px;
+        }
+
+        #d-indicator.enabled {
+            background: rgb(223, 23, 23);
+        }
+
+        #f-indicator.enabled {
+            background: rgb(20, 219, 20);
+        }
+
+        .overlay {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .puzzle-name {
+            position: absolute;
+            bottom: 4px;
+            text-align: center;
+            background-color: black;
+            color: white;
+            left: 4px;
+            right: 4px;
+            font-size: 32px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            padding: 4px;
+        }
+
+        .puzzle-name.hidden {
+            transform: translateY(100%);
+            overflow: hidden;
+        }
+
+        .score.hidden {
+            transform: translateX(-100%) translateY(-50%);
+            overflow: hidden;
+        }
+
+        .score {
+            position: absolute;
+            background-color: black;
+            color: white;
+            font-size: 96px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            text-align: center;
+            padding: 64px;
+            left: 0px;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 0px;
+            transition-property: all;
+            transition-duration: 1000ms;
+        }
     </style>
 </head>
 
