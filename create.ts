@@ -10,6 +10,46 @@ import { removeHints } from './reduce';
 const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
 const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#d-indicator");
 const createPuzzleButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#create-puzzle");
+const dialog: HTMLDialogElement | null = document.querySelector<HTMLDialogElement>("#color-dialog");
+const colorButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#color-button");
+
+colorButton?.addEventListener("click", function() {
+    dialog?.show();
+})
+
+function createColorPicker() {
+    function getHexDigit(n: number): string {
+        switch (n) {
+            case 0:
+                return "0";
+            case 1:
+                return "5";
+            case 2:
+                return "a";
+            default:
+                return "f";
+        }
+    }
+    for (let ir = 0; ir < 4; ir++) {
+        for (let ig = 0; ig < 4; ig++) {
+            for (let ib = 0; ib < 4; ib++) {
+                let elem = document.createElement("button");
+                elem.classList.add("color");
+                elem.style.backgroundColor = `#${getHexDigit(ir)}${getHexDigit(ig)}${getHexDigit(ib)}`
+                elem.setAttribute("x-color", `${ir},${ig},${ib}`);
+                dialog?.insertAdjacentElement("afterbegin", elem);   
+                elem.addEventListener("click", function() {
+                    if (!colorButton) {
+                        return;
+                    }
+                    colorButton.style.backgroundColor = this.style.backgroundColor;
+                    dialog?.close();
+                })
+            }
+        }
+    }
+}
+createColorPicker();
 
 let state = "orbit";
 
@@ -396,9 +436,7 @@ function flag() {
     // If you click on a cube, it switches its flag, and
     // switches to continueFlag state for click-drag
     let object: CoolMesh = intersects[0].object as CoolMesh;
-    object.qFlag = !object.qFlag;
-    updateMaterial(object, loader);
-    lastChange = object.qFlag;
+    object.material = new MeshLambertMaterial({ color: 0x00ff00 });
     setState("continueFlag");
 }
 
@@ -414,10 +452,7 @@ function continueFlag() {
 
     // Continue the flag
     let object: CoolMesh = intersects[0].object as CoolMesh;
-    if (object.qFlag != lastChange) {
-        object.qFlag = lastChange;
-        updateMaterial(object, loader);
-    }
+    object.material = new MeshLambertMaterial({ color: 0x00ff00 });
 }
 
 // Actions when deleting

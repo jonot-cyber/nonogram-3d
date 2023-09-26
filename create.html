@@ -90,10 +90,38 @@
             transition-property: all;
             transition-duration: 1000ms;
         }
+
+        #color-dialog {
+            z-index: 1;
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            top: 20px;
+            margin: 0px;
+            background-color: #eee;
+            color: black;
+            border: none;
+        }
+
+        #color-dialog[open] {
+            display: grid;
+            gap: 4px;
+            grid-template-columns: repeat(8, 1fr);
+            box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+        }
+
+        .color {
+            width: 64px;
+            height: 64px;
+            border: none;
+        }
     </style>
 </head>
 
 <body>
+    <dialog id="color-dialog">
+    </dialog>
     <div class="crop">
         <div class="key-holder">
             <div class="key a">A</div>
@@ -102,6 +130,7 @@
             <div class="key f" id="f-indicator">F</div>
         </div>
         <button id="create-puzzle">Create Puzzle</button>
+        <button id="color-button">Color...</button>
     </div>
     <script type="module" src="/create.ts"></script>
 </body>
