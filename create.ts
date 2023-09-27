@@ -13,7 +13,7 @@ const createPuzzleButton: HTMLButtonElement | null = document.querySelector<HTML
 const dialog: HTMLDialogElement | null = document.querySelector<HTMLDialogElement>("#color-dialog");
 const colorButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#color-button");
 
-colorButton?.addEventListener("click", function() {
+colorButton?.addEventListener("click", function () {
     dialog?.show();
 })
 
@@ -36,8 +36,8 @@ function createColorPicker() {
                 let elem = document.createElement("button");
                 elem.classList.add("color");
                 elem.style.backgroundColor = `#${getHexDigit(ir)}${getHexDigit(ig)}${getHexDigit(ib)}`
-                dialog?.insertAdjacentElement("afterbegin", elem);   
-                elem.addEventListener("click", function() {
+                dialog?.insertAdjacentElement("afterbegin", elem);
+                elem.addEventListener("click", function () {
                     if (!colorButton) {
                         return;
                     }
@@ -160,7 +160,7 @@ const cubes: CoolMesh[] = [];
 const geometry = new BoxGeometry(1, 1, 1);
 const cube: CoolMesh = new Mesh(geometry);
 cube.position.set(0, 0, 0);
-cube.qPos = new Vector3(0,0,0);
+cube.qPos = new Vector3(0, 0, 0);
 cube.qFlag = false;
 cube.qDestroy = false;
 cube.layers.enable(0);
@@ -198,13 +198,13 @@ zHandleMesh.scale.set(1, 1, 2);
 function updateHandles() {
     handleMinX = -puzzleSize.x / 2 - 1;
     handleMaxX = puzzleSize.x / 2 - 2;
-    
+
     handleMinNX = -puzzleSize.x / 2 + 2;
     handleMaxNX = puzzleSize.x / 2 + 1;
-    
+
     handleMinZ = -puzzleSize.z / 2 - 1;
     handleMaxZ = puzzleSize.z / 2 - 2;
-    
+
     handleMinNZ = -puzzleSize.z / 2 + 2;
     handleMaxNZ = puzzleSize.z / 2 + 1;
 
@@ -255,7 +255,7 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
     }
 });
 
-createPuzzleButton?.addEventListener("click", function() {
+createPuzzleButton?.addEventListener("click", function () {
     const puzzle: boolean[][][] = [];
     const colors: number[][][] = [];
     for (let ix = 0; ix < puzzleSize.x; ix++) {
@@ -281,14 +281,14 @@ createPuzzleButton?.addEventListener("click", function() {
         }
         if (!cube.qPos) {
             continue;
-        } 
+        }
         puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
         colors[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
     }
 
     const hints = createHints(puzzle);
     removeHints(puzzle, hints);
-    
+
 
     window.open("/game.html?puzzleData=" + JSON.stringify({
         puzzle: puzzle,
@@ -508,56 +508,65 @@ function remove() {
     let maxX = false;
     let maxY = false;
     let maxZ = false;
-    // Check if things need to be realigned
-    for (const cube of cubes) {
-        if (cube.qDestroy) {
-            continue;
-        }
-        if (cube.qPos?.x == 0) {
-            minX = true;
-        }
-        if (cube.qPos?.y == 0) {
-            minY = true;
-        }
-        if (cube.qPos?.z == 0) {
-            minZ = true;
-        }
-        if (cube.qPos?.x == puzzleSize.x - 1) {
-            maxX = true;
-        }
-        if (cube.qPos?.y == puzzleSize.y - 1) {
-            maxY = true;
-        }
-        if (cube.qPos?.z == puzzleSize.z - 1) {
-            maxZ = true;
-        }
-    }
-    if (!maxX) {
-        puzzleSize.setX(puzzleSize.x - 1);
-    }
-    if (!maxY) {
-        puzzleSize.setY(puzzleSize.y - 1);
-    }
-    if (!maxZ) {
-        puzzleSize.setZ(puzzleSize.z - 1);
-    }
-    if (!minX) {
+
+    while (!minX || !minY || !minZ || !maxX || !maxY || !maxZ) {
+        minX = false;
+        minY = false;
+        minZ = false;
+        maxX = false;
+        maxY = false;
+        maxZ = false;
+        // Check if things need to be realigned
         for (const cube of cubes) {
-            cube.qPos?.setX(cube.qPos.x - 1);
+            if (cube.qDestroy) {
+                continue;
+            }
+            if (cube.qPos?.x == 0) {
+                minX = true;
+            }
+            if (cube.qPos?.y == 0) {
+                minY = true;
+            }
+            if (cube.qPos?.z == 0) {
+                minZ = true;
+            }
+            if (cube.qPos?.x == puzzleSize.x - 1) {
+                maxX = true;
+            }
+            if (cube.qPos?.y == puzzleSize.y - 1) {
+                maxY = true;
+            }
+            if (cube.qPos?.z == puzzleSize.z - 1) {
+                maxZ = true;
+            }
         }
-        puzzleSize.setX(puzzleSize.x - 1);
-    }
-    if (!minY) {
-        for (const cube of cubes) {
-            cube.qPos?.setY(cube.qPos.y - 1);
+        if (!maxX) {
+            puzzleSize.setX(puzzleSize.x - 1);
         }
-        puzzleSize.setY(puzzleSize.y - 1);
-    }
-    if (!minZ) {
-        for (const cube of cubes) {
-            cube.qPos?.setZ(cube.qPos.z - 1);
+        if (!maxY) {
+            puzzleSize.setY(puzzleSize.y - 1);
         }
-        puzzleSize.setZ(puzzleSize.z - 1);
+        if (!maxZ) {
+            puzzleSize.setZ(puzzleSize.z - 1);
+        }
+        if (!minX) {
+            for (const cube of cubes) {
+                cube.qPos?.setX(cube.qPos.x - 1);
+            }
+            puzzleSize.setX(puzzleSize.x - 1);
+        }
+        if (!minY) {
+            for (const cube of cubes) {
+                cube.qPos?.setY(cube.qPos.y - 1);
+            }
+            puzzleSize.setY(puzzleSize.y - 1);
+        }
+        if (!minZ) {
+            for (const cube of cubes) {
+                cube.qPos?.setZ(cube.qPos.z - 1);
+            }
+            puzzleSize.setZ(puzzleSize.z - 1);
+        }
     }
 
     // Fix the puzzle positions :)
