@@ -1,7 +1,7 @@
 import { Mesh, Vector3 } from "three";
 
 // Great type name
-export type CoolMesh = Mesh & { qPos?: Vector3, qFlag?: boolean, qDestroy?: boolean };
+export type CoolMesh = Mesh & { qPos?: Vector3, qFlag?: boolean, qDestroy?: boolean, qColor?: number };
 
 export type State = "orbit" | "flag" | "continueFlag" | "remove" | "dragX" | "dragZ" | "end" | "place";
 

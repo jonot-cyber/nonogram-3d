@@ -36,13 +36,13 @@ function createColorPicker() {
                 let elem = document.createElement("button");
                 elem.classList.add("color");
                 elem.style.backgroundColor = `#${getHexDigit(ir)}${getHexDigit(ig)}${getHexDigit(ib)}`
-                elem.setAttribute("x-color", `${ir},${ig},${ib}`);
                 dialog?.insertAdjacentElement("afterbegin", elem);   
                 elem.addEventListener("click", function() {
                     if (!colorButton) {
                         return;
                     }
                     colorButton.style.backgroundColor = this.style.backgroundColor;
+                    colorButton?.setAttribute("x-color", `${ir},${ig},${ib}`);
                     dialog?.close();
                 })
             }
@@ -257,16 +257,22 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
 
 createPuzzleButton?.addEventListener("click", function() {
     const puzzle: boolean[][][] = [];
+    const colors: number[][][] = [];
     for (let ix = 0; ix < puzzleSize.x; ix++) {
         const part1: boolean[][] = [];
+        const cpart1: number[][] = [];
         for (let iy = 0; iy < puzzleSize.y; iy++) {
             const part2: boolean[] = []
+            const cpart2: number[] = []
             for (let iz = 0; iz < puzzleSize.z; iz++) {
                 part2.push(false);
+                cpart2.push(0);
             }
             part1.push(part2);
+            cpart1.push(cpart2);
         }
         puzzle.push(part1);
+        colors.push(cpart1);
     }
 
     for (const cube of cubes) {
@@ -277,14 +283,17 @@ createPuzzleButton?.addEventListener("click", function() {
             continue;
         } 
         puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
+        colors[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0;
     }
 
     const hints = createHints(puzzle);
     removeHints(puzzle, hints);
+    
 
     window.open("/game.html?puzzleData=" + JSON.stringify({
         puzzle: puzzle,
         hints: hints,
+        color: colors,
     }));
 })
 
@@ -435,8 +444,15 @@ function flag() {
 
     // If you click on a cube, it switches its flag, and
     // switches to continueFlag state for click-drag
-    let object: CoolMesh = intersects[0].object as CoolMesh;
-    object.material = new MeshLambertMaterial({ color: 0x00ff00 });
+    const object: CoolMesh = intersects[0].object as CoolMesh;
+    const color = colorButton?.getAttribute("x-color");
+    const [r, g, b] = color?.split(",").map(i => Number.parseInt(i)) ?? [0, 0, 0];
+    let c = 0x000000;
+    c += [0x00, 0x55, 0xaa, 0xff][b];
+    c += 0x100 * [0x00, 0x55, 0xaa, 0xff][g];
+    c += 0x10000 * [0x00, 0x55, 0xaa, 0xff][r];
+    object.material = new MeshLambertMaterial({ color: c });
+    object.qColor = 36 * r + 4 * g + b;
     setState("continueFlag");
 }
 
@@ -451,8 +467,15 @@ function continueFlag() {
     }
 
     // Continue the flag
-    let object: CoolMesh = intersects[0].object as CoolMesh;
-    object.material = new MeshLambertMaterial({ color: 0x00ff00 });
+    const object: CoolMesh = intersects[0].object as CoolMesh;
+    const color = colorButton?.getAttribute("x-color");
+    const [r, g, b] = color?.split(",").map(i => Number.parseInt(i)) ?? [0, 0, 0];
+    let c = 0x000000;
+    c += [0x00, 0x55, 0xaa, 0xff][b];
+    c += 0x100 * [0x00, 0x55, 0xaa, 0xff][g];
+    c += 0x10000 * [0x00, 0x55, 0xaa, 0xff][r];
+    object.material = new MeshLambertMaterial({ color: c });
+    object.qColor = c;
 }
 
 // Actions when deleting

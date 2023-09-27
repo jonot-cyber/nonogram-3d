@@ -116,28 +116,16 @@ export function checkDone(cubes: CoolMesh[], puzzle: Puzzle): boolean {
     }
     return true;
 }
+/*
+    */
 
 export function colorCubes(cubes: CoolMesh[], puzzleColors: number[][][]) {
-    const colors = [
-        0x000000, /* 0: black */
-        0xff0000, /* 1: red */
-        0x80cfcf, /* 2: cyan */
-        0x00ff00, /* 3: green */
-        0x793f16, /* 4: brown */
-        0xffffff, /* 5: white */
-        0xfa9312, /* 6: dog1 */
-        0xeee6a5, /* 7: dog2 */
-        0xff9100, /* 8: hund orange */
-        0x0000ff, /* 9: blue */
-        0x9999ff, /* 10: light blue */
-        0xff9999, /* 11: worm pink */
-    ]
     for (const cube of cubes) {
         if (cube.qDestroy) {
             continue;
         }
-        const color = puzzleColors[cube.qPos?.x ?? -1][cube.qPos?.y ?? -1][cube.qPos?.z ?? -1];
-        cube.material = new MeshLambertMaterial({ color: colors[color] });
+        const color = cube.qColor;
+        cube.material = new MeshLambertMaterial({ color: color });
     }
 }
 

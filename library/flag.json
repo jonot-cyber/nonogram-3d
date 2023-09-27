@@ -1082,27 +1082,27 @@
             [
                 false,
                 false,
-                1
+                16711680
             ],
             [
                 false,
                 false,
-                5
+                16777215
             ],
             [
                 false,
                 false,
-                1
+                16711680
             ],
             [
                 false,
                 false,
-                9
+                255
             ],
             [
                 false,
                 false,
-                9
+                255
             ]
         ],
         [
@@ -1113,27 +1113,27 @@
             [
                 false,
                 false,
-                1
+                16711680
             ],
             [
                 false,
                 false,
-                5
+                16777215
             ],
             [
                 false,
                 false,
-                1
+                16711680
             ],
             [
                 false,
                 false,
-                9
+                255
             ],
             [
                 false,
                 false,
-                9
+                255
             ]
         ],
         [
@@ -1143,120 +1143,27 @@
             [],
             [
                 false,
-                1,
+                16711680,
                 false
             ],
             [
                 false,
-                5,
+                16777215,
                 false
             ],
             [
                 false,
-                1,
+                16711680,
                 false
             ],
             [
                 false,
-                9,
+                255,
                 false
             ],
             [
                 false,
-                9,
-                false
-            ]
-        ],
-        [
-            [],
-            [],
-            [],
-            [],
-            [
-                false,
-                1,
-                false
-            ],
-            [
-                false,
-                5,
-                false
-            ],
-            [
-                false,
-                1,
-                false
-            ],
-            [
-                false,
-                5,
-                false
-            ],
-            [
-                false,
-                1,
-                false
-            ]
-        ],
-        [
-            [],
-            [],
-            [],
-            [],
-            [
-                1,
-                false,
-                false
-            ],
-            [
-                5,
-                false,
-                false
-            ],
-            [
-                1,
-                false,
-                false
-            ],
-            [
-                5,
-                false,
-                false
-            ],
-            [
-                1,
-                false,
-                false
-            ]
-        ],
-        [
-            [],
-            [],
-            [],
-            [],
-            [
-                1,
-                false,
-                false
-            ],
-            [
-                5,
-                false,
-                false
-            ],
-            [
-                1,
-                false,
-                false
-            ],
-            [
-                5,
-                false,
-                false
-            ],
-            [
-                1,
-                false,
+                255,
                 false
             ]
         ],
@@ -1267,27 +1174,89 @@
             [],
             [
                 false,
-                1,
+                16711680,
                 false
             ],
             [
                 false,
-                5,
+                16777215,
                 false
             ],
             [
                 false,
-                1,
+                16711680,
                 false
             ],
             [
                 false,
-                5,
+                16777215,
                 false
             ],
             [
                 false,
-                1,
+                16711680,
+                false
+            ]
+        ],
+        [
+            [],
+            [],
+            [],
+            [],
+            [
+                16711680,
+                false,
+                false
+            ],
+            [
+                16777215,
+                false,
+                false
+            ],
+            [
+                16711680,
+                false,
+                false
+            ],
+            [
+                16777215,
+                false,
+                false
+            ],
+            [
+                16711680,
+                false,
+                false
+            ]
+        ],
+        [
+            [],
+            [],
+            [],
+            [],
+            [
+                16711680,
+                false,
+                false
+            ],
+            [
+                16777215,
+                false,
+                false
+            ],
+            [
+                16711680,
+                false,
+                false
+            ],
+            [
+                16777215,
+                false,
+                false
+            ],
+            [
+                16711680,
+                false,
                 false
             ]
         ],
@@ -1298,27 +1267,58 @@
             [],
             [
                 false,
-                1,
+                16711680,
                 false
             ],
             [
                 false,
-                5,
+                16777215,
                 false
             ],
             [
                 false,
-                1,
+                16711680,
                 false
             ],
             [
                 false,
-                5,
+                16777215,
                 false
             ],
             [
                 false,
-                1,
+                16711680,
+                false
+            ]
+        ],
+        [
+            [],
+            [],
+            [],
+            [],
+            [
+                false,
+                16711680,
+                false
+            ],
+            [
+                false,
+                16777215,
+                false
+            ],
+            [
+                false,
+                16711680,
+                false
+            ],
+            [
+                false,
+                16777215,
+                false
+            ],
+            [
+                false,
+                16711680,
                 false
             ]
         ]

@@ -260,187 +260,612 @@
             ]
         ]
     ],
-    "hints": {"x":[[{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"}],[{"type":"normal","count":3},{"type":"normal","count":5},{"type":"normal","count":7},{"type":"normal","count":5},{"type":"normal","count":3}],[{"type":"normal","count":3},{"type":"normal","count":5},{"type":"circle","count":6},{"type":"normal","count":5},{"type":"normal","count":3}],[{"type":"normal","count":3},{"type":"normal","count":5},{"type":"normal","count":7},{"type":"normal","count":5},{"type":"normal","count":3}],[{"type":"normal","count":3},{"type":"circle","count":2},{"count":0,"type":"none"},{"type":"circle","count":2},{"type":"normal","count":3}]],"y":[[{"count":0,"type":"none"},{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4},{"count":0,"type":"none"}],[{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4}],[{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4}],[{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4},{"type":"normal","count":4}],[{"count":0,"type":"none"},{"type":"normal","count":4},{"count":0,"type":"none"},{"type":"normal","count":4},{"count":0,"type":"none"}],[{"count":0,"type":"none"},{"count":0,"type":"none"},{"type":"circle","count":2},{"count":0,"type":"none"},{"count":0,"type":"none"}],[{"count":0,"type":"none"},{"count":0,"type":"none"},{"type":"normal","count":3},{"count":0,"type":"none"},{"count":0,"type":"none"}]],"z":[[{"type":"normal","count":0},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"}],[{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"type":"circle","count":2}],[{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"type":"circle","count":2}],[{"type":"normal","count":3},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"}],[{"type":"normal","count":0},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"type":"normal","count":3}],[{"type":"normal","count":0},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"}],[{"type":"normal","count":0},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"},{"count":0,"type":"none"}]]},
+    "hints": {
+        "x": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 7
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "circle",
+                    "count": 6
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 7
+                },
+                {
+                    "type": "normal",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ]
+        ],
+        "y": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ],
+        "z": [
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ]
+    },
     "color": [
         [
             [],
             [
                 false,
-                5,
-                5,
-                5,
+                16777215,
+                16777215,
+                16777215,
                 false
             ],
             [
                 false,
-                5,
-                5,
-                5,
+                16777215,
+                16777215,
+                16777215,
                 false
             ],
             [
                 false,
-                5,
-                5,
-                5,
+                16777215,
+                16777215,
+                16777215,
                 false
             ],
             [
                 false,
-                5,
-                5,
-                5,
+                16777215,
+                16777215,
+                16777215,
                 false
             ]
         ],
         [
             [
                 false,
-                5,
-                5,
-                5,
+                16777215,
+                16777215,
+                16777215,
                 false
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
+                16777215,
                 false,
                 false,
                 false,
-                5
+                16777215
             ]
         ],
         [
             [
                 false,
-                5,
-                5,
-                5,
+                16777215,
+                16777215,
+                16777215,
                 false
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
+                16777215,
                 false,
                 false,
                 false,
-                5
+                16777215
             ]
         ],
         [
             [
                 false,
-                5,
-                5,
-                5,
+                16777215,
+                16777215,
+                16777215,
                 false
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
-                4,
-                4,
-                4,
-                5
+                16777215,
+                11162880,
+                11162880,
+                11162880,
+                16777215
             ],
             [
-                5,
+                16777215,
                 false,
                 false,
                 false,
-                5
-            ]
-        ],
-        [
-            [],
-            [
-                false,
-                5,
-                5,
-                5,
-                false
-            ],
-            [
-                false,
-                5,
-                5,
-                5,
-                false
-            ],
-            [
-                false,
-                5,
-                5,
-                5,
-                false
-            ],
-            [
-                false,
-                5,
-                5,
-                5,
-                false
+                16777215
             ]
         ],
         [
             [],
             [
                 false,
+                16777215,
+                16777215,
+                16777215,
+                false
+            ],
+            [
                 false,
-                5,
+                16777215,
+                16777215,
+                16777215,
+                false
+            ],
+            [
+                false,
+                16777215,
+                16777215,
+                16777215,
+                false
+            ],
+            [
+                false,
+                16777215,
+                16777215,
+                16777215,
+                false
+            ]
+        ],
+        [
+            [],
+            [
+                false,
+                false,
+                16777215,
                 false,
                 false
             ],
@@ -448,7 +873,7 @@
             [
                 false,
                 false,
-                5,
+                16777215,
                 false,
                 false
             ],
@@ -459,21 +884,21 @@
             [
                 false,
                 false,
-                5,
+                16777215,
                 false,
                 false
             ],
             [
                 false,
                 false,
-                5,
+                16777215,
                 false,
                 false
             ],
             [
                 false,
                 false,
-                5,
+                16777215,
                 false,
                 false
             ],

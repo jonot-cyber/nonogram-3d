@@ -16,8 +16,8 @@ const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#cle
 
 const debug = {
     showShape: false,
-    createHints: false,
-    reduceHints: false,
+    createHints: true,
+    reduceHints: true,
 };
 
 let state = "orbit";
@@ -133,7 +133,6 @@ function createLights() {
 createLights();
 
 async function createPuzzle(): Promise<{puzzle: Puzzle, hints: Hints, color: number[][][]}> {
-    console.log("TEST")
     const urlParams = new URLSearchParams(window.location.search);
     const puzzleName = urlParams.get("puzzle");
     if (puzzleName) {
@@ -141,7 +140,7 @@ async function createPuzzle(): Promise<{puzzle: Puzzle, hints: Hints, color: num
         const json = await response.json();
         const puzzle: Puzzle = json.puzzle;
         const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
-        return {puzzle, hints, color: []};
+        return {puzzle, hints, color: json.color};
     } else {
         const puzzleData = urlParams.get("puzzleData");
         const json = JSON.parse(puzzleData ?? "");
@@ -172,6 +171,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cube.qPos = new Vector3(x, y, z);
                 cube.qFlag = false;
                 cube.qDestroy = false;
+                cube.qColor = color[x][y][z];
                 cube.layers.enable(0);
                 scene.add(cube);
                 updateMaterial(cube, loader, hints);
