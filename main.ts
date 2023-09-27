@@ -16,8 +16,8 @@ const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#cle
 
 const debug = {
     showShape: false,
-    createHints: true,
-    reduceHints: true,
+    createHints: false,
+    reduceHints: false,
 };
 
 let state = "orbit";

@@ -1,0 +1,1190 @@
+{
+    "puzzle": [
+        [
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+            ]
+        ],
+        [
+            [
+                false,
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ]
+        ],
+        [
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+            ]
+        ]
+    ],
+    "hints": {
+        "x": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                },
+                {
+                    "type": "circle",
+                    "count": 2
+                }
+            ]
+        ],
+        "y": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 9
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ],
+        "z": [
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "circle",
+                    "count": 5
+                },
+                {
+                    "type": "circle",
+                    "count": 5
+                },
+                {
+                    "type": "circle",
+                    "count": 8
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "circle",
+                    "count": 5
+                },
+                {
+                    "type": "normal",
+                    "count": 6
+                },
+                {
+                    "type": "circle",
+                    "count": 5
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "normal",
+                    "count": 0
+                },
+                {
+                    "type": "circle",
+                    "count": 5
+                },
+                {
+                    "type": "circle",
+                    "count": 5
+                },
+                {
+                    "type": "circle",
+                    "count": 8
+                }
+            ]
+        ]
+    },
+    "color": [
+        [
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                16777215,
+                16777215,
+                16777215
+            ]
+        ],
+        [
+            [
+                0,
+                0,
+                0,
+                0,
+                11162880,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                11162880,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                11162880,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                11162880,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                11162880,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                11162880,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                16777215,
+                16777215,
+                16777215,
+                16777215,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                0,
+                0,
+                0
+            ]
+        ],
+        [
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                0,
+                0,
+                0
+            ],
+            [
+                16777215,
+                16777215,
+                0,
+                16777215,
+                16777215,
+                16777215,
+                16777215,
+                16777215,
+                16777215
+            ]
+        ]
+    ]
+}

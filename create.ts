@@ -283,7 +283,7 @@ createPuzzleButton?.addEventListener("click", function() {
             continue;
         } 
         puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
-        colors[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0;
+        colors[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
     }
 
     const hints = createHints(puzzle);
@@ -598,6 +598,7 @@ function place() {
     newCube.qPos = new Vector3(object.qPos.x, object.qPos.y, object.qPos.z);
     newCube.qDestroy = false;
     newCube.qFlag = false;
+    newCube.qColor = 0xffffff;
     if (normal.x == 1) {
         if (puzzleSize.x == 12) {
             return;

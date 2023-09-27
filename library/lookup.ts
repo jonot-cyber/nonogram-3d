@@ -15,4 +15,13 @@ export const puzzleTable = {
     "among": "/library/among.json",
     "headphones": "/library/headphones.json",
     "test": "/library/test.json",
+    "mouse": "/library/mouse.json",
+    "rubiksCube": "/library/rubiksCube.json",
+    "trophy": "/library/trophy.json",
+    "hammer": "/library/hammer.json",
+    "outlet": "/library/outlet.json",
+    "earth": "/library/earth.json",
+    "tulip": "/library/tulip.json",
+    "lightHouse": "/library/lightHouse.json",
+    "fox": "/library/fox.json",
 }
