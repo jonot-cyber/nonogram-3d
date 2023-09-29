@@ -8,7 +8,7 @@ if (body) {
         }
         const elem = document.createElement("a");
         elem.innerText = name;
-        elem.href = `/game.html?local=${name}`;
+        elem.href = `./game.html?local=${name}`;
         body.appendChild(elem);
     }
 }

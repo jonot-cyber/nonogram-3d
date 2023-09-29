@@ -303,7 +303,7 @@ createPuzzleButton?.addEventListener("click", function () {
         hints: hints,
         color: colors,
     }));
-    window.location = "/mypuzzles.html";
+    window.location = "./mypuzzles.html";
 })
 
 // Actions when in standard orbit mode
