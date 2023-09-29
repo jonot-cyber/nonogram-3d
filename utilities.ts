@@ -4,9 +4,9 @@ import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mes
 
 function getAssetURL(hint: Hint): string {
     if (hint.type == "none") {
-        return "/assets/blank.png"
+        return "./assets/blank.png"
     }
-    return `/assets/numbers/${hint.type}/${hint.count}.png`
+    return `./assets/numbers/${hint.type}/${hint.count}.png`
 }
 
 export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints?: Hints) {
