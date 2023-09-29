@@ -20,7 +20,11 @@ export default {
                 {
                     src: "library/*.json",
                     dest: "library",
-                }
+                },
+                {
+                    src: "assets/**/*",
+                    dest: "assets"
+                },
             ]
         })
     ]
