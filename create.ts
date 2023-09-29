@@ -7,8 +7,9 @@ import { createHints } from './puzzle';
 import { removeHints } from './reduce';
 
 // HTML elements that matter
-const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
-const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#d-indicator");
+const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".f");
+const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".d");
+const placeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".s");
 const createPuzzleButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#create-puzzle");
 const dialog: HTMLDialogElement | null = document.querySelector<HTMLDialogElement>("#color-dialog");
 const colorButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#color-button");
@@ -51,7 +52,7 @@ function createColorPicker() {
 }
 createColorPicker();
 
-let state = "orbit";
+let state: State = "orbit";
 
 function setState(newState: State) {
     if (newState == state) {
@@ -72,6 +73,8 @@ function setState(newState: State) {
         case "remove":
             removeIndicator?.classList.remove("enabled");
             break;
+        case "place":
+            placeIndicator?.classList.remove("enabled");
         case "dragX":
             break;
         case "dragZ":
@@ -91,6 +94,8 @@ function setState(newState: State) {
         case "orbit":
             controls.enableRotate = true;
             break;
+        case "place":
+            placeIndicator?.classList.add("enabled");
         case "dragX":
             handleOriginalPosition = xHandleMesh.position.x;
             startPosition.set(pointer.x, pointer.y);
@@ -289,12 +294,16 @@ createPuzzleButton?.addEventListener("click", function () {
     const hints = createHints(puzzle);
     removeHints(puzzle, hints);
 
-
-    window.open("/game.html?puzzleData=" + JSON.stringify({
+    const name = prompt("Enter a name for your puzzle:");
+    if (!name) {
+        return;
+    }
+    localStorage.setItem(name, JSON.stringify({
         puzzle: puzzle,
         hints: hints,
         color: colors,
     }));
+    window.location = "/mypuzzles.html";
 })
 
 // Actions when in standard orbit mode
@@ -609,7 +618,7 @@ function place() {
     newCube.qFlag = false;
     newCube.qColor = 0xffffff;
     if (normal.x == 1) {
-        if (puzzleSize.x == 12) {
+        if (puzzleSize.x == 12 && object.qPos.x == 11) {
             return;
         }
         newCube.qPos.setX(newCube.qPos.x + 1);
@@ -617,7 +626,7 @@ function place() {
             puzzleSize.setX(puzzleSize.x + 1);
         }
     } else if (normal.x == -1) {
-        if (puzzleSize.x == 12) {
+        if (puzzleSize.x == 12 && object.qPos.x == 0) {
             return;
         }
         if (newCube.qPos.x == 0) {
@@ -629,7 +638,7 @@ function place() {
             newCube.qPos.setX(newCube.qPos.x - 1);
         }
     } else if (normal.y == 1) {
-        if (puzzleSize.y == 12) {
+        if (puzzleSize.y == 12 && object.qPos.y == 11) {
             return;
         }
         newCube.qPos.setY(newCube.qPos.y + 1);
@@ -637,7 +646,7 @@ function place() {
             puzzleSize.setY(puzzleSize.y + 1);
         }
     } else if (normal.y == -1) {
-        if (puzzleSize.y == 12) {
+        if (puzzleSize.y == 12 && object.qPos.y == 0) {
             return;
         }
         if (newCube.qPos.y == 0) {
@@ -649,7 +658,7 @@ function place() {
             newCube.qPos.setY(newCube.qPos.y - 1);
         }
     } else if (normal.z == 1) {
-        if (puzzleSize.z == 12) {
+        if (puzzleSize.z == 12 && object.qPos.z == 11) {
             return;
         }
         newCube.qPos.setZ(newCube.qPos.z + 1);
@@ -657,7 +666,7 @@ function place() {
             puzzleSize.setZ(puzzleSize.z + 1);
         }
     } else if (normal.z == -1) {
-        if (puzzleSize.z == 12) {
+        if (puzzleSize.z == 12 && object.qPos.z == 0) {
             return;
         }
         if (newCube.qPos.z == 0) {

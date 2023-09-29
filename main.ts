@@ -4,7 +4,7 @@ import { Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 import { puzzleTable } from './library/lookup';
 import { clamp, lerp } from 'three/src/math/MathUtils';
-import { State, CoolMesh, XRay } from './types';
+import { State, CoolMesh, XRay, Level } from './types';
 import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
 import { enableClock } from './clock';
 
@@ -132,18 +132,22 @@ function createLights() {
 }
 createLights();
 
-async function createPuzzle(): Promise<{puzzle: Puzzle, hints: Hints, color: number[][][]}> {
+async function createPuzzle(): Promise<Level> {
     const urlParams = new URLSearchParams(window.location.search);
     const puzzleName = urlParams.get("puzzle");
+    const puzzleData = urlParams.get("puzzleData");
+    const puzzleLocal = urlParams.get("local");
     if (puzzleName) {
         const response = await fetch(puzzleTable[puzzleName ?? ""]);
         const json = await response.json();
         const puzzle: Puzzle = json.puzzle;
         const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
         return {puzzle, hints, color: json.color};
+    } else if (puzzleData) {
+        const json = JSON.parse(puzzleData);
+        return {puzzle: json.puzzle, hints: json.hints, color: json.color};
     } else {
-        const puzzleData = urlParams.get("puzzleData");
-        const json = JSON.parse(puzzleData ?? "");
+        const json = JSON.parse(localStorage.getItem(puzzleLocal ?? "") ?? "");
         return {puzzle: json.puzzle, hints: json.hints, color: json.color};
     }
 }
@@ -237,6 +241,7 @@ renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
 })
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
+    console.log("Key down event");
     if (ev.key == "f" && state == "orbit") {
         setState("flag");
     } else if (ev.key == "d" && state == "orbit") {
@@ -245,6 +250,7 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
 })
 
 window.addEventListener("keyup", function (ev: KeyboardEvent) {
+    console.log("Key up event");
     if (ev.key == "f" && state == "flag" || state == "continueFlag") {
         setState("orbit");
     } else if (ev.key == "d" && state == "remove") {

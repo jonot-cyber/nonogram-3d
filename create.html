@@ -37,12 +37,16 @@
             column-gap: 2px;
         }
 
-        #d-indicator.enabled {
+        .d.enabled {
             background: rgb(223, 23, 23);
         }
 
-        #f-indicator.enabled {
+        .f.enabled {
             background: rgb(20, 219, 20);
+        }
+
+        .s.enabled {
+            background: rgb(20, 103, 219);
         }
 
         .overlay {
@@ -126,8 +130,8 @@
         <div class="key-holder">
             <div class="key a">A</div>
             <div class="key s">S</div>
-            <div class="key d" id="d-indicator">D</div>
-            <div class="key f" id="f-indicator">F</div>
+            <div class="key d">D</div>
+            <div class="key f">F</div>
         </div>
         <button id="create-puzzle">Create Puzzle</button>
         <button id="color-button">Color...</button>
