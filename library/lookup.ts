@@ -1,6 +1,6 @@
 export const puzzleTable = {
-    "mug": "./library/mug.json",
-    "hund": "./library/hund.json",
+    "mug": "./library/shibaInu.json",
+    "hund": "./library/shibaInu.json",
     "shibainu": "./library/shibaInu.json",
     "note": "./library/note.json",
     "flag": "./library/flag.json",
