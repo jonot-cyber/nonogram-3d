@@ -241,7 +241,6 @@ renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
 })
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
-    console.log("Key down event");
     if (ev.key == "f" && state == "orbit") {
         setState("flag");
     } else if (ev.key == "d" && state == "orbit") {
@@ -250,7 +249,6 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
 })
 
 window.addEventListener("keyup", function (ev: KeyboardEvent) {
-    console.log("Key up event");
     if (ev.key == "f" && state == "flag" || state == "continueFlag") {
         setState("orbit");
     } else if (ev.key == "d" && state == "remove") {
