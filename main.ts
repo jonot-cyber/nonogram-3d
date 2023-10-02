@@ -16,8 +16,8 @@ const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#cle
 
 const debug = {
     showShape: false,
-    createHints: false,
-    reduceHints: false,
+    createHints: true,
+    reduceHints: true,
 };
 
 let state = "orbit";
@@ -142,17 +142,17 @@ async function createPuzzle(): Promise<Level> {
         const json = await response.json();
         const puzzle: Puzzle = json.puzzle;
         const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
-        return {puzzle, hints, color: json.color};
+        return { puzzle, hints, color: json.color };
     } else if (puzzleData) {
         const json = JSON.parse(puzzleData);
-        return {puzzle: json.puzzle, hints: json.hints, color: json.color};
+        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color };
     } else {
         const json = JSON.parse(localStorage.getItem(puzzleLocal ?? "") ?? "");
-        return {puzzle: json.puzzle, hints: json.hints, color: json.color};
+        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color };
     }
 }
 
-const {puzzle, hints, color} = await createPuzzle();
+const { puzzle, hints, color } = await createPuzzle();
 const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
 const distance = puzzleSize.length();
 camera.position.z = distance;
@@ -216,7 +216,7 @@ scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
 
-enableClock(10*60, function() {
+enableClock(10 * 60, function () {
     setState("end");
 });
 
