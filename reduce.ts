@@ -15,12 +15,11 @@ function scoreHint(hint: Hint, size: number): number {
     } else if (hint.type == "square") {
         count += 2;
     }
+    
     if (count == 0) {
         return 128;
-    } else if (count == size) {
-        return 64;
     }
-    return count / size;
+    return Math.max(count, size - count);
 }
 
 export function removeHints(puzzle: Puzzle, hints: Hints) {
