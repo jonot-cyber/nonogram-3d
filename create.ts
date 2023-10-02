@@ -446,7 +446,7 @@ function flag() {
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
     if (intersects.length == 0) {
         return;
     }
@@ -470,7 +470,7 @@ function continueFlag() {
     raycaster.setFromCamera(pointer, camera);
     raycaster.layers.set(0);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
     if (intersects.length == 0) {
         return;
     }
