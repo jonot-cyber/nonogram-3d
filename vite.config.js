@@ -9,6 +9,7 @@ export default {
                 main: resolve(__dirname, "index.html"),
                 game: resolve(__dirname, "game.html"),
                 mypuzzles: resolve(__dirname, "mypuzzles.html"),
+                puzzles: resolve(__dirname, "puzzles.html"),
                 create: resolve(__dirname, "create.html"),
             }
         },

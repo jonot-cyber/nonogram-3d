@@ -1,31 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nonogram 3D</title>
     <style>
         body {
-            background-color: rgb(240, 240, 240);
+            background-color: white;
             user-select: none;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .menu {
+            display: grid;
+            grid-template:
+                "a a" auto
+                "b c" auto
+                "d e" auto
+                "f f" auto;
+            gap: 16px;
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        img {
+            grid-area: a;
+        }
+
+        .menu-option {
+            font-size: 24px;
+            font-family: sans-serif;
+            text-align: center;
+            padding: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            box-shadow: 8px 8px 0px var(--shadow-color);
+        }
+
+        .menu-option:hover {
+            box-shadow: 6px 6px 0px var(--shadow-color);
+            transform: translate(2px, 2px);
+        }
+
+        .menu-option:active {
+            box-shadow: 0px 0px 0px var(--shadow-color);
+            transform: translate(8px, 8px);
+        }
+
+        .menu-option:nth-child(2) {
+            background-color: #0abb8f;
+            --shadow-color: #0a7563;
+            grid-area: b;
+        }
+
+        .menu-option:nth-child(3) {
+            background-color: #ea565f;
+            --shadow-color: #a5314d;
+            grid-area: c;
+        }
+
+        .menu-option:nth-child(4) {
+            background-color: #567dea;
+            --shadow-color: #404bcd;
+            grid-area: d;
+        }
+
+        .menu-option:nth-child(5) {
+            background-color: #fbca18;
+            --shadow-color: #b09303;
+            grid-area: e;
+        }
+
+        .menu-option:nth-child(6) {
+            background-color: #8950e5;
+            --shadow-color: #5d4aab;
+            grid-area: f;
         }
     </style>
 </head>
+
 <body>
-    <a href="./mypuzzles.html">Your Puzzles</a><br>
-    <a href="./game.html?puzzle=mug">Mug</a>
-    <a href="./game.html?puzzle=hund">Hund</a>
-    <a href="./game.html?puzzle=shibainu">Shiba Inu</a>
-    <a href="./game.html?puzzle=note">Music Note</a>
-    <a href="./game.html?puzzle=flag">Flag</a>
-    <a href="./game.html?puzzle=palmTree">Palm Tree</a>
-    <a href="./game.html?puzzle=hand">Hand</a>
-    <a href="./game.html?puzzle=youtube">Youtube</a>
-    <a href="./game.html?puzzle=j">J</a>
-    <a href="./game.html?puzzle=o">O</a>
-    <a href="./game.html?puzzle=e">E</a>
-    <a href="./game.html?puzzle=t">T</a>
-    <a href="./game.html?puzzle=worm">Worm</a>
-    <a href="./game.html?puzzle=among">Crewmate</a>
+    <div class="menu">
+        <img src="assets/logo.png" alt="Nonogram 3D">
+        <a class="menu-option" href="./about.html">About</a>
+        <a class="menu-option" href="./tutorial.html">Tutorial</a>
+        <a class="menu-option" href="./puzzles.html">Puzzles</a>
+        <a class="menu-option" href="./mypuzzles.html">My Puzzles</a>
+        <a class="menu-option" href="https://github.com/jonot-cyber/nonogram-3d">Github</a>
+    </div>
 </body>
+
 </html>
