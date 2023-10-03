@@ -19,7 +19,7 @@ function scoreHint(hint: Hint, size: number): number {
     if (count == 0) {
         return 128;
     }
-    return Math.max(count, size - count);
+    return Math.max(count, size - count) / size;
 }
 
 export function removeHints(puzzle: Puzzle, hints: Hints) {
