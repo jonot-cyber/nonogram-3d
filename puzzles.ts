@@ -1,4 +1,4 @@
-class PuzzleElement extends HTMLElement {
+export class PuzzleElement extends HTMLElement {
     pad(input: string, len: number): string {
         while (input.length < len) {
             input = "0" + input;

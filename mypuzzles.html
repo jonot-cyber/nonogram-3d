@@ -6,17 +6,26 @@
     <title>Nonogram 3D</title>
     <style>
         body {
-            background-color: rgb(240, 240, 240);
             user-select: none;
         }
 
         a {
             display: block;
         }
+
+        .puzzles {
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
     </style>
-    <script type="module" src="/mypuzzles.ts" defer></script>
+    <script type="module" src="./mypuzzles.ts" defer></script>
 </head>
 <body>
     <a href="./create.html">Create a puzzle</a>
+    <div class="puzzles">
+    </div>
 </body>
 </html>
