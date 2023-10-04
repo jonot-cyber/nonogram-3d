@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,24 +9,47 @@
         body {
             background-color: rgb(240, 240, 240);
             user-select: none;
+            box-sizing: border-box;
+        }
+
+        .puzzles {
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
     </style>
+    <script type="module" src="puzzles.ts"></script>
 </head>
+
 <body>
-    <a href="./mypuzzles.html">Your Puzzles</a><br>
-    <a href="./game.html?puzzle=mug">Mug</a>
-    <a href="./game.html?puzzle=hund">Hund</a>
-    <a href="./game.html?puzzle=shibainu">Shiba Inu</a>
-    <a href="./game.html?puzzle=note">Music Note</a>
-    <a href="./game.html?puzzle=flag">Flag</a>
-    <a href="./game.html?puzzle=palmTree">Palm Tree</a>
-    <a href="./game.html?puzzle=hand">Hand</a>
-    <a href="./game.html?puzzle=youtube">Youtube</a>
-    <a href="./game.html?puzzle=j">J</a>
-    <a href="./game.html?puzzle=o">O</a>
-    <a href="./game.html?puzzle=e">E</a>
-    <a href="./game.html?puzzle=t">T</a>
-    <a href="./game.html?puzzle=worm">Worm</a>
-    <a href="./game.html?puzzle=among">Crewmate</a>
+    <div class="puzzles">
+        <puzzle-info stars="0" title="Crewmate" puzzle-id="among"></puzzle-info>
+        <puzzle-info stars="0" title="E" puzzle-id="e"></puzzle-info>
+        <puzzle-info stars="0" title="Earth" puzzle-id="earth"></puzzle-info>
+        <puzzle-info stars="0" title="Flag" puzzle-id="flag"></puzzle-info>
+        <puzzle-info stars="0" title="Fox" puzzle-id="fox"></puzzle-info>
+        <puzzle-info stars="0" title="Hammer" puzzle-id="hammer"></puzzle-info>
+        <puzzle-info stars="0" title="Hand" puzzle-id="hand"></puzzle-info>
+        <puzzle-info stars="0" title="Headphones" puzzle-id="headphones"></puzzle-info>
+        <puzzle-info stars="0" title="Hund" puzzle-id="hund"></puzzle-info>
+        <puzzle-info stars="0" title="J" puzzle-id="j"></puzzle-info>
+        <puzzle-info stars="0" title="Lighthouse" puzzle-id="lightHouse"></puzzle-info>
+        <puzzle-info stars="0" title="Mouse" puzzle-id="mouse"></puzzle-info>
+        <puzzle-info stars="0" title="Mug" puzzle-id="mug"></puzzle-info>
+        <puzzle-info stars="0" title="Music Note" puzzle-id="note"></puzzle-info>
+        <puzzle-info stars="0" title="O" puzzle-id="o"></puzzle-info>
+        <puzzle-info stars="0" title="Outlet" puzzle-id="outlet"></puzzle-info>
+        <puzzle-info stars="0" title="Palm Tree" puzzle-id="palmTree"></puzzle-info>
+        <puzzle-info stars="0" title="Rubiks Cube" puzzle-id="rubiksCube"></puzzle-info>
+        <puzzle-info stars="0" title="Shiba Inu" puzzle-id="shibainu"></puzzle-info>
+        <puzzle-info stars="0" title="T" puzzle-id="t"></puzzle-info>
+        <puzzle-info stars="0" title="Trophy" puzzle-id="trophy"></puzzle-info>
+        <puzzle-info stars="0" title="Tulip" puzzle-id="tulip"></puzzle-info>
+        <puzzle-info stars="0" title="Worm" puzzle-id="worm"></puzzle-info>
+        <puzzle-info stars="0" title="YouTube" puzzle-id="youtube"></puzzle-info>
+    </div>
 </body>
+
 </html>
