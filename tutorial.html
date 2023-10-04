@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nonogram 3D</title>
+    <style>
+        body {
+            max-width: 38rem;
+            padding: 2rem;
+            margin: auto;
+            font-family: sans-serif;
+            line-height: 2;
+            box-sizing: border-box;
+        }
+
+        img {
+            float: left;
+            margin-right: 1rem;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        p {
+            color: #333;
+        }
+
+        a {
+            display: block;
+            background-color: #0abb8f;
+            --shadow-color: #0a7563;
+            font-size: 24px;
+            font-family: sans-serif;
+            text-align: center;
+            padding: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            box-shadow: 8px 8px 0px var(--shadow-color);
+        }
+
+        a:hover {
+            box-shadow: 6px 6px 0px var(--shadow-color);
+            transform: translate(2px, 2px);
+        }
+
+        a:active {
+            box-shadow: 0px 0px 0px var(--shadow-color);
+            transform: translate(8px, 8px);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>How to Play</h1>
+    <p>This document will explain how to play 3D Nonograms. Note that this game can be played with a laptop trackpad,
+        but you will likely find it easier to play with a standard mouse. This game will not work on mobile devices.</p>
+    <p>A level consists of a rectangular prism made up of cubes, and you use provided hints to reveal a shape.</p>
+    <h2>Controls</h2>
+    <h3>Orbit</h3>
+    <p>Click and drag with the mouse to orbit around the puzzle. You can use this to get a better perspective at the
+        puzzle while solving.</p>
+    <h3>Handles</h3>
+    <p>You will see yellow and magenta handles on the edges of the puzzles. You can click and drag these to see the
+        cubes in the middle of the puzzle.</p>
+    <h3>Flagging</h3>
+    <p>Flagging is an important technique to solving puzzles. It allows you to mark cubes that you know are part of the
+        solution. This will prevent you from deleting them, and allow you to remember what you have already solved.</p>
+    <p>You can enter <em>flagging</em> mode by holding <strong>F</strong>. While in flagging mode, you can click a cube
+        to flag it. If a cube is already flagged, clicking it again will unflag it. You can click and drag to
+        flag/unflag multiple cubes at once.</p>
+    <h3>Removing</h3>
+    <p>Puzzles are solved by removing cubes that are not part of the final shape.</p>
+    <p>You can enter <em>removing</em> mode by holding <strong>D</strong>. While in removing mode, click a cube to
+        remove it. If you accidentally remove a cube that was part of the solution, it will be flagged instead, and be
+        counted as a mistake.</p>
+    <h2>Constraints</h2>
+    <p>Hints will appear on the puzzle in the form of numbers on the sides of the cubes. The hints give you information
+        about which cubes are part of the puzzle. There are three types of hints:</p>
+    <h3>Normal Hints</h3>
+    <img src="assets/numbers/normal/5.png" alt="5">
+    <p>A normal hint is a number. In this case, the number is 5. What this tells you is that on that slice, there are
+        <em>5</em> cubes filled in. All of the five cubes are in a row. Examples are shown below:
+    </p>
+    <p>__XXXXX__</p>
+    <p>Valid: 5 cubes are filled in in a row.</p>
+    <p>XXXXX</p>
+    <p>Valid: A hint can consist of an entire row.</p>
+    <p>_XXX_XX</p>
+    <p>Invalid: There are 5 cubes, but they are not in a row.</p>
+    <h3>Circle Hints</h3>
+    <img src="assets/numbers/circle/4.png" alt="4 in a circle">
+    <p>A circle hint is a number with a circle around it. This is similar to a normal hint, but says that there is
+        exactly <em>one</em> gap in the answer. Examples are shown below:</p>
+    <p>XXX_X_</p>
+    <p>Valid: There are 4 cubes filled in, with 1 gap</p>
+    <p>XX__XX</p>
+    <p>Valid: Gaps can be any size.</p>
+    <p>X_X_XX</p>
+    <p>Invalid: There are two gaps</p>
+    <p>XXXX__</p>
+    <p>Invalid: There are no gaps in this</p>
+    <h3>Square Hints</h3>
+    <img src="assets/numbers/square/5.png" alt="5 with a square around it">
+    <p>A square hint means that there are <em>2 or more</em> gaps in the span of cubes. Examples are shown below:</p>
+    <p>XX_X_XX_</p>
+    <p>Valid: 2 gaps within the solution</p>
+    <p>X_X_X_XX</p>
+    <p>Valid: More than 2 gaps</p>
+    <p>XXX_XX__</p>
+    <p>Invalid: Only one gap in this solution</p>
+    <h2>How to Solve</h2>
+    <p>Imagine you have a row of 7 cubes, and the hint 5. What does this tell you? Think about all of the possible
+        solutions to this row:</p>
+    <p>__XXXXX</p>
+    <p>_XXXXX_</p>
+    <p>XXXXX__</p>
+    <p>You may notice that the middle three cubes are filled in for every possible solution. Therefore, we know that
+        these cubes will be filled in.</p>
+    <p>Take advantage of this information by flagging those three cubes.</p>
+    <p>Not only does this fill in information for that slice, it also narrows down the possibilities for perpendicular
+        slices. You can repeat this process with various hints to solve a puzzle.</p>
+
+    <a href="./index.html">Back</a>
+</body>
+
+</html>

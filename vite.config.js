@@ -12,6 +12,7 @@ export default {
                 main: resolve(__dirname, "index.html"),
                 mypuzzles: resolve(__dirname, "mypuzzles.html"),
                 puzzles: resolve(__dirname, "puzzles.html"),
+                tutorial: resolve(__dirname, "tutorial.html"),
             }
         },
         target: "esnext",
