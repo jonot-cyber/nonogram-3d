@@ -303,7 +303,7 @@ createPuzzleButton?.addEventListener("click", function () {
         hints: hints,
         color: colors,
     }));
-    window.location.replace("https://io.jonot.me/nonogram-3d/mypuzzles.html");
+    document.querySelector<HTMLAnchorElement>("#back")?.click();
 })
 
 // Actions when in standard orbit mode
