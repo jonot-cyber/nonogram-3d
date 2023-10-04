@@ -6,11 +6,12 @@ export default {
     build: {
         rollupOptions: {
             input: {
-                main: resolve(__dirname, "index.html"),
+                about: resolve(__dirname, "about.html"),
+                create: resolve(__dirname, "create.html"),
                 game: resolve(__dirname, "game.html"),
+                main: resolve(__dirname, "index.html"),
                 mypuzzles: resolve(__dirname, "mypuzzles.html"),
                 puzzles: resolve(__dirname, "puzzles.html"),
-                create: resolve(__dirname, "create.html"),
             }
         },
         target: "esnext",
