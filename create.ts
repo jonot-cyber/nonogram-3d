@@ -1,10 +1,11 @@
 import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { clamp, lerp } from 'three/src/math/MathUtils';
-import { State, CoolMesh, XRay } from './types';
-import { facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
-import { createHints } from './puzzle';
+import { State, CoolMesh, XRay, Level } from './types';
+import { colorCubes, facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
+import { Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
+import { puzzleTable } from './library/lookup';
 
 // HTML elements that matter
 const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".f");
@@ -118,6 +119,7 @@ function setState(newState: State) {
 
 const loader = new TextureLoader();
 
+let editing: string | null = null;
 let click: boolean = false;
 let lastChange: boolean = false;
 let mistakeCount = 0;
@@ -158,20 +160,51 @@ function createLights() {
 }
 createLights();
 
-let puzzleSize = new Vector3(1, 1, 1);
-const distance = Math.sqrt(puzzleSize.x * puzzleSize.x + puzzleSize.y * puzzleSize.y + puzzleSize.z * puzzleSize.z);
+async function createPuzzle(): Promise<{ puzzle: Puzzle, color: number[][][] }> {
+    const urlParams = new URLSearchParams(window.location.search);
+    const puzzleLocal = urlParams.get("local");
+    if (puzzleLocal) {
+        const json = JSON.parse(localStorage.getItem(puzzleLocal ?? "") ?? "");
+        editing = puzzleLocal;
+        if (createPuzzleButton) {
+            createPuzzleButton.textContent = "Update Puzzle";
+        }
+
+        return { puzzle: json.puzzle, color: json.color };
+    } else {
+        return { puzzle: [[[true]]], color: [[[0xffffff]]]}
+    }
+}
+
+const { puzzle, color } = await createPuzzle();
+const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
+const distance = puzzleSize.length();
 camera.position.z = distance;
 const cubes: CoolMesh[] = [];
-const geometry = new BoxGeometry(1, 1, 1);
-const cube: CoolMesh = new Mesh(geometry);
-cube.position.set(0, 0, 0);
-cube.qPos = new Vector3(0, 0, 0);
-cube.qFlag = false;
-cube.qDestroy = false;
-cube.layers.enable(0);
-cubes.push(cube);
-scene.add(cube);
-updateMaterial(cube, loader);
+
+function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) {
+    for (let x = 0; x < size.x; x++) {
+        for (let y = 0; y < size.y; y++) {
+            for (let z = 0; z < size.z; z++) {
+                if (!puzzle[x][y][z]) {
+                    continue;
+                }
+                const geometry = new BoxGeometry(1, 1, 1);
+                const cube: CoolMesh = new Mesh(geometry);
+                cube.position.set(x - puzzleSize.x / 2 + 0.5, y - puzzleSize.y / 2 + 0.5, z - puzzleSize.z / 2 + 0.5);
+                cube.qPos = new Vector3(x, y, z);
+                cube.qFlag = false;
+                cube.qDestroy = false;
+                cube.qColor = color[x][y][z];
+                cube.material = new MeshLambertMaterial({ color: cube.qColor });
+                cube.layers.enable(0);
+                scene.add(cube);
+                cubes.push(cube);
+            }
+        }
+    }
+}
+createCubes(puzzleSize, puzzle);
 
 // Minimum and maximum positions of X slider
 let handleMinX = -puzzleSize.x / 2 - 1;
@@ -293,8 +326,8 @@ createPuzzleButton?.addEventListener("click", function () {
 
     const hints = createHints(puzzle);
     removeHints(puzzle, hints);
-
-    const name = prompt("Enter a name for your puzzle:");
+    
+    const name = editing ?? prompt("Enter a name for your puzzle") ?? "";
     if (!name) {
         return;
     }

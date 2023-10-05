@@ -136,7 +136,7 @@ export class PuzzleElement extends HTMLElement {
 
         const edit = document.createElement("a");
         edit.innerText = "Edit";
-        edit.href = "./create.html";
+        edit.href = `./create.html?local=${puzzleId ?? ""}`;
         edit.className = "edit";
 
         shadow.appendChild(style);
