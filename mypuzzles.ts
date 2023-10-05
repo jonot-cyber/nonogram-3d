@@ -1,4 +1,5 @@
 export class PuzzleElement extends HTMLElement {
+
     pad(input: string, len: number): string {
         while (input.length < len) {
             input = "0" + input;
@@ -53,6 +54,34 @@ export class PuzzleElement extends HTMLElement {
             transform: translate(8px, 8px);
         }
 
+        .icon {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+
+        .remove {
+            background-color: #567dea;
+            --shadow-color: #404bcd;
+            color: white;
+            box-shadow: 8px 8px 0px var(--shadow-color);
+            padding: 8px;
+            font-family: sans-serif;
+            display: block;
+            aspect-ratio: 1 / 1;
+            height: 128px;
+            text-decoration: none;
+        }
+
+        .remove:hover {
+            box-shadow: 6px 6px 0px var(--shadow-color);
+            transform: translate(2px, 2px);
+        }
+
+        .remove:active {
+            box-shadow: 0px 0px 0px var(--shadow-color);
+            transform: translate(8px, 8px);
+        }
+
         .wrapper {
             --shadow-color: #0a7563;
             background-color: #0abb8f;
@@ -94,6 +123,8 @@ export class PuzzleElement extends HTMLElement {
         }
         `
 
+        const puzzleId = this.getAttribute("puzzle-id") ?? "";
+
         const bigWrapper = document.createElement("span");
         bigWrapper.className = "big-wrapper";
 
@@ -130,25 +161,41 @@ export class PuzzleElement extends HTMLElement {
         }
         bestTime.innerText = `Best Time: --:--`;
 
-        const puzzleId = this.getAttribute("puzzle-id");
         const hiddenLink = document.createElement("a");
-        hiddenLink.href = `./game.html?local=${puzzleId ?? ""}`;
+        hiddenLink.href = `./game.html?local=${puzzleId}`;
 
         const edit = document.createElement("a");
-        edit.innerText = "Edit";
-        edit.href = `./create.html?local=${puzzleId ?? ""}`;
+        edit.href = `./create.html?local=${puzzleId}`;
         edit.className = "edit";
+        const editIcon = document.createElement("img");
+        editIcon.src = "./assets/edit.svg";
+        editIcon.className = "icon";
+        editIcon.alt = "edit";
+        edit.appendChild(editIcon);
+
+        const remove = document.createElement("div");
+        remove.className = "remove";
+        remove.addEventListener("click", function() {
+            localStorage.removeItem(puzzleId);
+            location.reload();
+        });
+        const removeIcons = document.createElement("img");
+        removeIcons.src = "./assets/delete.svg";
+        removeIcons.className = "icon";
+        removeIcons.alt = "edit";
+        remove.appendChild(removeIcons);
 
         shadow.appendChild(style);
         wrapper.appendChild(block2);
         wrapper.appendChild(bestTime);
         bigWrapper.appendChild(wrapper);
         bigWrapper.appendChild(edit);
+        bigWrapper.appendChild(remove);
         shadow.appendChild(bigWrapper);
 
         wrapper.addEventListener("click", function() {
             hiddenLink.click();
-        })
+        });
     }
 }
 
