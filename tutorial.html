@@ -24,6 +24,12 @@
             text-align: center;
         }
 
+        h1,
+        h2,
+        h3 {
+            clear: both;
+        }
+
         p {
             color: #333;
         }
@@ -51,6 +57,45 @@
             box-shadow: 0px 0px 0px var(--shadow-color);
             transform: translate(8px, 8px);
         }
+
+        .float-right {
+            float: right;
+        }
+
+        .valid {
+            font-weight: bold;
+            color: green;
+        }
+
+        .invalid {
+            font-weight: bold;
+            color: darkred;
+        }
+
+        table {
+            clear: both;
+            margin-bottom: 0;
+        }
+
+        td {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            margin: 0;
+            border: 1px solid black;
+        }
+
+        .filled {
+            background-color: black;
+        }
+
+        .flagged {
+            background-color: aqua;
+        }
+
+        .validity {
+            margin-top: 0;
+        }
     </style>
 </head>
 
@@ -64,15 +109,18 @@
     <p>Click and drag with the mouse to orbit around the puzzle. You can use this to get a better perspective at the
         puzzle while solving.</p>
     <h3>Handles</h3>
+    <img src="assets/handle.png" alt="One of the two handles">
     <p>You will see yellow and magenta handles on the edges of the puzzles. You can click and drag these to see the
         cubes in the middle of the puzzle.</p>
     <h3>Flagging</h3>
+    <img src="assets/flagexample.png" alt="An example of flagging in a puzzle" width="200" class="float-right">
     <p>Flagging is an important technique to solving puzzles. It allows you to mark cubes that you know are part of the
         solution. This will prevent you from deleting them, and allow you to remember what you have already solved.</p>
     <p>You can enter <em>flagging</em> mode by holding <strong>F</strong>. While in flagging mode, you can click a cube
         to flag it. If a cube is already flagged, clicking it again will unflag it. You can click and drag to
         flag/unflag multiple cubes at once.</p>
     <h3>Removing</h3>
+    <img src="assets/deleteexample.png" alt="The same puzzle from the last example with one cube removed" width="200">
     <p>Puzzles are solved by removing cubes that are not part of the final shape.</p>
     <p>You can enter <em>removing</em> mode by holding <strong>D</strong>. While in removing mode, click a cube to
         remove it. If you accidentally remove a cube that was part of the solution, it will be flagged instead, and be
@@ -85,41 +133,180 @@
     <p>A normal hint is a number. In this case, the number is 5. What this tells you is that on that slice, there are
         <em>5</em> cubes filled in. All of the five cubes are in a row. Examples are shown below:
     </p>
-    <p>__XXXXX__</p>
-    <p>Valid: 5 cubes are filled in in a row.</p>
-    <p>XXXXX</p>
-    <p>Valid: A hint can consist of an entire row.</p>
-    <p>_XXX_XX</p>
-    <p>Invalid: There are 5 cubes, but they are not in a row.</p>
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="valid">✓ Valid</span>: 5 cubes are filled in in a row.</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="valid">✓ Valid</span>: A hint can consist of an entire row.</p>
+    <table>
+        <tr>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="invalid">✗ Invalid</span>: There are five cubes, but they are not in a row.</p>
     <h3>Circle Hints</h3>
     <img src="assets/numbers/circle/4.png" alt="4 in a circle">
     <p>A circle hint is a number with a circle around it. This is similar to a normal hint, but says that there is
         exactly <em>one</em> gap in the answer. Examples are shown below:</p>
-    <p>XXX_X_</p>
-    <p>Valid: There are 4 cubes filled in, with 1 gap</p>
-    <p>XX__XX</p>
-    <p>Valid: Gaps can be any size.</p>
-    <p>X_X_XX</p>
-    <p>Invalid: There are two gaps</p>
-    <p>XXXX__</p>
-    <p>Invalid: There are no gaps in this</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="valid">✓ Valid</span>: There are four cubes filled in with one gap</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="valid">✓ Valid</span>: Gaps can be any size.</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="invalid">✗ Invalid</span>: There are two gaps.</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="invalid">✗ Invalid</span>: There are no gaps.</p>
     <h3>Square Hints</h3>
     <img src="assets/numbers/square/5.png" alt="5 with a square around it">
-    <p>A square hint means that there are <em>2 or more</em> gaps in the span of cubes. Examples are shown below:</p>
-    <p>XX_X_XX_</p>
-    <p>Valid: 2 gaps within the solution</p>
-    <p>X_X_X_XX</p>
-    <p>Valid: More than 2 gaps</p>
-    <p>XXX_XX__</p>
-    <p>Invalid: Only one gap in this solution</p>
+    <p>A square hint means that there are <em>two or more</em> gaps in the span of cubes. Examples are shown below:</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="valid">✓ Valid</span>: Two gaps within the solution</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="valid">✓ Valid</span>: More than two gaps</p>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <p class="validity"><span class="invalid">✗ Invalid</span>: Only one gap</p>
     <h2>How to Solve</h2>
-    <p>Imagine you have a row of 7 cubes, and the hint 5. What does this tell you? Think about all of the possible
+    <p>Imagine you have a row of seven cubes, and the hint is a five. What does this tell you? Think about all of the possible
         solutions to this row:</p>
-    <p>__XXXXX</p>
-    <p>_XXXXX_</p>
-    <p>XXXXX__</p>
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td class="filled"></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
     <p>You may notice that the middle three cubes are filled in for every possible solution. Therefore, we know that
-        these cubes will be filled in.</p>
+        these cubes will be filled in:</p>
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td class="flagged"></td>
+            <td class="flagged"></td>
+            <td class="flagged"></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
     <p>Take advantage of this information by flagging those three cubes.</p>
     <p>Not only does this fill in information for that slice, it also narrows down the possibilities for perpendicular
         slices. You can repeat this process with various hints to solve a puzzle.</p>
