@@ -16,8 +16,8 @@ const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#cle
 
 const debug = {
     showShape: false,
-    createHints: true,
-    reduceHints: true,
+    createHints: false,
+    reduceHints: false,
 };
 
 let state = "orbit";
@@ -142,13 +142,13 @@ async function createPuzzle(): Promise<Level> {
         const json = await response.json();
         const puzzle: Puzzle = json.puzzle;
         const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
-        return { puzzle, hints, color: json.color };
+        return { puzzle, hints, color: json.color, name: json.name, thumbnail: "" };
     } else if (puzzleData) {
         const json = JSON.parse(puzzleData);
-        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color };
+        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
     } else {
         const json = JSON.parse(localStorage.getItem(puzzleLocal ?? "") ?? "");
-        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color };
+        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
     }
 }
 
