@@ -1,3 +1,5 @@
+import { Level } from "./types";
+
 export class PuzzleElement extends HTMLElement {
 
     pad(input: string, len: number): string {
@@ -177,8 +179,9 @@ export class PuzzleElement extends HTMLElement {
         const remove = document.createElement("div");
         remove.className = "remove";
         remove.addEventListener("click", function() {
-            localStorage.removeItem(puzzleId);
-            localStorage.removeItem(puzzleId + "-image");
+            const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+            delete storage[puzzleId];
+            localStorage.setItem("nonogram-3d-puzzle", JSON.stringify(storage));
             location.reload();
         });
         const removeIcons = document.createElement("img");
@@ -207,22 +210,14 @@ const body = document.querySelector("body");
 const puzzles = document.querySelector(".puzzles");
 
 if (puzzles) {
-    for (let i = 0; i < localStorage.length; i++) {
-        const name = localStorage.key(i);
-        if (name?.endsWith("-image")) {
-            continue;
-        }
-        const image = localStorage.getItem(name + "-image");
-        if (!name) {
-            break;
-        }
+    const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+    for (const [key, value] of Object.entries(storage)) {
+        const nv = value as Level;
         const elem = document.createElement("puzzle-info");
         elem.setAttribute("stars", "0");
-        elem.setAttribute("title", name);
-        elem.setAttribute("puzzle-id", name);
-        if (image) {
-            elem.setAttribute("thumbnail", image);
-        }
+        elem.setAttribute("title", nv.name);
+        elem.setAttribute("puzzle-id", nv.name);
+        elem.setAttribute("thumbnail", nv.thumbnail);
         puzzles.appendChild(elem);
     }
 }

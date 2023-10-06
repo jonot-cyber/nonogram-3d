@@ -15,4 +15,6 @@ export interface Level {
     puzzle: Puzzle,
     hints: Hints,
     color: number[][][],
+    name: string,
+    thumbnail: string,
 }

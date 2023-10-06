@@ -113,7 +113,6 @@ function setState(newState: State) {
             updateVisibility(xray, cubes, puzzleSize);
             document.querySelector(".crop")?.setAttribute("style", "display:none");
         case "saveImage":
-            console.log("webit");
             xHandleMesh.visible = false;
             zHandleMesh.visible = false;
             xray.count = 0;
@@ -171,13 +170,14 @@ async function createPuzzle(): Promise<{ puzzle: Puzzle, color: number[][][] }> 
     const urlParams = new URLSearchParams(window.location.search);
     const puzzleLocal = urlParams.get("local");
     if (puzzleLocal) {
-        const json = JSON.parse(localStorage.getItem(puzzleLocal ?? "") ?? "");
+        const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+        const level = storage[puzzleLocal];
         editing = puzzleLocal;
         if (createPuzzleButton) {
             createPuzzleButton.textContent = "Update Puzzle";
         }
 
-        return { puzzle: json.puzzle, color: json.color };
+        return { puzzle: level.puzzle, color: level.color };
     } else {
         return { puzzle: [[[true]]], color: [[[0xffffff]]] }
     }
@@ -735,12 +735,15 @@ function saveImage() {
         return;
     }
     const image = renderer.domElement.toDataURL("image/png");
-    localStorage.setItem(name, JSON.stringify({
+    let storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+    storage[name] = {
         puzzle: puzzle,
         hints: hints,
         color: colors,
-    }));
-    localStorage.setItem(name + "-image", image);
+        name: name,
+        thumbnail: image,
+    };
+    localStorage.setItem("nonogram-3d-puzzle", JSON.stringify(storage));
     setState("end");
     document.querySelector<HTMLAnchorElement>("#back")?.click();
 }
