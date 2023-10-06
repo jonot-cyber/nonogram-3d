@@ -1,11 +1,10 @@
 import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { clamp, lerp } from 'three/src/math/MathUtils';
-import { State, CoolMesh, XRay, Level } from './types';
-import { colorCubes, facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
-import { Hints, Puzzle, createHints } from './puzzle';
+import { State, CoolMesh, XRay } from './types';
+import { facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
+import { Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
-import { puzzleTable } from './library/lookup';
 
 // HTML elements that matter
 const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".f");
@@ -113,12 +112,20 @@ function setState(newState: State) {
             xray.count = 0;
             updateVisibility(xray, cubes, puzzleSize);
             document.querySelector(".crop")?.setAttribute("style", "display:none");
+        case "saveImage":
+            console.log("webit");
+            xHandleMesh.visible = false;
+            zHandleMesh.visible = false;
+            xray.count = 0;
+            updateVisibility(xray, cubes, puzzleSize);
+            frames = 0;
     }
     state = newState;
 }
 
 const loader = new TextureLoader();
 
+let frames = 0;
 let editing: string | null = null;
 let click: boolean = false;
 let lastChange: boolean = false;
@@ -134,7 +141,7 @@ const scene = new Scene();
 scene.background = new Color(240, 240, 240);
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-const renderer = new WebGLRenderer({ antialias: true });
+const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -172,7 +179,7 @@ async function createPuzzle(): Promise<{ puzzle: Puzzle, color: number[][][] }> 
 
         return { puzzle: json.puzzle, color: json.color };
     } else {
-        return { puzzle: [[[true]]], color: [[[0xffffff]]]}
+        return { puzzle: [[[true]]], color: [[[0xffffff]]] }
     }
 }
 
@@ -294,49 +301,7 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
 });
 
 createPuzzleButton?.addEventListener("click", function () {
-    const puzzle: boolean[][][] = [];
-    const colors: number[][][] = [];
-    for (let ix = 0; ix < puzzleSize.x; ix++) {
-        const part1: boolean[][] = [];
-        const cpart1: number[][] = [];
-        for (let iy = 0; iy < puzzleSize.y; iy++) {
-            const part2: boolean[] = []
-            const cpart2: number[] = []
-            for (let iz = 0; iz < puzzleSize.z; iz++) {
-                part2.push(false);
-                cpart2.push(0);
-            }
-            part1.push(part2);
-            cpart1.push(cpart2);
-        }
-        puzzle.push(part1);
-        colors.push(cpart1);
-    }
-
-    for (const cube of cubes) {
-        if (cube.qDestroy) {
-            continue;
-        }
-        if (!cube.qPos) {
-            continue;
-        }
-        puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
-        colors[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
-    }
-
-    const hints = createHints(puzzle);
-    removeHints(puzzle, hints);
-    
-    const name = editing ?? prompt("Enter a name for your puzzle") ?? "";
-    if (!name) {
-        return;
-    }
-    localStorage.setItem(name, JSON.stringify({
-        puzzle: puzzle,
-        hints: hints,
-        color: colors,
-    }));
-    document.querySelector<HTMLAnchorElement>("#back")?.click();
+    setState("saveImage");
 })
 
 // Actions when in standard orbit mode
@@ -726,6 +691,60 @@ function place() {
     updateHandles();
 }
 
+// All of these weird workarounds are needed because the handles need to be not shown when the thumbnail is taken, and we need at least one frame rendered for that to happen.
+function saveImage() {
+    if (frames == 0) {
+        return;
+    }
+    const puzzle: boolean[][][] = [];
+    const colors: number[][][] = [];
+    for (let ix = 0; ix < puzzleSize.x; ix++) {
+        const part1: boolean[][] = [];
+        const cpart1: number[][] = [];
+        for (let iy = 0; iy < puzzleSize.y; iy++) {
+            const part2: boolean[] = []
+            const cpart2: number[] = []
+            for (let iz = 0; iz < puzzleSize.z; iz++) {
+                part2.push(false);
+                cpart2.push(0);
+            }
+            part1.push(part2);
+            cpart1.push(cpart2);
+        }
+        puzzle.push(part1);
+        colors.push(cpart1);
+    }
+
+    for (const cube of cubes) {
+        if (cube.qDestroy) {
+            continue;
+        }
+        if (!cube.qPos) {
+            continue;
+        }
+        puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
+        colors[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
+    }
+
+    const hints = createHints(puzzle);
+    removeHints(puzzle, hints);
+    // take the puzzle
+
+    const name = editing ?? prompt("Enter a name for your puzzle") ?? "";
+    if (!name) {
+        return;
+    }
+    const image = renderer.domElement.toDataURL("image/png");
+    localStorage.setItem(name, JSON.stringify({
+        puzzle: puzzle,
+        hints: hints,
+        color: colors,
+    }));
+    localStorage.setItem(name + "-image", image);
+    setState("end");
+    document.querySelector<HTMLAnchorElement>("#back")?.click();
+}
+
 // Main method
 function animate() {
     requestAnimationFrame(animate);
@@ -752,8 +771,12 @@ function animate() {
         case "place":
             place();
             break;
+        case "saveImage":
+            saveImage();
+            break;
     }
     renderer.render(scene, camera);
+    frames++;
 }
 
 animate();
