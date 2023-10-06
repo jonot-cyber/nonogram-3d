@@ -63,12 +63,12 @@ function setState(newState: State) {
         case "dragX":
             handleOriginalPosition = xHandleMesh.position.x;
             startPosition.set(pointer.x, pointer.y);
-            resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
+            resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ, puzzleSize);
             break;
         case "dragZ":
             handleOriginalPosition = zHandleMesh.position.z;
             startPosition.set(pointer.x, pointer.y);
-            resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
+            resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX, puzzleSize);
             break;
         case "end":
             xHandleMesh.visible = false;
@@ -103,10 +103,10 @@ const startPosition = new Vector2();
 
 const raycaster = new Raycaster();
 const scene = new Scene();
-scene.background = new Color(240, 240, 240);
+scene.background = new Color(255, 255, 255);
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-const renderer = new WebGLRenderer({ antialias: true });
+const renderer = new WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -271,8 +271,8 @@ function orbit() {
 
     // If you aren't using xray, reset the handles. Needed because the positions can change
     if (xray.count == 0) {
-        resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
-        resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
+        resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX, puzzleSize);
+        resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ, puzzleSize);
     }
 
     // Do raycast
@@ -507,6 +507,7 @@ function animate() {
             remove();
             break;
     }
+
     renderer.render(scene, camera);
 }
 

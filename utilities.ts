@@ -1,6 +1,6 @@
 import { Hint, Hints, Puzzle } from "./puzzle";
 import { CoolMesh, XRay } from "./types";
-import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2 } from "three";
+import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2, RGB_PVRTC_2BPPV1_Format } from "three";
 
 function getAssetURL(hint: Hint): string {
     if (hint.type == "none") {
@@ -129,19 +129,27 @@ export function colorCubes(cubes: CoolMesh[], puzzleColors: number[][][]) {
     }
 }
 
-export function resetXHandle(camera: Camera, handle: Mesh, min: number, max: number) {
+/*
+xHandleMesh.position.set(handleMinX, -puzzleSize.y / 2, -puzzleSize.z / 2);
+xHandleMesh.scale.set(2, 1, 1);
+
+const zHandleMesh = new Mesh(handleGeometry, new MeshLambertMaterial({ color: 0xffff00, opacity: 0.5, transparent: true }));
+scene.add(zHandleMesh);
+zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);*/
+
+export function resetXHandle(camera: Camera, handle: Mesh, min: number, max: number, size: Vector3) {
     if (camera.position.x > 0) {
-        handle.position.setX(max);
+        handle.position.set(max, -size.y / 2, -size.z / 2);
     } else {
-        handle.position.setX(min);
+        handle.position.set(min, -size.y / 2, -size.z / 2);
     }
 }
 
-export function resetZHandle(camera: Camera, handle: Mesh, min: number, max: number) {
+export function resetZHandle(camera: Camera, handle: Mesh, min: number, max: number, size: Vector3) {
     if (camera.position.z > 0) {
-        handle.position.setZ(max);
+        handle.position.set(-size.x / 2, -size.y / 2, max);
     } else {
-        handle.position.setZ(min);
+        handle.position.set(-size.x / 2, -size.y / 2, min);
     }
 }
 

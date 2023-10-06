@@ -100,12 +100,12 @@ function setState(newState: State) {
         case "dragX":
             handleOriginalPosition = xHandleMesh.position.x;
             startPosition.set(pointer.x, pointer.y);
-            resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
+            resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ, puzzleSize);
             break;
         case "dragZ":
             handleOriginalPosition = zHandleMesh.position.z;
             startPosition.set(pointer.x, pointer.y);
-            resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
+            resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX, puzzleSize);
             break;
         case "end":
             xHandleMesh.visible = false;
@@ -246,8 +246,8 @@ function updateHandles() {
     handleMinNZ = -puzzleSize.z / 2 + 2;
     handleMaxNZ = puzzleSize.z / 2 + 1;
 
-    resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
-    resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
+    resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX, puzzleSize);
+    resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ, puzzleSize);
 }
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
@@ -346,8 +346,8 @@ function orbit() {
 
     // If you aren't using xray, reset the handles. Needed because the positions can change
     if (xray.count == 0) {
-        resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX);
-        resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ);
+        resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX, puzzleSize);
+        resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ, puzzleSize);
     }
 
     // Do raycast
