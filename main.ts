@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
+import { BoxGeometry, Clock, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
@@ -45,6 +45,10 @@ function setState(newState: State) {
             break;
         case "dragZ":
             break;
+        case "continueRemove":
+            removeIndicator?.classList.remove("enabled");
+            removeClock.stop();
+            break;
     }
 
     switch (newState) {
@@ -70,6 +74,11 @@ function setState(newState: State) {
             startPosition.set(pointer.x, pointer.y);
             resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX, puzzleSize);
             break;
+        case "continueRemove":
+            removeIndicator?.classList.add("enabled");
+            removeClock.start();
+            continueDelay = false;
+            break;
         case "end":
             xHandleMesh.visible = false;
             zHandleMesh.visible = false;
@@ -84,6 +93,9 @@ const loader = new TextureLoader();
 
 let click: boolean = false;
 let lastChange: boolean = false;
+let removeDirection: Vector3 = new Vector3();
+let continueDelay = false;
+let removePos: Vector3 = new Vector3();
 let mistakeCount = 0;
 let handleOriginalPosition: number = 0;
 let xray: XRay = { direction: "right", count: 0 };
@@ -100,6 +112,7 @@ function addMistake() {
 
 const pointer = new Vector2();
 const startPosition = new Vector2();
+const removeClock = new Clock();
 
 const raycaster = new Raycaster();
 const scene = new Scene();
@@ -233,6 +246,8 @@ renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     ev.preventDefault();
     if (state == "continueFlag") {
         setState("flag")
+    } else if (state == "continueRemove") {
+        setState("remove");
     } else if (state == "dragX" || state == "dragZ") {
         setState("orbit");
         xHandleMesh.material.opacity = 0.5;
@@ -251,7 +266,7 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
 window.addEventListener("keyup", function (ev: KeyboardEvent) {
     if (ev.key == "f" && state == "flag" || state == "continueFlag") {
         setState("orbit");
-    } else if (ev.key == "d" && state == "remove") {
+    } else if (ev.key == "d" && state == "remove" || state == "continueRemove") {
         setState("orbit");
     }
 })
@@ -481,6 +496,77 @@ function remove() {
             setState("end");
         }
     }
+    removeDirection = intersects[0].normal ?? new Vector3();
+    removePos = object.qPos ?? new Vector3();
+    setState("continueRemove");
+}
+
+function continueRemove() {
+    const neededDelay = continueDelay ? 0.1 : 0.5;
+    if (removeClock.getElapsedTime() < neededDelay) {
+        return;
+    }
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.layers.set(0);
+
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
+    if (intersects.length == 0) {
+        return;
+    }
+
+    let object: CoolMesh = intersects[0].object as CoolMesh;
+    let objectPosition: Vector3 = object.qPos ?? new Vector3();
+
+    // You can't delete a flagged cube
+    if (object.qFlag) {
+        setState("remove");
+        return;
+    }
+
+    if (!object.qPos) {
+        return;
+    }
+    if (removeDirection.x == 1 || removeDirection.x == -1) {
+        if (object.qPos.y != removePos.y || object.qPos.z != removePos.z) {
+            setState("remove");
+            return;
+        }
+    } else if (removeDirection.y == 1 || removeDirection.y == -1) {
+        if (object.qPos.x != removePos.x || object.qPos.z != removePos.z) {
+            setState("remove");
+            return;
+        }
+    } else {
+        if (object.qPos.x != removePos.x || object.qPos.y != removePos.y) {
+            setState("remove");
+            return;
+        }
+    }
+    removeClock.start();
+    continueDelay = true;
+
+    // If the cube is part of the solution, count it as a mistake.
+    if (puzzle[objectPosition.x][objectPosition.y][objectPosition.z]) {
+        addMistake();
+        object.qFlag = true;
+        updateMaterial(object, loader, hints);
+    } else {
+        // Destroy the cube
+        object.qDestroy = true;
+        scene.remove(object);
+
+        // Check for zeroes
+        if (clearZeroesButton) {
+            clearZeroesButton.disabled = !areZeroes(cubes, hints);
+        }
+
+        // Check if the puzzle is complete
+        if (checkDone(cubes, puzzle)) {
+            // Color the cubes and disable xray
+            colorCubes(cubes, color);
+            setState("end");
+        }
+    }
 }
 
 // Main method
@@ -505,6 +591,9 @@ function animate() {
             break;
         case "remove":
             remove();
+            break;
+        case "continueRemove":
+            continueRemove();
             break;
     }
 
