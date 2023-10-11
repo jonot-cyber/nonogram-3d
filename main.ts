@@ -160,7 +160,8 @@ async function createPuzzle(): Promise<Level> {
         const json = JSON.parse(puzzleData);
         return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
     } else {
-        const json = JSON.parse(localStorage.getItem(puzzleLocal ?? "") ?? "");
+        const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+        const json = storage[puzzleLocal ?? ""];
         return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
     }
 }
