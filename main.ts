@@ -14,6 +14,15 @@ const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivEle
 const mistakeCounter: HTMLSpanElement | null = document.querySelector<HTMLSpanElement>("#mistakes-count");
 const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
 
+// Results elements
+const resultsDialog: HTMLDialogElement | null = document.querySelector<HTMLDialogElement>("#results");
+const resultsName: HTMLSpanElement | null = document.querySelector("#results-name");
+const resultsTime: HTMLSpanElement | null = document.querySelector("#results-time");
+const resultsMistakes = document.querySelector("#results-mistakes");
+const resultsStars = document.querySelector("#results-stars");
+const resultsCustomBack = document.querySelector("#results-custom-back");
+const resultsBuiltinBack = document.querySelector("#results-builtin-back");
+
 const debug = {
     showShape: false,
     createHints: false,
@@ -21,6 +30,7 @@ const debug = {
 };
 
 let state = "orbit";
+let isBuiltin = true;
 
 function setState(newState: State) {
     if (newState == state) {
@@ -80,11 +90,55 @@ function setState(newState: State) {
             continueDelay = false;
             break;
         case "end":
+            solveClock.stop();
             xHandleMesh.visible = false;
             zHandleMesh.visible = false;
             xray.count = 0;
             updateVisibility(xray, cubes, puzzleSize);
-            document.querySelector(".crop")?.setAttribute("style", "display:none")
+
+            camera.position.set(1, 1, 1).normalize().multiplyScalar(distance);
+            camera.lookAt(new Vector3(0, 0, 0));
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 8;
+
+            document.querySelector(".crop")?.setAttribute("style", "display:none");
+            if (!resultsName || !resultsTime || !resultsMistakes || !resultsStars) {
+                return;
+            }
+            resultsName.textContent = `"${level.name}"`;
+            const seconds = solveClock.getElapsedTime();
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            let secondsString = remainingSeconds.toString();
+            let minutesString = minutes.toString();
+            if (secondsString.length == 1) {
+                secondsString = "0" + secondsString;
+            }
+            if (minutesString.length == 1) {
+                minutesString = "0" + minutesString;
+            }
+            resultsTime.textContent = `${minutesString}:${secondsString}`;
+            resultsMistakes.textContent = mistakeCount.toString();
+            let stars = 1;
+            if (mistakeCount == 0) {
+                stars++;
+            }
+            if (/* time */ 0 == 0) {
+                stars++;
+            }
+            resultsStars.textContent = "★".repeat(stars) + "☆".repeat(3 - stars);
+            if (isBuiltin) {
+                resultsCustomBack?.remove();
+            } else {
+                resultsBuiltinBack?.remove();
+            }
+            resultsDialog?.show();
+            break;
+        case "fail":
+            xHandleMesh.visible = false;
+            zHandleMesh.visible = false;
+            break;
+
     }
     state = newState;
 }
@@ -99,15 +153,20 @@ let removePos: Vector3 = new Vector3();
 let mistakeCount = 0;
 let handleOriginalPosition: number = 0;
 let xray: XRay = { direction: "right", count: 0 };
+const solveClock = new Clock();
+solveClock.start();
 
-function addMistake() {
+// Returns whether the game is over
+function addMistake(): boolean {
     mistakeCount++;
     if (mistakeCounter) {
         mistakeCounter.textContent = mistakeCount.toString();
     }
     if (mistakeCount == 5) {
-        setState("end");
+        setState("fail");
+        return true;
     }
+    return false;
 }
 
 const pointer = new Vector2();
@@ -160,13 +219,15 @@ async function createPuzzle(): Promise<Level> {
         const json = JSON.parse(puzzleData);
         return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
     } else {
+        isBuiltin = false;
         const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
         const json = storage[puzzleLocal ?? ""];
         return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
     }
 }
 
-const { puzzle, hints, color } = await createPuzzle();
+const level = await createPuzzle();
+const { puzzle, hints, color } = level;
 const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
 const distance = puzzleSize.length();
 camera.position.z = distance;
@@ -231,7 +292,7 @@ zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
 
 enableClock(10 * 60, function () {
-    setState("end");
+    setState("fail");
 });
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
@@ -250,9 +311,13 @@ renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     } else if (state == "continueRemove") {
         setState("remove");
     } else if (state == "dragX" || state == "dragZ") {
+        const xDistance = pointer.x - startPosition.x;
+        const yDistance = pointer.y - startPosition.y;
+        if (Math.abs(xDistance) < 0.05 && Math.abs(yDistance) < 0.05) { // Small drag
+            xray.count = 0;
+            updateVisibility(xray, cubes, puzzleSize);
+        }
         setState("orbit");
-        xHandleMesh.material.opacity = 0.5;
-        zHandleMesh.material.opacity = 0.5;
     }
 })
 
@@ -316,6 +381,15 @@ function orbit() {
     }
     xHandleMesh.material.opacity = intersectXHandle ? 1 : 0.5;
     zHandleMesh.material.opacity = intersectZHandle ? 1 : 0.5;
+    if (xray.count != 0) {
+        if (xray.direction == "left" || xray.direction == "right") {
+            xHandleMesh.material.opacity = 1;
+            zHandleMesh.material.opacity = 0.5;
+        } else {
+            xHandleMesh.material.opacity = 0.5;
+            zHandleMesh.material.opacity = 1;
+        }
+    }
     click = false;
 }
 
@@ -477,9 +551,12 @@ function remove() {
 
     // If the cube is part of the solution, count it as a mistake.
     if (puzzle[objectPosition.x][objectPosition.y][objectPosition.z]) {
-        addMistake();
+        const result = addMistake();
         object.qFlag = true;
         updateMaterial(object, loader, hints);
+        if (result) {
+            return;
+        }
     } else {
         // Destroy the cube
         object.qDestroy = true;
@@ -495,6 +572,7 @@ function remove() {
             // Color the cubes and disable xray
             colorCubes(cubes, color);
             setState("end");
+            return;
         }
     }
     removeDirection = intersects[0].normal ?? new Vector3();
@@ -570,6 +648,7 @@ function continueRemove() {
     }
 }
 
+
 // Main method
 function animate() {
     requestAnimationFrame(animate);
@@ -596,7 +675,27 @@ function animate() {
         case "continueRemove":
             continueRemove();
             break;
+        case "end":
+            controls.update();
+            break;
     }
+
+    const clock = document.querySelector("#clock-digital");
+    const seconds = 10 * 60 - solveClock.getElapsedTime();
+    const minutes = Math.floor(seconds / 60);
+    const leftSeconds = Math.floor(seconds % 60);
+    if (!clock) {
+        return;
+    }
+    let secondsString = leftSeconds.toString();
+    if (secondsString.length == 1) {
+        secondsString = "0" + secondsString;
+    }
+    let minutesString = minutes.toString();
+    if (minutesString.length == 1) {
+        minutesString = "0" + minutesString;
+    }
+    clock.textContent = `${minutesString}:${secondsString}`;
 
     renderer.render(scene, camera);
 }

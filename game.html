@@ -9,6 +9,7 @@
         body {
             margin: 0;
             box-sizing: border-box;
+            user-select: none;
         }
 
         .crop {
@@ -95,10 +96,54 @@
             transition-property: all;
             transition-duration: 1000ms;
         }
+
+        #results {
+            position: absolute;
+            left: 16px;
+            bottom: 16px;
+            margin: 0;
+            background-color: black;
+            color: white;
+            z-index: 1;
+            font-family: sans-serif;
+            border: 0;
+            font-size: 24px;
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+
+        #results h1 {
+            text-align: center;
+            font-size: 80px;
+        }
+
+        #results a {
+            color: white;
+            font-weight: bold;
+        }
+
+        #clock-digital {
+            position: absolute;
+            text-align: center;
+            width: 128px;
+            height: 128px;
+            margin: 0;
+            margin-top: 64px;
+            font-family: sans-serif;
+        }
     </style>
 </head>
 
 <body>
+    <dialog id="results">
+        <h1>Puzzle Complete!</h1>
+        <h2 id="results-name">"Crewmate"</h2>
+        <p>Time: <span id="results-time">--:--</span></p>
+        <p>Mistakes: <span id="results-mistakes">0</span></p>
+        <p>Stars: <span id="results-stars">★☆☆</span></p>
+        <a href="puzzles.html" id="results-builtin-back">Back</a>
+        <a href="mypuzzles.html" id="results-custom-back">Back</a>
+    </dialog>
     <div class="crop">
         <p>Mistakes: <span id="mistakes-count">0</span></p>
         <button id="clear-zeroes">Clear all Zeroes</button>
@@ -108,16 +153,20 @@
             <div class="key d" id="d-indicator"><img src="assets/remove-icon.svg" alt="Remove"></div>
             <div class="key f" id="f-indicator"><img src="assets/flag-icon.svg" alt="Flag"></div>
         </div>
-        <svg id="clock" viewbox="0 0 16 16" width="128px" height="128px" fill="none">
+        <div>
+            <p id="clock-digital">00:00</p>
+            <svg id="clock" viewbox="0 0 16 16" width="128px" height="128px" fill="none">
 
-            <circle id="clock-circle" fill="none" cx="8" cy="8" r="4" stroke="#000000c0" data-fallback="edge" stroke-width="0.5px"
-                transform="rotate(-90, 8, 8)" stroke-dasharray="0 100">
+                <circle id="clock-circle" fill="none" cx="8" cy="8" r="4" stroke="#000000c0" data-fallback="edge"
+                    stroke-width="0.5px" transform="rotate(-90, 8, 8)" stroke-dasharray="0 100">
 
-                <animate dur="60s" id="clock-animation" attributeName="stroke-dasharray" to="26 100" fill="freeze" />
+                    <animate dur="60s" id="clock-animation" attributeName="stroke-dasharray" to="25 100"
+                        fill="freeze" />
 
-            </circle>
+                </circle>
 
-        </svg>
+            </svg>
+        </div>
     </div>
     <script type="module" src="/main.ts"></script>
 </body>
