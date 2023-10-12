@@ -1,6 +1,6 @@
 import { Hint, Hints, Puzzle } from "./puzzle";
-import { CoolMesh, XRay } from "./types";
-import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2, RGB_PVRTC_2BPPV1_Format } from "three";
+import { CoolMesh, Level, XRay } from "./types";
+import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2 } from "three";
 
 function getAssetURL(hint: Hint): string {
     if (hint.type == "none") {
@@ -157,4 +157,73 @@ export function facingX(camera: Camera): number {
     let cameraVector: Vector2 = new Vector2(camera.position.x, camera.position.z);
     cameraVector.normalize();
     return Math.abs(cameraVector.dot(new Vector2(1, 0)));
+}
+
+
+function pad(input: string, len: number): string {
+    while (input.length < len) {
+        input = "0" + input;
+    }
+    return input;
+}
+
+export function secondsToTime(seconds?: number): string {
+    if (!seconds) {
+        return "--:--";
+    }
+    const minutes = Math.floor(seconds / 60);
+    const leftoverSeconds = Math.floor(seconds % 60);
+
+    return `${pad(minutes.toString(), 2)}:${pad(leftoverSeconds.toString(), 2)}`
+}
+
+export function renderStars(stars: number): string {
+    return "★".repeat(stars) + "☆".repeat(3 - stars);
+}
+
+export function getPuzzleResults(id: string): Object {
+    const results: Object = JSON.parse(localStorage.getItem("nonogram-3d-results") ?? "{}");
+    if (results.hasOwnProperty(id)) {
+        return results[id];
+    }
+    return {};
+}
+
+export function updatePuzzleResults(id: string, fn: (e: Object) => Object): Object {
+    let results: Object = JSON.parse(localStorage.getItem("nonogram-3d-results") ?? "{}");
+    if (results[id]) {
+        results[id] = fn(results[id]);
+    } else {
+        results[id] = fn({});
+    }
+    localStorage.setItem("nonogram-3d-results", JSON.stringify(results));
+    return results[id];
+}
+
+export function getPuzzle(id: string): Level {
+    const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+    const json = storage[id ?? ""];
+    return { puzzle: json.puzzle, hints: json.hints, color: json.color, name: json.name, thumbnail: "" };
+}
+
+export function removePuzzle(id: string) {
+    const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+    delete storage[id];
+    localStorage.setItem("nonogram-3d-puzzle", JSON.stringify(storage));
+}
+
+export function updatePuzzle(id: string, fn: (e: Object) => Object): Object {
+    let puzzles: Object = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+    if (puzzles[id]) {
+        puzzles[id] = fn(puzzles[id]);
+    } else {
+        puzzles[id] = fn({});
+    }
+    localStorage.setItem("nonogram-3d-puzzle", JSON.stringify(puzzles));
+    return puzzles[id];
+}
+
+export function getPuzzles(): Level[] {
+    const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
+    return Object.values(storage);
 }

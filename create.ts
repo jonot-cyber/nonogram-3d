@@ -2,34 +2,37 @@ import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, Octahe
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay } from './types';
-import { facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
+import { facingX, getPuzzle, resetXHandle, resetZHandle, updateMaterial, updatePuzzle, updateVisibility } from './utilities';
 import { Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 
 // HTML elements that matter
-const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".f");
-const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".d");
-const placeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>(".s");
-const createPuzzleButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#create-puzzle");
-const dialog: HTMLDialogElement | null = document.querySelector<HTMLDialogElement>("#color-dialog");
-const colorButton: HTMLButtonElement | null = document.querySelector<HTMLButtonElement>("#color-button");
+// @ts-ignore
+const flagIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>(".f");
+// @ts-ignore
+const removeIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>(".d");
+// @ts-ignore
+const placeIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>(".s");
+// @ts-ignore
+const createPuzzleButton: HTMLButtonElement = document.querySelector<HTMLButtonElement>("#create-puzzle");
+// @ts-ignore
+const dialog: HTMLDialogElement = document.querySelector<HTMLDialogElement>("#color-dialog");
+// @ts-ignore
+const colorButton: HTMLButtonElement = document.querySelector<HTMLButtonElement>("#color-button");
+// @ts-ignore
+const ui: HTMLDivElement = document.querySelector<HTMLDivElement>(".crop");
+// @ts-ignore
+const backButton: HTMLButtonElement = document.querySelector<HTMLAnchorElement>("#back");
 
-colorButton?.addEventListener("click", function () {
-    dialog?.show();
+const colorStages = ["0", "5", "a", "f"];
+
+colorButton.addEventListener("click", function () {
+    dialog.show();
 })
 
 function createColorPicker() {
     function getHexDigit(n: number): string {
-        switch (n) {
-            case 0:
-                return "0";
-            case 1:
-                return "5";
-            case 2:
-                return "a";
-            default:
-                return "f";
-        }
+        return colorStages[n];
     }
     for (let ir = 0; ir < 4; ir++) {
         for (let ig = 0; ig < 4; ig++) {
@@ -37,14 +40,11 @@ function createColorPicker() {
                 let elem = document.createElement("button");
                 elem.classList.add("color");
                 elem.style.backgroundColor = `#${getHexDigit(ir)}${getHexDigit(ig)}${getHexDigit(ib)}`
-                dialog?.insertAdjacentElement("afterbegin", elem);
+                dialog.insertAdjacentElement("afterbegin", elem);
                 elem.addEventListener("click", function () {
-                    if (!colorButton) {
-                        return;
-                    }
                     colorButton.style.backgroundColor = this.style.backgroundColor;
-                    colorButton?.setAttribute("x-color", `${ir},${ig},${ib}`);
-                    dialog?.close();
+                    colorButton.setAttribute("x-color", `${ir},${ig},${ib}`);
+                    dialog.close();
                 })
             }
         }
@@ -111,7 +111,7 @@ function setState(newState: State) {
             zHandleMesh.visible = false;
             xray.count = 0;
             updateVisibility(xray, cubes, puzzleSize);
-            document.querySelector(".crop")?.setAttribute("style", "display:none");
+            ui.setAttribute("style", "display:none");
         case "saveImage":
             xHandleMesh.visible = false;
             zHandleMesh.visible = false;
@@ -127,8 +127,6 @@ const loader = new TextureLoader();
 let frames = 0;
 let editing: string | null = null;
 let click: boolean = false;
-let lastChange: boolean = false;
-let mistakeCount = 0;
 let handleOriginalPosition: number = 0;
 let xray: XRay = { direction: "right", count: 0 };
 
@@ -170,12 +168,9 @@ async function createPuzzle(): Promise<{ puzzle: Puzzle, color: number[][][] }> 
     const urlParams = new URLSearchParams(window.location.search);
     const puzzleLocal = urlParams.get("local");
     if (puzzleLocal) {
-        const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
-        const level = storage[puzzleLocal];
         editing = puzzleLocal;
-        if (createPuzzleButton) {
-            createPuzzleButton.textContent = "Update Puzzle";
-        }
+        const level = getPuzzle(puzzleLocal);
+        createPuzzleButton.textContent = "Update Puzzle";
 
         return { puzzle: level.puzzle, color: level.color };
     } else {
@@ -433,6 +428,19 @@ function dragZ() {
     zHandleMesh.position.setZ(clampedPosition);
 }
 
+const hexColorStages = [0x00, 0x55, 0xaa, 0xff];
+
+function updateColor(object: CoolMesh) {
+    const color = colorButton?.getAttribute("x-color");
+    const [r, g, b] = color?.split(",").map(i => Number.parseInt(i)) ?? [0, 0, 0];
+    let c = 0;
+    c += hexColorStages[b];
+    c += 0x100 * hexColorStages[g];
+    c += 0x10000 * hexColorStages[r];
+    object.material = new MeshLambertMaterial({ color: c });
+    object.qColor = 36 * r + 4 * g + b;
+}
+
 // Actions when in flagging mode
 function flag() {
     // Nothing happens if not clicking
@@ -449,17 +457,11 @@ function flag() {
         return;
     }
 
+    const object: CoolMesh = intersects[0].object as CoolMesh;
+    updateColor(object);
+
     // If you click on a cube, it switches its flag, and
     // switches to continueFlag state for click-drag
-    const object: CoolMesh = intersects[0].object as CoolMesh;
-    const color = colorButton?.getAttribute("x-color");
-    const [r, g, b] = color?.split(",").map(i => Number.parseInt(i)) ?? [0, 0, 0];
-    let c = 0x000000;
-    c += [0x00, 0x55, 0xaa, 0xff][b];
-    c += 0x100 * [0x00, 0x55, 0xaa, 0xff][g];
-    c += 0x10000 * [0x00, 0x55, 0xaa, 0xff][r];
-    object.material = new MeshLambertMaterial({ color: c });
-    object.qColor = 36 * r + 4 * g + b;
     setState("continueFlag");
 }
 
@@ -475,14 +477,7 @@ function continueFlag() {
 
     // Continue the flag
     const object: CoolMesh = intersects[0].object as CoolMesh;
-    const color = colorButton?.getAttribute("x-color");
-    const [r, g, b] = color?.split(",").map(i => Number.parseInt(i)) ?? [0, 0, 0];
-    let c = 0x000000;
-    c += [0x00, 0x55, 0xaa, 0xff][b];
-    c += 0x100 * [0x00, 0x55, 0xaa, 0xff][g];
-    c += 0x10000 * [0x00, 0x55, 0xaa, 0xff][r];
-    object.material = new MeshLambertMaterial({ color: c });
-    object.qColor = c;
+    updateColor(object);
 }
 
 // Actions when deleting
@@ -696,24 +691,10 @@ function saveImage() {
     if (frames == 0) {
         return;
     }
-    const puzzle: boolean[][][] = [];
-    const colors: number[][][] = [];
-    for (let ix = 0; ix < puzzleSize.x; ix++) {
-        const part1: boolean[][] = [];
-        const cpart1: number[][] = [];
-        for (let iy = 0; iy < puzzleSize.y; iy++) {
-            const part2: boolean[] = []
-            const cpart2: number[] = []
-            for (let iz = 0; iz < puzzleSize.z; iz++) {
-                part2.push(false);
-                cpart2.push(0);
-            }
-            part1.push(part2);
-            cpart1.push(cpart2);
-        }
-        puzzle.push(part1);
-        colors.push(cpart1);
-    }
+
+    // Save all the data
+    const puzzle = Array(puzzleSize.x).fill(Array(puzzleSize.y).fill(Array(puzzleSize.z).fill(false)));
+    const color = Array(puzzleSize.x).fill(Array(puzzleSize.y).fill(Array(puzzleSize.z).fill(0)));
 
     for (const cube of cubes) {
         if (cube.qDestroy) {
@@ -723,7 +704,7 @@ function saveImage() {
             continue;
         }
         puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
-        colors[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
+        color[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
     }
 
     const hints = createHints(puzzle);
@@ -735,17 +716,11 @@ function saveImage() {
         return;
     }
     const image = renderer.domElement.toDataURL("image/png");
-    let storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
-    storage[name] = {
-        puzzle: puzzle,
-        hints: hints,
-        color: colors,
-        name: name,
-        thumbnail: image,
-    };
-    localStorage.setItem("nonogram-3d-puzzle", JSON.stringify(storage));
+    updatePuzzle(name, function (e) {
+        return {puzzle, hints, color, name, thumbnail: image}
+    })
     setState("end");
-    document.querySelector<HTMLAnchorElement>("#back")?.click();
+    backButton.click();
 }
 
 // Main method

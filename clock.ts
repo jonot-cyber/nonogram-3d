@@ -1,5 +1,3 @@
-const clock = document.querySelector<SVGElement>("#clock");
-const clockCircle = document.querySelector<SVGCircleElement>("#clock-circle");
 const clockAnimation = document.querySelector<SVGAnimateElement>("#clock-animation");
 
 let clockEnabled = false;

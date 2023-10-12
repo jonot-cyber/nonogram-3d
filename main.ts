@@ -1,27 +1,41 @@
-import { BoxGeometry, Clock, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
+import { BoxGeometry, Clock, Color, DirectionalLight, MaxEquation, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Hints, Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 import { puzzleTable } from './library/lookup';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay, Level } from './types';
-import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, resetXHandle, resetZHandle, updateMaterial, updateVisibility } from './utilities';
+import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, getPuzzle, renderStars, resetXHandle, resetZHandle, secondsToTime, updateMaterial, updatePuzzleResults, updateVisibility } from './utilities';
 import { enableClock } from './clock';
 
 // HTML elements that matter
-const flagIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#f-indicator");
-const removeIndicator: HTMLDivElement | null = document.querySelector<HTMLDivElement>("#d-indicator");
-const mistakeCounter: HTMLSpanElement | null = document.querySelector<HTMLSpanElement>("#mistakes-count");
-const clearZeroesButton: HTMLButtonElement | null = document.querySelector("#clear-zeroes");
+// @ts-ignore
+const flagIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>("#f-indicator");
+// @ts-ignore
+const removeIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>("#d-indicator");
+// @ts-ignore
+const mistakeCounter: HTMLSpanElement = document.querySelector<HTMLSpanElement>("#mistakes-count");
+// @ts-ignore
+const clearZeroesButton: HTMLButtonElement = document.querySelector<HTMLButtonElement>("#clear-zeroes");
+// @ts-ignore
+const clock: HTMLParagraphElement = document.querySelector<HTMLParagraphElement>("#clock-digital");
 
 // Results elements
-const resultsDialog: HTMLDialogElement | null = document.querySelector<HTMLDialogElement>("#results");
-const resultsName: HTMLSpanElement | null = document.querySelector("#results-name");
-const resultsTime: HTMLSpanElement | null = document.querySelector("#results-time");
-const resultsMistakes = document.querySelector("#results-mistakes");
-const resultsStars = document.querySelector("#results-stars");
-const resultsCustomBack = document.querySelector("#results-custom-back");
-const resultsBuiltinBack = document.querySelector("#results-builtin-back");
+// @ts-ignore
+const resultsDialog: HTMLDialogElement = document.querySelector<HTMLDialogElement>("#results");
+// @ts-ignore
+const resultsName: HTMLHeadingElement = document.querySelector<HTMLHeadingElement>("#results-name");
+// @ts-ignore
+const resultsTime: HTMLSpanElement = document.querySelector<HTMLSpanElement>("#results-time");
+// @ts-ignore
+const resultsMistakes: HTMLSpanElement = document.querySelector<HTMLSpanElement>("#results-mistakes");
+// @ts-ignore
+const resultsStars: HTMLSpanElement = document.querySelector<HTMLSpanElement>("#results-stars");
+// @ts-ignore
+const resultsCustomBack: HTMLAnchorElement = document.querySelector<HTMLAnchorElement>("#results-custom-back");
+// @ts-ignore
+const resultsBuiltinBack: HTMLAnchorElement = document.querySelector<HTMLAnchorElement>("#results-builtin-back");
+
 
 const debug = {
     showShape: false,
@@ -29,7 +43,9 @@ const debug = {
     reduceHints: false,
 };
 
-let state = "orbit";
+let state: State = "orbit";
+
+// Whether a puzzle is built in or user created.
 let isBuiltin = true;
 
 function setState(newState: State) {
@@ -96,60 +112,27 @@ function setState(newState: State) {
             xray.count = 0;
             updateVisibility(xray, cubes, puzzleSize);
 
+            // Setup camera for spin
             camera.position.set(1, 1, 1).normalize().multiplyScalar(distance);
             camera.lookAt(new Vector3(0, 0, 0));
             controls.autoRotate = true;
             controls.autoRotateSpeed = 8;
 
+            // Hide UI
             document.querySelector(".crop")?.setAttribute("style", "display:none");
-            if (!resultsName || !resultsTime || !resultsMistakes || !resultsStars) {
-                return;
-            }
-            resultsName.textContent = `"${level.name}"`;
+
             const seconds = solveClock.getElapsedTime();
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = Math.floor(seconds % 60);
-            let secondsString = remainingSeconds.toString();
-            let minutesString = minutes.toString();
-            if (secondsString.length == 1) {
-                secondsString = "0" + secondsString;
-            }
-            if (minutesString.length == 1) {
-                minutesString = "0" + minutesString;
-            }
-            resultsTime.textContent = `${minutesString}:${secondsString}`;
-            resultsMistakes.textContent = mistakeCount.toString();
             let stars = 1;
             if (mistakeCount == 0) {
                 stars++;
             }
-            if (/* time */ 0 == 0) {
+            if (seconds < 60 * 5) {
                 stars++;
             }
-            resultsStars.textContent = "★".repeat(stars) + "☆".repeat(3 - stars);
-            if (isBuiltin) {
-                resultsCustomBack?.remove();
-            } else {
-                resultsBuiltinBack?.remove();
-            }
-            resultsDialog?.show();
+            showResults(level.name, seconds, mistakeCount, stars);
 
             // save data
-            let resultsData: Object = JSON.parse(localStorage.getItem("nonogram-3d-results") ?? "{}");
-            if (resultsData.hasOwnProperty(puzzleId)) {
-                if (seconds < resultsData[puzzleId].seconds) {
-                    resultsData[puzzleId].seconds = seconds;
-                }
-                if (stars > resultsData[puzzleId].stars) {
-                    resultsData[puzzleId].stars = stars;
-                }
-            } else {
-                resultsData[puzzleId] = {
-                    seconds: seconds,
-                    stars: stars,
-                };
-            }
-            localStorage.setItem("nonogram-3d-results", JSON.stringify(resultsData));
+            saveResults(puzzleId, seconds, stars)
             break;
         case "fail":
             xHandleMesh.visible = false;
@@ -158,6 +141,28 @@ function setState(newState: State) {
 
     }
     state = newState;
+}
+
+function showResults(name: string, seconds: number, mistakes: number, stars: number) {
+    resultsName.textContent = `"${name}"`;
+    resultsTime.textContent = `${secondsToTime(seconds)}`;
+    resultsMistakes.textContent = mistakes.toString();
+    resultsStars.textContent = renderStars(stars);
+    if (isBuiltin) {
+        resultsCustomBack?.remove();
+    } else {
+        resultsBuiltinBack?.remove();
+    }
+    resultsDialog?.show();
+}
+
+function saveResults(puzzleId: string, seconds: number, stars: number) {
+    updatePuzzleResults(puzzleId, function (e: Object): Object {
+        return {
+            seconds: Math.min(seconds, e["seconds"] ?? 9999),
+            stars: Math.max(stars, e["stars"] ?? 0)
+        };
+    });
 }
 
 const loader = new TextureLoader();
@@ -223,26 +228,26 @@ function createLights() {
 createLights();
 
 async function createPuzzle(): Promise<Level> {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(location.search);
     const puzzleName = urlParams.get("puzzle");
-    const puzzleData = urlParams.get("puzzleData");
     const puzzleLocal = urlParams.get("local");
     if (puzzleName) {
         const response = await fetch(puzzleTable[puzzleName ?? ""]);
         const json = await response.json();
         const puzzle: Puzzle = json.puzzle;
         const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
-        puzzleId = puzzleName ?? "";
+        puzzleId = puzzleName;
         return { puzzle, hints, color: json.color, name: json.name, thumbnail: "" };
-    } else if (puzzleData) {
-        const json = JSON.parse(puzzleData);
-        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
-    } else {
+    } else if (puzzleLocal) {
         isBuiltin = false;
-        const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
-        const json = storage[puzzleLocal ?? ""];
-        puzzleId = puzzleLocal ?? "";
-        return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
+        puzzleId = puzzleLocal;
+        let res = getPuzzle(puzzleLocal);
+        if (debug.createHints) {
+            res.hints = createHints(res.puzzle);
+        }
+        return res;
+    } else {
+        throw "No puzzle provided";
     }
 }
 
@@ -324,43 +329,53 @@ renderer.domElement.addEventListener("mousedown", function (ev: MouseEvent) {
     click = true;
 })
 
+function smallDistance(end: Vector2, start: Vector2): boolean {
+    const xDistance = end.x - start.x;
+    const yDistance = end.y - start.y;
+    return Math.abs(xDistance) < 0.05 && Math.abs(yDistance) < 0.05;
+}
+
 renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     ev.preventDefault();
-    if (state == "continueFlag") {
-        setState("flag")
-    } else if (state == "continueRemove") {
-        setState("remove");
-    } else if (state == "dragX" || state == "dragZ") {
-        const xDistance = pointer.x - startPosition.x;
-        const yDistance = pointer.y - startPosition.y;
-        if (Math.abs(xDistance) < 0.05 && Math.abs(yDistance) < 0.05) { // Small drag
-            xray.count = 0;
-            updateVisibility(xray, cubes, puzzleSize);
-        }
-        setState("orbit");
+    switch (state) {
+        case "continueFlag":
+            setState("flag");
+            break;
+        case "continueRemove":
+            setState("remove");
+            break;
+        case "dragX":
+        case "dragZ":
+            if (smallDistance(pointer, startPosition)) {
+                xray.count = 0;
+                updateVisibility(xray, cubes, puzzleSize);
+            }
+            setState("orbit");
+            break;
     }
 })
 
 window.addEventListener("keydown", function (ev: KeyboardEvent) {
-    if (ev.key == "f" && state == "orbit") {
+    if (state != "orbit") {
+        return;
+    }
+    if (ev.key == "f") {
         setState("flag");
-    } else if (ev.key == "d" && state == "orbit") {
+    } else if (ev.key == "d") {
         setState("remove");
     }
 })
 
 window.addEventListener("keyup", function (ev: KeyboardEvent) {
-    if (ev.key == "f" && state == "flag" || state == "continueFlag") {
-        setState("orbit");
-    } else if (ev.key == "d" && state == "remove" || state == "continueRemove") {
+    const stopFlag = ev.key == "f" && state == "flag" || state == "continueFlag";
+    const stopRemove = ev.key == "d" && state == "remove" || state == "continueRemove";
+    if (stopFlag || stopRemove) {
         setState("orbit");
     }
 })
 
-if (clearZeroesButton) {
-    clearZeroesButton.disabled = !areZeroes(cubes, hints);
-}
-clearZeroesButton?.addEventListener("click", function (ev: MouseEvent) {
+clearZeroesButton.disabled = !areZeroes(cubes, hints);
+clearZeroesButton.addEventListener("click", function (ev: MouseEvent) {
     clearZeroes(cubes, hints, scene);
     clearZeroesButton.disabled = true;
 })
@@ -668,6 +683,10 @@ function continueRemove() {
     }
 }
 
+function updateClock() {
+    const seconds = 10 * 60 - solveClock.getElapsedTime();
+    clock.textContent = `${secondsToTime(seconds)}`;
+}
 
 // Main method
 function animate() {
@@ -700,22 +719,7 @@ function animate() {
             break;
     }
 
-    const clock = document.querySelector("#clock-digital");
-    const seconds = 10 * 60 - solveClock.getElapsedTime();
-    const minutes = Math.floor(seconds / 60);
-    const leftSeconds = Math.floor(seconds % 60);
-    if (!clock) {
-        return;
-    }
-    let secondsString = leftSeconds.toString();
-    if (secondsString.length == 1) {
-        secondsString = "0" + secondsString;
-    }
-    let minutesString = minutes.toString();
-    if (minutesString.length == 1) {
-        minutesString = "0" + minutesString;
-    }
-    clock.textContent = `${minutesString}:${secondsString}`;
+    updateClock();
 
     renderer.render(scene, camera);
 }
