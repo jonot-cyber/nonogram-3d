@@ -125,6 +125,7 @@ export class PuzzleElement extends HTMLElement {
             margin: 0;
         }
         `
+        const dat: Object = JSON.parse(localStorage.getItem("nonogram-3d-results") ?? "{}");
 
         const puzzleId = this.getAttribute("puzzle-id") ?? "";
 
@@ -141,7 +142,10 @@ export class PuzzleElement extends HTMLElement {
         title.className = "title";
         title.textContent = this.getAttribute("title") ?? "???";
 
-        const starCount: number = Number.parseInt(this.getAttribute("stars") ?? "");
+        let starCount: number = 0;
+        if (dat.hasOwnProperty(puzzleId)) {
+            starCount = dat[puzzleId].stars;
+        }
         const stars = document.createElement("p");
         stars.className = "stars";
         stars.textContent = "★".repeat(starCount) + "☆".repeat(3 - starCount);
@@ -158,11 +162,15 @@ export class PuzzleElement extends HTMLElement {
 
         const bestTime = document.createElement("p");
         bestTime.className = "best-time";
-        const seconds = this.getAttribute("seconds");
+        let seconds = null;
+        if (dat.hasOwnProperty(puzzleId)) {
+            seconds = dat[puzzleId].seconds;
+        }
         if (seconds) {
             bestTime.innerText = `Best Time: ${this.createTime(Number.parseInt(seconds))}`;
+        } else {
+            bestTime.innerText = `Best Time: --:--`;
         }
-        bestTime.innerText = `Best Time: --:--`;
 
         const hiddenLink = document.createElement("a");
         hiddenLink.href = `./game.html?local=${puzzleId}`;

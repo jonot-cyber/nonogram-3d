@@ -133,6 +133,23 @@ function setState(newState: State) {
                 resultsBuiltinBack?.remove();
             }
             resultsDialog?.show();
+
+            // save data
+            let resultsData: Object = JSON.parse(localStorage.getItem("nonogram-3d-results") ?? "{}");
+            if (resultsData.hasOwnProperty(puzzleId)) {
+                if (seconds < resultsData[puzzleId].seconds) {
+                    resultsData[puzzleId].seconds = seconds;
+                }
+                if (stars > resultsData[puzzleId].stars) {
+                    resultsData[puzzleId].stars = stars;
+                }
+            } else {
+                resultsData[puzzleId] = {
+                    seconds: seconds,
+                    stars: stars,
+                };
+            }
+            localStorage.setItem("nonogram-3d-results", JSON.stringify(resultsData));
             break;
         case "fail":
             xHandleMesh.visible = false;
@@ -154,6 +171,7 @@ let mistakeCount = 0;
 let handleOriginalPosition: number = 0;
 let xray: XRay = { direction: "right", count: 0 };
 const solveClock = new Clock();
+let puzzleId = "";
 solveClock.start();
 
 // Returns whether the game is over
@@ -214,6 +232,7 @@ async function createPuzzle(): Promise<Level> {
         const json = await response.json();
         const puzzle: Puzzle = json.puzzle;
         const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
+        puzzleId = puzzleName ?? "";
         return { puzzle, hints, color: json.color, name: json.name, thumbnail: "" };
     } else if (puzzleData) {
         const json = JSON.parse(puzzleData);
@@ -222,6 +241,7 @@ async function createPuzzle(): Promise<Level> {
         isBuiltin = false;
         const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
         const json = storage[puzzleLocal ?? ""];
+        puzzleId = puzzleLocal ?? "";
         return { puzzle: json.puzzle, hints: debug.createHints ? createHints(json.puzzle) : json.hints, color: json.color, name: json.name, thumbnail: "" };
     }
 }
