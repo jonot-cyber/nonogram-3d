@@ -693,8 +693,24 @@ function saveImage() {
     }
 
     // Save all the data
-    const puzzle = Array(puzzleSize.x).fill(Array(puzzleSize.y).fill(Array(puzzleSize.z).fill(false)));
-    const color = Array(puzzleSize.x).fill(Array(puzzleSize.y).fill(Array(puzzleSize.z).fill(0)));
+    const puzzle: boolean[][][] = [];
+    const color: number[][][] = [];
+    for (let ix = 0; ix < puzzleSize.x; ix++) {
+        let part2: boolean[][] = [];
+        let cpart2: number[][] = [];
+        for (let iy = 0; iy < puzzleSize.y; iy++) {
+            let part: boolean[] = [];
+            let cpart: number[] = [];
+            for (let iz = 0; iz < puzzleSize.z; iz++) {
+                part.push(false);
+                cpart.push(0);
+            }
+            part2.push(part);
+            cpart2.push(cpart);
+        }
+        puzzle.push(part2);
+        color.push(cpart2);
+    }
 
     for (const cube of cubes) {
         if (cube.qDestroy) {
@@ -706,6 +722,7 @@ function saveImage() {
         puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
         color[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
     }
+    console.log(puzzle);
 
     const hints = createHints(puzzle);
     removeHints(puzzle, hints);

@@ -13,19 +13,36 @@ export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints?: Hi
     const onBeforeCompile = (shader: Shader) => {
         shader.fragmentShader = shader.fragmentShader.replace(
             "#include <alphatest_fragment>",
-            `float a = 1.0 - diffuseColor.a; diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);`);
+            `float a = 1.0 - diffuseColor.a;
+            if (diffuseColor.a > 0.5 && diffuse.r == 0.0) {
+                diffuseColor = vec4(0.0, 0.3, 0.3, 1.0);
+            } else {
+                diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);
+            }
+            `);
+    }
+    const onBeforeCompile2 = (shader: Shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+            "#include <alphatest_fragment>",
+            `diffuseColor.r = diffuseColor.r * diffuseColor.a + diffuse.r * (1.0 - diffuseColor.a);
+            diffuseColor.g = diffuseColor.g * diffuseColor.a + diffuse.g * (1.0 - diffuseColor.a);
+            diffuseColor.b = diffuseColor.b * diffuseColor.a + diffuse.b * (1.0 - diffuseColor.a);
+            diffuseColor.a = 1.0;
+            `);
     }
     const meshPosition = mesh.qPos ?? new Vector3(0, 0, 0);
     const color: number = mesh.qFlag ? 0x00ffff : 0xffffff;
+    let hintCompleted = false;
     if (hints) {
         mesh.material = [
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: onBeforeCompile }),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: onBeforeCompile }),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: onBeforeCompile }),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
         ];
+        mesh.material[0].defines = {FLAGGED: mesh.qFlag};
     } else {
         mesh.material = [
             new MeshLambertMaterial({ color: color }),
