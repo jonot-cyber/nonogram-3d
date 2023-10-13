@@ -1,4 +1,4 @@
-.big-wrapper {
+export default `.big-wrapper {
     display: flex;
     width: 100%;
     gap: 16px;
@@ -101,4 +101,4 @@ h1 {
 
 .wrapper-3 {
     flex-grow: 1;
-}
+}`

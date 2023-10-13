@@ -1,7 +1,7 @@
 import { Level } from "./types";
 import { getPuzzleResults, getPuzzles, removePuzzle, renderStars, secondsToTime } from "./utilities";
 
-import styles from "./mypuzzle.css";
+import styles from "./puzzle.css.js";
 
 export class PuzzleElement extends HTMLElement {
 
