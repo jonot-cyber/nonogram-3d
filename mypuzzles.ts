@@ -11,7 +11,7 @@ export class PuzzleElement extends HTMLElement {
 
     connectedCallback() {
         const puzzleId = this.getAttribute("puzzle-id") ?? "";
-        const results: Object = getPuzzleResults(puzzleId);
+        const results = getPuzzleResults(puzzleId);
 
         const puzzleTitle: string = this.getAttribute("title") ?? "???";
         const starCount: number = results ? results["stars"] : 0;

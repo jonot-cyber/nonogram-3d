@@ -13,7 +13,7 @@ export class PuzzleElement extends HTMLElement {
         const starCount = results ? results["stars"] : 0;
         const seconds = results ? results["seconds"] : undefined;
         const puzzleTitle = results ? this.getAttribute("title") : "???";
-        const thumbnailSource = this.getAttribute("thumbnail") ?? "";
+        const thumbnailSource = results ? this.getAttribute("thumbnail") ?? "./assets/unsolved.png" : "./assets/unsolved.png";
 
         const shadow = this.attachShadow({ mode: "open" });
 

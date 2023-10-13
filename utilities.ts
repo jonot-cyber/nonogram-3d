@@ -181,12 +181,12 @@ export function renderStars(stars: number): string {
     return "★".repeat(stars) + "☆".repeat(3 - stars);
 }
 
-export function getPuzzleResults(id: string): Object {
+export function getPuzzleResults(id: string): Object | undefined {
     const results: Object = JSON.parse(localStorage.getItem("nonogram-3d-results") ?? "{}");
     if (results.hasOwnProperty(id)) {
         return results[id];
     }
-    return {};
+    return undefined;
 }
 
 export function updatePuzzleResults(id: string, fn: (e: Object) => Object): Object {
