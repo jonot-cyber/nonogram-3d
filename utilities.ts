@@ -2,11 +2,14 @@ import { Hint, Hints, Puzzle } from "./puzzle";
 import { CoolMesh, Level, XRay } from "./types";
 import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2 } from "three";
 
-function getAssetURL(hint: Hint): string {
+function getAssetURL(hint: Hint, broken: boolean = false): string {
     if (hint.type == "none") {
+        if (broken) {
+            return "./assets/broken-border.png";
+        }
         return "./assets/blank.png"
     }
-    return `./assets/numbers/${hint.type}/${hint.count}.png`
+    return `./assets/numbers/${hint.type}/${broken ? "broken/" : ""}${hint.count}.png`
 }
 
 export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints?: Hints) {
@@ -35,12 +38,12 @@ export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints?: Hi
     let hintCompleted = false;
     if (hints) {
         mesh.material = [
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y])), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
+            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
         ];
         mesh.material[0].defines = {FLAGGED: mesh.qFlag};
     } else {

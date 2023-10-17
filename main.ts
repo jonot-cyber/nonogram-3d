@@ -537,9 +537,11 @@ function flag() {
     // If you click on a cube, it switches its flag, and
     // switches to continueFlag state for click-drag
     let object: CoolMesh = intersects[0].object as CoolMesh;
-    object.qFlag = !object.qFlag;
+    if (!object.qBroken) {
+        object.qFlag = !object.qFlag;
+    }
     updateMaterial(object, loader, hints);
-    lastChange = object.qFlag;
+    lastChange = object.qFlag ?? true;
     setState("continueFlag");
 }
 
@@ -588,6 +590,7 @@ function remove() {
     if (puzzle[objectPosition.x][objectPosition.y][objectPosition.z]) {
         const result = addMistake();
         object.qFlag = true;
+        object.qBroken = true;
         updateMaterial(object, loader, hints);
         if (result) {
             return;
@@ -663,6 +666,7 @@ function continueRemove() {
     if (puzzle[objectPosition.x][objectPosition.y][objectPosition.z]) {
         addMistake();
         object.qFlag = true;
+        object.qBroken = true;
         updateMaterial(object, loader, hints);
     } else {
         // Destroy the cube
