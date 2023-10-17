@@ -438,7 +438,7 @@ function updateColor(object: CoolMesh) {
     c += 0x100 * hexColorStages[g];
     c += 0x10000 * hexColorStages[r];
     object.material = new MeshLambertMaterial({ color: c });
-    object.qColor = 36 * r + 4 * g + b;
+    object.qColor = c;
 }
 
 // Actions when in flagging mode
@@ -722,7 +722,6 @@ function saveImage() {
         puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
         color[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
     }
-    console.log(puzzle);
 
     const hints = createHints(puzzle);
     removeHints(puzzle, hints);

@@ -142,6 +142,7 @@ export function colorCubes(cubes: CoolMesh[], puzzleColors: number[][][]) {
             continue;
         }
         const color = cube.qColor;
+        console.log(color);
         cube.material = new MeshLambertMaterial({ color: color });
     }
 }
