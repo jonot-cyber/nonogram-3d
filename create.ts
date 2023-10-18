@@ -117,6 +117,9 @@ function setState(newState: State) {
             zHandleMesh.visible = false;
             xray.count = 0;
             updateVisibility(xray, cubes, puzzleSize);
+            for (const cube of cubes) {
+                updateMaterial(cube, loader, false);
+            }
             frames = 0;
     }
     state = newState;

@@ -37,11 +37,11 @@ const resultsCustomBack: HTMLAnchorElement = document.querySelector<HTMLAnchorEl
 const resultsBuiltinBack: HTMLAnchorElement = document.querySelector<HTMLAnchorElement>("#results-builtin-back");
 
 
-const debug = {
-    showShape: false,
-    createHints: false,
-    reduceHints: false,
-};
+// const debug = {
+//     showShape: false,
+//     createHints: false,
+//     reduceHints: false,
+// };
 
 let state: State = "orbit";
 
@@ -106,6 +106,8 @@ function setState(newState: State) {
             continueDelay = false;
             break;
         case "end":
+            colorCubes(cubes, loader);
+
             solveClock.stop();
             xHandleMesh.visible = false;
             zHandleMesh.visible = false;
@@ -235,16 +237,13 @@ async function createPuzzle(): Promise<Level> {
         const response = await fetch(puzzleTable[puzzleName ?? ""]);
         const json = await response.json();
         const puzzle: Puzzle = json.puzzle;
-        const hints: Hints = debug.createHints ? createHints(puzzle) : json.hints;
+        const hints: Hints = json.hints;
         puzzleId = puzzleName;
-        return { puzzle, hints, color: json.color, name: json.name, thumbnail: "" };
+        return { puzzle, hints, color: json.color, name: json.name, thumbnail: "", stickers: [] };
     } else if (puzzleLocal) {
         isBuiltin = false;
         puzzleId = puzzleLocal;
         let res = getPuzzle(puzzleLocal);
-        if (debug.createHints) {
-            res.hints = createHints(res.puzzle);
-        }
         return res;
     } else {
         throw "No puzzle provided";
@@ -252,23 +251,16 @@ async function createPuzzle(): Promise<Level> {
 }
 
 const level = await createPuzzle();
-const { puzzle, hints, color } = level;
+const { puzzle, hints, color, stickers } = level;
 const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
 const distance = puzzleSize.length();
 camera.position.z = distance;
-if (debug.reduceHints) {
-    removeHints(puzzle, hints);
-    console.log(JSON.stringify(hints));
-}
 const cubes: CoolMesh[] = [];
 
 function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) {
     for (let x = 0; x < size.x; x++) {
         for (let y = 0; y < size.y; y++) {
             for (let z = 0; z < size.z; z++) {
-                if (!puzzle[x][y][z] && debug.showShape) {
-                    continue;
-                }
                 const geometry = new BoxGeometry(1, 1, 1);
                 const cube: CoolMesh = new Mesh(geometry);
                 cube.position.set(x - puzzleSize.x / 2 + 0.5, y - puzzleSize.y / 2 + 0.5, z - puzzleSize.z / 2 + 0.5);
@@ -276,15 +268,15 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cube.qFlag = false;
                 cube.qDestroy = false;
                 cube.qColor = color[x][y][z];
+                if (stickers && stickers.length > 0) {
+                    cube.qSticker = stickers[x][y][z];
+                }
                 cube.layers.enable(0);
                 scene.add(cube);
                 updateMaterial(cube, loader, false, hints);
                 cubes.push(cube);
             }
         }
-    }
-    if (debug.showShape) {
-        colorCubes(cubes, color);
     }
 }
 createCubes(puzzleSize, puzzle);
@@ -608,7 +600,6 @@ function remove() {
         // Check if the puzzle is complete
         if (checkDone(cubes, puzzle)) {
             // Color the cubes and disable xray
-            colorCubes(cubes, color);
             setState("end");
             return;
         }
@@ -681,7 +672,6 @@ function continueRemove() {
         // Check if the puzzle is complete
         if (checkDone(cubes, puzzle)) {
             // Color the cubes and disable xray
-            colorCubes(cubes, color);
             setState("end");
         }
     }

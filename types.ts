@@ -2,7 +2,7 @@ import { Mesh, Vector3 } from "three";
 import { Hints, Puzzle } from "./puzzle";
 
 // Great type name
-export type CoolMesh = Mesh & { qPos?: Vector3, qFlag?: boolean, qDestroy?: boolean, qColor?: number, qBroken?: boolean };
+export type CoolMesh = Mesh & { qPos?: Vector3, qFlag?: boolean, qDestroy?: boolean, qColor?: number, qBroken?: boolean, qSticker?: string[] };
 
 export type State = "orbit" | "flag" | "continueFlag" | "remove" | "continueRemove" | "dragX" | "dragZ" | "end" | "fail" | "place" | "saveImage";
 
@@ -17,4 +17,5 @@ export interface Level {
     color: number[][][],
     name: string,
     thumbnail: string,
+    stickers: string[][][][],
 }

@@ -1,6 +1,6 @@
 import { Hint, Hints, Puzzle } from "./puzzle";
 import { CoolMesh, Level, XRay } from "./types";
-import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2 } from "three";
+import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2, Color, ImageLoader } from "three";
 
 function getAssetURL(hint: Hint, broken: boolean = false): string {
     if (hint.type == "none") {
@@ -37,14 +37,13 @@ function onBeforeCompile2(shader: Shader) {
 export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, createMode: boolean, hints?: Hints) {
     if (createMode) {
         const color = mesh.qColor ?? 0xffffff;
-        const texture = loader.load("./assets/blank.png");
         mesh.material = [
-            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[0] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[1] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[2] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[3] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[4] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[5] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
         ];
 
     } else {
@@ -64,7 +63,18 @@ export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, createMode
                 new MeshLambertMaterial({ color: color, map: zTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
             ];
         } else {
-            mesh.material = new MeshLambertMaterial({ color: mesh.qColor });
+            if (!mesh.qSticker) {
+                mesh.material = new MeshLambertMaterial({ color: mesh.qColor });
+                return;
+            }
+            mesh.material = [
+                new MeshLambertMaterial({ color: mesh.qColor, map: loader.load(mesh.qSticker[0]), onBeforeCompile: onBeforeCompile2}),
+                new MeshLambertMaterial({ color: mesh.qColor, map: loader.load(mesh.qSticker[1]), onBeforeCompile: onBeforeCompile2}),
+                new MeshLambertMaterial({ color: mesh.qColor, map: loader.load(mesh.qSticker[2]), onBeforeCompile: onBeforeCompile2}),
+                new MeshLambertMaterial({ color: mesh.qColor, map: loader.load(mesh.qSticker[3]), onBeforeCompile: onBeforeCompile2}),
+                new MeshLambertMaterial({ color: mesh.qColor, map: loader.load(mesh.qSticker[4]), onBeforeCompile: onBeforeCompile2}),
+                new MeshLambertMaterial({ color: mesh.qColor, map: loader.load(mesh.qSticker[5]), onBeforeCompile: onBeforeCompile2}),
+            ]
         }
     }
 }
@@ -146,17 +156,14 @@ export function checkDone(cubes: CoolMesh[], puzzle: Puzzle): boolean {
     }
     return true;
 }
-/*
-    */
 
-export function colorCubes(cubes: CoolMesh[], puzzleColors: number[][][]) {
+export function colorCubes(cubes: CoolMesh[], loader: TextureLoader) {
     for (const cube of cubes) {
         if (cube.qDestroy) {
             continue;
         }
         const color = cube.qColor;
-        console.log(color);
-        cube.material = new MeshLambertMaterial({ color: color });
+        updateMaterial(cube, loader, false);
     }
 }
 
