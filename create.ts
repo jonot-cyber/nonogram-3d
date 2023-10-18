@@ -43,6 +43,7 @@ function createColorPicker() {
                 dialog.insertAdjacentElement("afterbegin", elem);
                 elem.addEventListener("click", function () {
                     colorButton.style.backgroundColor = this.style.backgroundColor;
+                    colorButton.style.color = (ir + ig + ib < 3) ? "white" : "black";
                     colorButton.setAttribute("x-color", `${ir},${ig},${ib}`);
                     dialog.close();
                 })
