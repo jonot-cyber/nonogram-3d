@@ -278,7 +278,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cube.qColor = color[x][y][z];
                 cube.layers.enable(0);
                 scene.add(cube);
-                updateMaterial(cube, loader, hints);
+                updateMaterial(cube, loader, false, hints);
                 cubes.push(cube);
             }
         }
@@ -540,7 +540,7 @@ function flag() {
     if (!object.qBroken) {
         object.qFlag = !object.qFlag;
     }
-    updateMaterial(object, loader, hints);
+    updateMaterial(object, loader, false, hints);
     lastChange = object.qFlag ?? true;
     setState("continueFlag");
 }
@@ -559,7 +559,7 @@ function continueFlag() {
     let object: CoolMesh = intersects[0].object as CoolMesh;
     if (object.qFlag != lastChange) {
         object.qFlag = lastChange;
-        updateMaterial(object, loader, hints);
+        updateMaterial(object, loader, false, hints);
     }
 }
 
@@ -591,7 +591,7 @@ function remove() {
         const result = addMistake();
         object.qFlag = true;
         object.qBroken = true;
-        updateMaterial(object, loader, hints);
+        updateMaterial(object, loader, false, hints);
         if (result) {
             return;
         }
@@ -667,7 +667,7 @@ function continueRemove() {
         addMistake();
         object.qFlag = true;
         object.qBroken = true;
-        updateMaterial(object, loader, hints);
+        updateMaterial(object, loader, false, hints);
     } else {
         // Destroy the cube
         object.qDestroy = true;

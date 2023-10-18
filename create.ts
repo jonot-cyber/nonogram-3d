@@ -198,7 +198,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cube.qFlag = false;
                 cube.qDestroy = false;
                 cube.qColor = color[x][y][z];
-                cube.material = new MeshLambertMaterial({ color: cube.qColor });
+                updateMaterial(cube, loader, true);
                 cube.layers.enable(0);
                 scene.add(cube);
                 cubes.push(cube);
@@ -437,8 +437,8 @@ function updateColor(object: CoolMesh) {
     c += hexColorStages[b];
     c += 0x100 * hexColorStages[g];
     c += 0x10000 * hexColorStages[r];
-    object.material = new MeshLambertMaterial({ color: c });
     object.qColor = c;
+    updateMaterial(object, loader, true);
 }
 
 // Actions when in flagging mode
@@ -673,7 +673,7 @@ function place() {
     }
     scene.add(newCube);
     cubes.push(newCube);
-    updateMaterial(newCube, loader);
+    updateMaterial(newCube, loader, true);
 
     // Fix the puzzle positions :)
     for (const cube of cubes) {

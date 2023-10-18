@@ -12,50 +12,60 @@ function getAssetURL(hint: Hint, broken: boolean = false): string {
     return `./assets/numbers/${hint.type}/${broken ? "broken/" : ""}${hint.count}.png`
 }
 
-export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, hints?: Hints) {
-    const onBeforeCompile = (shader: Shader) => {
-        shader.fragmentShader = shader.fragmentShader.replace(
-            "#include <alphatest_fragment>",
-            `float a = 1.0 - diffuseColor.a;
-            if (diffuseColor.a > 0.5 && diffuse.r == 0.0) {
-                diffuseColor = vec4(0.0, 0.3, 0.3, 1.0);
-            } else {
-                diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);
-            }
-            `);
-    }
-    const onBeforeCompile2 = (shader: Shader) => {
-        shader.fragmentShader = shader.fragmentShader.replace(
-            "#include <alphatest_fragment>",
-            `diffuseColor.r = diffuseColor.r * diffuseColor.a + diffuse.r * (1.0 - diffuseColor.a);
-            diffuseColor.g = diffuseColor.g * diffuseColor.a + diffuse.g * (1.0 - diffuseColor.a);
-            diffuseColor.b = diffuseColor.b * diffuseColor.a + diffuse.b * (1.0 - diffuseColor.a);
-            diffuseColor.a = 1.0;
-            `);
-    }
-    const meshPosition = mesh.qPos ?? new Vector3(0, 0, 0);
-    const color: number = mesh.qFlag ? 0x00ffff : 0xffffff;
-    let hintCompleted = false;
-    if (hints) {
+function onBeforeCompile(shader: Shader) {
+    shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <alphatest_fragment>",
+        `float a = 1.0 - diffuseColor.a;
+        if (diffuseColor.a > 0.5 && diffuse.r == 0.0) {
+            diffuseColor = vec4(0.0, 0.3, 0.3, 1.0);
+        } else {
+            diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);
+        }
+        `);
+}
+
+function onBeforeCompile2(shader: Shader) {
+    shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <alphatest_fragment>",
+        `diffuseColor.r = diffuseColor.r * diffuseColor.a + diffuse.r * (1.0 - diffuseColor.a);
+        diffuseColor.g = diffuseColor.g * diffuseColor.a + diffuse.g * (1.0 - diffuseColor.a);
+        diffuseColor.b = diffuseColor.b * diffuseColor.a + diffuse.b * (1.0 - diffuseColor.a);
+        diffuseColor.a = 1.0;
+        `);
+}
+
+export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, createMode: boolean, hints?: Hints) {
+    if (createMode) {
+        const color = mesh.qColor ?? 0xffffff;
+        const texture = loader.load("./assets/blank.png");
         mesh.material = [
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-            new MeshLambertMaterial({ color: color, map: loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y], mesh.qBroken)), onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2}),
-        ];
-        mesh.material[0].defines = {FLAGGED: mesh.qFlag};
-    } else {
-        mesh.material = [
-            new MeshLambertMaterial({ color: color }),
-            new MeshLambertMaterial({ color: color }),
-            new MeshLambertMaterial({ color: color }),
-            new MeshLambertMaterial({ color: color }),
-            new MeshLambertMaterial({ color: color }),
-            new MeshLambertMaterial({ color: color }),
+            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: texture, onBeforeCompile: onBeforeCompile2 }),
         ];
 
+    } else {
+        if (hints) {
+            const meshPosition = mesh.qPos ?? new Vector3(0, 0, 0);
+            const color: number = mesh.qFlag ? 0x00ffff : 0xffffff;
+            let hintCompleted = false; // TODO
+            const xTexture = loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z], mesh.qBroken));
+            const yTexture = loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z], mesh.qBroken));
+            const zTexture = loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y], mesh.qBroken));
+            mesh.material = [
+                new MeshLambertMaterial({ color: color, map: xTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: xTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: yTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: yTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: zTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: zTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
+            ];
+        } else {
+            mesh.material = new MeshLambertMaterial({ color: mesh.qColor });
+        }
     }
 }
 
