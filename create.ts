@@ -64,10 +64,12 @@ function createColorPicker() {
 createColorPicker();
 
 function createStickerPicker() {
-    for (let i = 0; i < 1; i++) {
+    const stickers = ["./assets/stickers/dognose.png", "./assets/stickers/eye.png", "./assets/stickers/happy.png", "./assets/stickers/star.png"];
+    for (const iSticker of stickers) {
         let elem = document.createElement("img");
-        elem.src = "./assets/numbers/normal/0.png";
+        elem.src = iSticker;
         elem.addEventListener("click", function() {
+            sticker = this.src;
             stickerDialog.close();
         })
         stickerDialog.appendChild(elem);
@@ -161,6 +163,7 @@ let editing: string | null = null;
 let click: boolean = false;
 let handleOriginalPosition: number = 0;
 let xray: XRay = { direction: "right", count: 0 };
+let sticker: string = "./assets/stickers/eye.png";
 
 const pointer = new Vector2();
 const startPosition = new Vector2();
@@ -750,7 +753,7 @@ function stick() {
         object.qSticker = ["", "", "", "", "", "", ""];
     }
     const stickerIndex = normalToStickerIndex(normal);
-    object.qSticker[stickerIndex] = "./assets/numbers/normal/0.png";
+    object.qSticker[stickerIndex] = sticker;
     updateMaterial(object, loader, true);
 }
 
