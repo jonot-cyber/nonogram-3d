@@ -49,6 +49,10 @@
             background: rgb(20, 103, 219);
         }
 
+        .a.enabled {
+            background: rgb(253, 249, 16);
+        }
+
         .overlay {
             width: 100vw;
             height: 100vh;
@@ -100,7 +104,7 @@
             color: white;
         }
 
-        #color-dialog {
+        dialog {
             z-index: 1;
             position: absolute;
             left: 20px;
@@ -113,11 +117,16 @@
             border: none;
         }
 
-        #color-dialog[open] {
+        dialog[open] {
             display: grid;
             gap: 4px;
             grid-template-columns: repeat(8, 1fr);
             box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+        }
+
+        dialog img {
+            width: 64px;
+            aspect-ratio: 1 / 1;
         }
 
         .color {
@@ -137,6 +146,7 @@
     <a href="./mypuzzles.html" hidden id="back"></a>
     <dialog id="color-dialog">
     </dialog>
+    <dialog id="sticker-dialog"></dialog>
     <div class="crop">
         <div class="key-holder">
             <div class="key a">A</div>
@@ -146,6 +156,7 @@
         </div>
         <button id="create-puzzle">Create Puzzle</button>
         <button id="color-button">Color...</button>
+        <button id="sticker-button">Sticker...</button>
     </div>
     <script type="module" src="/create.ts"></script>
 </body>

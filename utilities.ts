@@ -1,6 +1,6 @@
 import { Hint, Hints, Puzzle } from "./puzzle";
 import { CoolMesh, Level, XRay } from "./types";
-import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2, Color, ImageLoader } from "three";
+import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2, Color, ImageLoader, Loader } from "three";
 
 function getAssetURL(hint: Hint, broken: boolean = false): string {
     if (hint.type == "none") {
@@ -34,16 +34,26 @@ function onBeforeCompile2(shader: Shader) {
         `);
 }
 
+function loadSticker(idx: number, stickers?: string[]): string {
+    if (!stickers) {
+        return "./assets/blank.png";
+    }
+    if (stickers[idx] == "") {
+        return "./assets/blank.png";
+    }
+    return stickers[idx];
+}
+
 export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, createMode: boolean, hints?: Hints) {
     if (createMode) {
         const color = mesh.qColor ?? 0xffffff;
         mesh.material = [
-            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[0] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[1] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[2] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[3] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[4] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
-            new MeshLambertMaterial({ color: color, map: loader.load(mesh.qSticker ? mesh.qSticker[5] : "./assets/blank.png"), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(loadSticker(0, mesh.qSticker)), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(loadSticker(1, mesh.qSticker)), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(loadSticker(2, mesh.qSticker)), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(loadSticker(3, mesh.qSticker)), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(loadSticker(4, mesh.qSticker)), onBeforeCompile: onBeforeCompile2 }),
+            new MeshLambertMaterial({ color: color, map: loader.load(loadSticker(5, mesh.qSticker)), onBeforeCompile: onBeforeCompile2 }),
         ];
 
     } else {
@@ -241,7 +251,7 @@ export function updatePuzzleResults(id: string, fn: (e: Object) => Object): Obje
 export function getPuzzle(id: string): Level {
     const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
     const json = storage[id ?? ""];
-    return { puzzle: json.puzzle, hints: json.hints, color: json.color, name: json.name, thumbnail: "" };
+    return { puzzle: json.puzzle, hints: json.hints, color: json.color, name: json.name, thumbnail: "", stickers: json.stickers };
 }
 
 export function removePuzzle(id: string) {
@@ -264,4 +274,20 @@ export function updatePuzzle(id: string, fn: (e: Object) => Object): Object {
 export function getPuzzles(): Level[] {
     const storage = JSON.parse(localStorage.getItem("nonogram-3d-puzzle") ?? "{}");
     return Object.values(storage);
+}
+
+export function normalToStickerIndex(normal: Vector3): number {
+    if (normal.x == 1) {
+        return 0;
+    } else if (normal.x == -1) {
+        return 1;
+    } else if (normal.y == 1) {
+        return 2;
+    } else if (normal.y == -1) {
+        return 3;
+    } else if (normal.z == 1) {
+        return 4;
+    } else {
+        return 5;
+    }
 }

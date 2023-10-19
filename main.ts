@@ -36,13 +36,6 @@ const resultsCustomBack: HTMLAnchorElement = document.querySelector<HTMLAnchorEl
 // @ts-ignore
 const resultsBuiltinBack: HTMLAnchorElement = document.querySelector<HTMLAnchorElement>("#results-builtin-back");
 
-
-// const debug = {
-//     showShape: false,
-//     createHints: false,
-//     reduceHints: false,
-// };
-
 let state: State = "orbit";
 
 // Whether a puzzle is built in or user created.
@@ -243,8 +236,7 @@ async function createPuzzle(): Promise<Level> {
     } else if (puzzleLocal) {
         isBuiltin = false;
         puzzleId = puzzleLocal;
-        let res = getPuzzle(puzzleLocal);
-        return res;
+        return getPuzzle(puzzleLocal);
     } else {
         throw "No puzzle provided";
     }

@@ -2,7 +2,7 @@ import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, Octahe
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay } from './types';
-import { facingX, getPuzzle, resetXHandle, resetZHandle, updateMaterial, updatePuzzle, updateVisibility } from './utilities';
+import { facingX, getPuzzle, normalToStickerIndex, resetXHandle, resetZHandle, updateMaterial, updatePuzzle, updateVisibility } from './utilities';
 import { Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 
@@ -14,11 +14,17 @@ const removeIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>("
 // @ts-ignore
 const placeIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>(".s");
 // @ts-ignore
+const stickIndicator: HTMLDivElement = document.querySelector<HTMLDivElement>(".a");
+// @ts-ignore
 const createPuzzleButton: HTMLButtonElement = document.querySelector<HTMLButtonElement>("#create-puzzle");
 // @ts-ignore
-const dialog: HTMLDialogElement = document.querySelector<HTMLDialogElement>("#color-dialog");
+const colorDialog: HTMLDialogElement = document.querySelector<HTMLDialogElement>("#color-dialog");
 // @ts-ignore
 const colorButton: HTMLButtonElement = document.querySelector<HTMLButtonElement>("#color-button");
+// @ts-ignore
+const stickerDialog: HTMLDialogElement = document.querySelector<HTMLDialogElement>("#sticker-dialog");
+// @ts-ignore
+const stickerButton: HTMLButtonElement = document.querySelector<HTMLButtonElement>("#sticker-button");
 // @ts-ignore
 const ui: HTMLDivElement = document.querySelector<HTMLDivElement>(".crop");
 // @ts-ignore
@@ -27,7 +33,11 @@ const backButton: HTMLButtonElement = document.querySelector<HTMLAnchorElement>(
 const colorStages = ["0", "5", "a", "f"];
 
 colorButton.addEventListener("click", function () {
-    dialog.show();
+    colorDialog.show();
+})
+
+stickerButton.addEventListener("click", function() {
+    stickerDialog.show();
 })
 
 function createColorPicker() {
@@ -40,18 +50,30 @@ function createColorPicker() {
                 let elem = document.createElement("button");
                 elem.classList.add("color");
                 elem.style.backgroundColor = `#${getHexDigit(ir)}${getHexDigit(ig)}${getHexDigit(ib)}`
-                dialog.insertAdjacentElement("afterbegin", elem);
+                colorDialog.insertAdjacentElement("afterbegin", elem);
                 elem.addEventListener("click", function () {
                     colorButton.style.backgroundColor = this.style.backgroundColor;
                     colorButton.style.color = (ir + ig + ib < 3) ? "white" : "black";
                     colorButton.setAttribute("x-color", `${ir},${ig},${ib}`);
-                    dialog.close();
+                    colorDialog.close();
                 })
             }
         }
     }
 }
 createColorPicker();
+
+function createStickerPicker() {
+    for (let i = 0; i < 1; i++) {
+        let elem = document.createElement("img");
+        elem.src = "./assets/numbers/normal/0.png";
+        elem.addEventListener("click", function() {
+            stickerDialog.close();
+        })
+        stickerDialog.appendChild(elem);
+    }
+}
+createStickerPicker();
 
 let state: State = "orbit";
 
@@ -66,16 +88,18 @@ function setState(newState: State) {
             controls.enableRotate = false;
             break;
         case "flag":
-            flagIndicator?.classList.remove("enabled");
+            flagIndicator.classList.remove("enabled");
             break;
         case "continueFlag":
-            flagIndicator?.classList.remove("enabled");
+            flagIndicator.classList.remove("enabled");
             break;
         case "remove":
-            removeIndicator?.classList.remove("enabled");
+            removeIndicator.classList.remove("enabled");
             break;
         case "place":
-            placeIndicator?.classList.remove("enabled");
+            placeIndicator.classList.remove("enabled");
+        case "stick":
+            stickIndicator.classList.remove("enabled");
         case "dragX":
             break;
         case "dragZ":
@@ -84,19 +108,23 @@ function setState(newState: State) {
 
     switch (newState) {
         case "flag":
-            flagIndicator?.classList.add("enabled");
+            flagIndicator.classList.add("enabled");
             break;
         case "continueFlag":
-            flagIndicator?.classList.add("enabled");
+            flagIndicator.classList.add("enabled");
             break;
         case "remove":
-            removeIndicator?.classList.add("enabled");
+            removeIndicator.classList.add("enabled");
             break;
         case "orbit":
             controls.enableRotate = true;
             break;
         case "place":
-            placeIndicator?.classList.add("enabled");
+            placeIndicator.classList.add("enabled");
+            break;
+        case "stick":
+            stickIndicator.classList.add("enabled");
+            break;
         case "dragX":
             handleOriginalPosition = xHandleMesh.position.x;
             startPosition.set(pointer.x, pointer.y);
@@ -168,7 +196,7 @@ function createLights() {
 }
 createLights();
 
-async function createPuzzle(): Promise<{ puzzle: Puzzle, color: number[][][] }> {
+async function createPuzzle(): Promise<{ puzzle: Puzzle, color: number[][][], stickers: string[][][][] }> {
     const urlParams = new URLSearchParams(window.location.search);
     const puzzleLocal = urlParams.get("local");
     if (puzzleLocal) {
@@ -176,13 +204,13 @@ async function createPuzzle(): Promise<{ puzzle: Puzzle, color: number[][][] }> 
         const level = getPuzzle(puzzleLocal);
         createPuzzleButton.textContent = "Update Puzzle";
 
-        return { puzzle: level.puzzle, color: level.color };
+        return { puzzle: level.puzzle, color: level.color, stickers: level.stickers };
     } else {
-        return { puzzle: [[[true]]], color: [[[0xffffff]]] }
+        return { puzzle: [[[true]]], color: [[[0xffffff]]], stickers: [] }
     }
 }
 
-const { puzzle, color } = await createPuzzle();
+const { puzzle, color, stickers } = await createPuzzle();
 const puzzleSize = new Vector3(puzzle.length, puzzle[0].length, puzzle[0][0].length);
 const distance = puzzleSize.length();
 camera.position.z = distance;
@@ -202,6 +230,9 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cube.qFlag = false;
                 cube.qDestroy = false;
                 cube.qColor = color[x][y][z];
+                if (stickers && stickers.length > 0) {
+                    cube.qSticker = stickers[x][y][z];
+                }
                 updateMaterial(cube, loader, true);
                 cube.layers.enable(0);
                 scene.add(cube);
@@ -286,6 +317,8 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
         setState("remove");
     } else if (ev.key == "s") {
         setState("place");
+    } else if (ev.key == "a") {
+        setState("stick");
     }
 });
 
@@ -295,6 +328,8 @@ window.addEventListener("keyup", function (ev: KeyboardEvent) {
     } else if (ev.key == "d" && state == "remove") {
         setState("orbit");
     } else if (ev.key == "s" && state == "place") {
+        setState("orbit");
+    } else if (ev.key == "a" && state == "stick") {
         setState("orbit");
     }
 });
@@ -587,7 +622,6 @@ function remove() {
 }
 
 function place() {
-    // This code decides not to work if you click on the edge of a block. I do not know why.
     if (!click) {
         return;
     }
@@ -690,6 +724,36 @@ function place() {
     updateHandles();
 }
 
+function stick() {
+    if (!click) {
+        return;
+    }
+    click = false;
+
+    raycaster.setFromCamera(pointer, camera);
+    raycaster.layers.set(0);
+
+    const intersects = raycaster.intersectObjects(scene.children).filter(i => i.object != xHandleMesh && i.object != zHandleMesh);
+    if (intersects.length == 0) {
+        return;
+    }
+    let object: CoolMesh = intersects[0].object as CoolMesh;
+    if (!object.qPos) {
+        return;
+    }
+
+    let normal = intersects[0].normal;
+    if (!normal) {
+        return;
+    }
+    if (object.qSticker == undefined) {
+        object.qSticker = ["", "", "", "", "", "", ""];
+    }
+    const stickerIndex = normalToStickerIndex(normal);
+    object.qSticker[stickerIndex] = "./assets/numbers/normal/0.png";
+    updateMaterial(object, loader, true);
+}
+
 // All of these weird workarounds are needed because the handles need to be not shown when the thumbnail is taken, and we need at least one frame rendered for that to happen.
 function saveImage() {
     if (frames == 0) {
@@ -699,21 +763,27 @@ function saveImage() {
     // Save all the data
     const puzzle: boolean[][][] = [];
     const color: number[][][] = [];
+    const stickers: (string[] | undefined)[][][] = [];
     for (let ix = 0; ix < puzzleSize.x; ix++) {
         let part2: boolean[][] = [];
         let cpart2: number[][] = [];
+        let spart2: string[][][] = [];
         for (let iy = 0; iy < puzzleSize.y; iy++) {
             let part: boolean[] = [];
             let cpart: number[] = [];
+            let spart: string[][] = [];
             for (let iz = 0; iz < puzzleSize.z; iz++) {
                 part.push(false);
                 cpart.push(0);
+                spart.push([]);
             }
             part2.push(part);
             cpart2.push(cpart);
+            spart2.push(spart);
         }
         puzzle.push(part2);
         color.push(cpart2);
+        stickers.push(spart2);
     }
 
     for (const cube of cubes) {
@@ -725,6 +795,7 @@ function saveImage() {
         }
         puzzle[cube.qPos.x][cube.qPos.y][cube.qPos.z] = true;
         color[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qColor ?? 0xffffff;
+        stickers[cube.qPos.x][cube.qPos.y][cube.qPos.z] = cube.qSticker ?? undefined;
     }
 
     const hints = createHints(puzzle);
@@ -737,7 +808,7 @@ function saveImage() {
     }
     const image = renderer.domElement.toDataURL("image/png");
     updatePuzzle(name, function (e) {
-        return {puzzle, hints, color, name, thumbnail: image}
+        return {puzzle, hints, color, name, thumbnail: image, stickers};
     })
     setState("end");
     backButton.click();
@@ -768,6 +839,9 @@ function animate() {
             break;
         case "place":
             place();
+            break;
+        case "stick":
+            stick();
             break;
         case "saveImage":
             saveImage();
