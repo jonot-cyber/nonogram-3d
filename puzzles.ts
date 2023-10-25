@@ -1,5 +1,6 @@
-import { getPuzzleResults, renderStars, secondsToTime } from "./utilities";
+import { getPuzzle, getPuzzleResults, renderStars, secondsToTime } from "./utilities";
 import styles from "./puzzle.css.js";
+import { puzzleNames, puzzleTable, puzzleThumbnails } from "./library/lookup";
 
 export class PuzzleElement extends HTMLElement {
     constructor() {
@@ -8,12 +9,15 @@ export class PuzzleElement extends HTMLElement {
 
     connectedCallback() {
         const puzzleId = this.getAttribute("puzzle-id");
-        const results = getPuzzleResults(puzzleId ?? "");
+        if (!puzzleId) {
+            return;
+        }
+        const results = getPuzzleResults(puzzleId);
 
         const starCount = results ? results["stars"] : 0;
         const seconds = results ? results["seconds"] : undefined;
-        const puzzleTitle = results ? this.getAttribute("title") : "???";
-        const thumbnailSource = results ? this.getAttribute("thumbnail") ?? "./assets/unsolved.png" : "./assets/unsolved.png";
+        const puzzleTitle = results ? puzzleNames[puzzleId] : "???";
+        const thumbnailSource = results ? puzzleThumbnails[puzzleId] : "./assets/unsolved.png";
 
         const shadow = this.attachShadow({ mode: "open" });
 
@@ -64,3 +68,12 @@ export class PuzzleElement extends HTMLElement {
 }
 
 customElements.define("puzzle-info", PuzzleElement);
+
+for (const puzzle of Object.keys(puzzleTable)) {
+    const elem = document.createElement("puzzle-info");
+    elem.setAttribute("puzzle-id", puzzle);
+    const puzzles = document.querySelector(".puzzles");
+    puzzles?.appendChild(elem);
+    /*<puzzle-info stars="0" title="Crewmate" puzzle-id="among"
+    thumbnail="assets/thumbnails/crewmate.png"></puzzle-info>*/
+}
