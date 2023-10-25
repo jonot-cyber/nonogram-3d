@@ -2,7 +2,7 @@ import { BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, Octahe
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay } from './types';
-import { facingX, getPuzzle, normalToStickerIndex, resetXHandle, resetZHandle, updateMaterial, updatePuzzle, updateVisibility } from './utilities';
+import { facingX, getPuzzle, normalToStickerIndex, resetXHandle, resetZHandle, smallDistance, updateMaterial, updatePuzzle, updateVisibility } from './utilities';
 import { Puzzle, createHints } from './puzzle';
 import { removeHints } from './reduce';
 
@@ -36,7 +36,7 @@ colorButton.addEventListener("click", function () {
     colorDialog.show();
 })
 
-stickerButton.addEventListener("click", function() {
+stickerButton.addEventListener("click", function () {
     stickerDialog.show();
 })
 
@@ -68,7 +68,7 @@ function createStickerPicker() {
     for (const iSticker of stickers) {
         let elem = document.createElement("img");
         elem.src = iSticker;
-        elem.addEventListener("click", function() {
+        elem.addEventListener("click", function () {
             sticker = this.src;
             stickerDialog.close();
         })
@@ -273,7 +273,7 @@ scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
 
-function updateHandles() {
+function updateHandles(placeDirection?: string) {
     handleMinX = -puzzleSize.x / 2 - 1;
     handleMaxX = puzzleSize.x / 2 - 2;
 
@@ -288,6 +288,35 @@ function updateHandles() {
 
     resetXHandle(camera, xHandleMesh, handleMinX, handleMaxNX, puzzleSize);
     resetZHandle(camera, zHandleMesh, handleMinZ, handleMaxNZ, puzzleSize);
+    if (xray.count != 0) {
+        switch (xray.direction) {
+            case "left":
+                if (placeDirection == "x") {
+                    xray.count = 0;
+                }
+                xHandleMesh.position.setX(xHandleMesh.position.x + xray.count);
+                break;
+            case "right":
+                if (placeDirection == "x") {
+                    xray.count = 0;
+                }
+                xHandleMesh.position.setX(xHandleMesh.position.x - xray.count);
+                break;
+            case "front":
+                if (placeDirection == "z") {
+                    xray.count = 0;
+                }
+                zHandleMesh.position.setZ(zHandleMesh.position.z - xray.count);
+                break;
+            case "back":
+                if (placeDirection == "z") {
+                    xray.count = 0;
+                }
+                zHandleMesh.position.setZ(zHandleMesh.position.z + xray.count);
+                break;
+        }
+    }
+    updateVisibility(xray, cubes, puzzleSize);
 }
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
@@ -301,12 +330,22 @@ renderer.domElement.addEventListener("mousedown", function (ev: MouseEvent) {
 
 renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     ev.preventDefault();
-    if (state == "continueFlag") {
-        setState("flag")
-    } else if (state == "dragX" || state == "dragZ") {
-        setState("orbit");
-        xHandleMesh.material.opacity = 0.5;
-        zHandleMesh.material.opacity = 0.5;
+    ev.preventDefault();
+    switch (state) {
+        case "continueFlag":
+            setState("flag");
+            break;
+        case "continueRemove":
+            setState("remove");
+            break;
+        case "dragX":
+        case "dragZ":
+            if (smallDistance(pointer, startPosition)) {
+                xray.count = 0;
+                updateVisibility(xray, cubes, puzzleSize);
+            }
+            setState("orbit");
+            break;
     }
 });
 
@@ -377,6 +416,15 @@ function orbit() {
     }
     xHandleMesh.material.opacity = intersectXHandle ? 1 : 0.5;
     zHandleMesh.material.opacity = intersectZHandle ? 1 : 0.5;
+    if (xray.count != 0) {
+        if (xray.direction == "left" || xray.direction == "right") {
+            xHandleMesh.material.opacity = 1;
+            zHandleMesh.material.opacity = 0.5;
+        } else {
+            xHandleMesh.material.opacity = 0.5;
+            zHandleMesh.material.opacity = 1;
+        }
+    }
     click = false;
 }
 
@@ -651,6 +699,7 @@ function place() {
     newCube.qDestroy = false;
     newCube.qFlag = false;
     newCube.qColor = 0xffffff;
+    let direction: string = "";
     if (normal.x == 1) {
         if (puzzleSize.x == 12 && object.qPos.x == 11) {
             return;
@@ -659,6 +708,7 @@ function place() {
         if (newCube.qPos.x == puzzleSize.x) {
             puzzleSize.setX(puzzleSize.x + 1);
         }
+        direction = "x";
     } else if (normal.x == -1) {
         if (puzzleSize.x == 12 && object.qPos.x == 0) {
             return;
@@ -671,6 +721,7 @@ function place() {
         } else {
             newCube.qPos.setX(newCube.qPos.x - 1);
         }
+        direction = "x";
     } else if (normal.y == 1) {
         if (puzzleSize.y == 12 && object.qPos.y == 11) {
             return;
@@ -679,6 +730,7 @@ function place() {
         if (newCube.qPos.y == puzzleSize.y) {
             puzzleSize.setY(puzzleSize.y + 1);
         }
+        direction = "y";
     } else if (normal.y == -1) {
         if (puzzleSize.y == 12 && object.qPos.y == 0) {
             return;
@@ -691,6 +743,7 @@ function place() {
         } else {
             newCube.qPos.setY(newCube.qPos.y - 1);
         }
+        direction = "y";
     } else if (normal.z == 1) {
         if (puzzleSize.z == 12 && object.qPos.z == 11) {
             return;
@@ -699,6 +752,7 @@ function place() {
         if (newCube.qPos.z == puzzleSize.z) {
             puzzleSize.setZ(puzzleSize.z + 1);
         }
+        direction = "z";
     } else if (normal.z == -1) {
         if (puzzleSize.z == 12 && object.qPos.z == 0) {
             return;
@@ -711,6 +765,7 @@ function place() {
         } else {
             newCube.qPos.setZ(newCube.qPos.z - 1);
         }
+        direction = "z";
     }
     scene.add(newCube);
     cubes.push(newCube);
@@ -724,7 +779,7 @@ function place() {
         cube.position.set(cube.qPos.x - puzzleSize.x / 2 + 0.5, cube.qPos.y - puzzleSize.y / 2 + 0.5, cube.qPos.z - puzzleSize.z / 2 + 0.5);
     }
     camera.position.normalize().multiplyScalar(puzzleSize.length());
-    updateHandles();
+    updateHandles(direction);
 }
 
 function stick() {
@@ -811,7 +866,7 @@ function saveImage() {
     }
     const image = renderer.domElement.toDataURL("image/png");
     updatePuzzle(name, function (e) {
-        return {puzzle, hints, color, name, thumbnail: image, stickers};
+        return { puzzle, hints, color, name, thumbnail: image, stickers };
     })
     setState("end");
     backButton.click();

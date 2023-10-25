@@ -291,3 +291,9 @@ export function normalToStickerIndex(normal: Vector3): number {
         return 5;
     }
 }
+
+export function smallDistance(end: Vector2, start: Vector2): boolean {
+    const xDistance = end.x - start.x;
+    const yDistance = end.y - start.y;
+    return Math.abs(xDistance) < 0.05 && Math.abs(yDistance) < 0.05;
+}

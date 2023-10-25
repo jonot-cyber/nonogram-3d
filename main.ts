@@ -1,11 +1,10 @@
-import { BoxGeometry, Clock, Color, DirectionalLight, MaxEquation, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
+import { BoxGeometry, Clock, Color, DirectionalLight, Mesh, MeshLambertMaterial, OctahedronGeometry, PerspectiveCamera, Raycaster, Scene, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Hints, Puzzle, createHints } from './puzzle';
-import { removeHints } from './reduce';
+import { Hints, Puzzle } from './puzzle';
 import { puzzleTable } from './library/lookup';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay, Level } from './types';
-import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, getPuzzle, renderStars, resetXHandle, resetZHandle, secondsToTime, updateMaterial, updatePuzzleResults, updateVisibility } from './utilities';
+import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, getPuzzle, renderStars, resetXHandle, resetZHandle, secondsToTime, smallDistance, updateMaterial, updatePuzzleResults, updateVisibility } from './utilities';
 import { enableClock } from './clock';
 
 // HTML elements that matter
@@ -300,8 +299,10 @@ scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
 
-enableClock(10 * 60, function () {
-    setState("fail");
+enableClock(1 * 60, function () {
+    if (state != "end") {
+        setState("fail");
+    }
 });
 
 renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
@@ -312,12 +313,6 @@ renderer.domElement.addEventListener("mousemove", function (ev: MouseEvent) {
 renderer.domElement.addEventListener("mousedown", function (ev: MouseEvent) {
     click = true;
 })
-
-function smallDistance(end: Vector2, start: Vector2): boolean {
-    const xDistance = end.x - start.x;
-    const yDistance = end.y - start.y;
-    return Math.abs(xDistance) < 0.05 && Math.abs(yDistance) < 0.05;
-}
 
 renderer.domElement.addEventListener("mouseup", function (ev: MouseEvent) {
     ev.preventDefault();
