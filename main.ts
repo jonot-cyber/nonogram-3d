@@ -299,7 +299,7 @@ scene.add(zHandleMesh);
 zHandleMesh.position.set(-puzzleSize.x / 2, -puzzleSize.y / 2, handleMinZ);
 zHandleMesh.scale.set(1, 1, 2);
 
-enableClock(1 * 60, function () {
+enableClock(10 * 60, function () {
     if (state != "end") {
         setState("fail");
     }

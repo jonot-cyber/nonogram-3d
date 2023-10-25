@@ -1,7 +1,21 @@
 import { Level } from "./types";
-import { getPuzzleResults, getPuzzles, removePuzzle, renderStars, secondsToTime } from "./utilities";
+import { getPuzzle, getPuzzleResults, getPuzzles, removePuzzle, renderStars, secondsToTime, updatePuzzle } from "./utilities";
 
 import styles from "./puzzle.css.js";
+import { unzip, zip } from "gzip-js";
+
+function encodePuzzle(id: string): string {
+    const puzzle = getPuzzle(id);
+    const puzzleJson = JSON.stringify(puzzle);
+    const gzipData = zip(puzzleJson);
+    console.log(gzipData);
+    const gzipString = String.fromCharCode(...gzipData);
+    const base64 = btoa(gzipString);
+    return base64;
+}
+
+// @ts-ignore
+const importButton: HTMLButtonElement = document.querySelector("#import-puzzle");
 
 export class PuzzleElement extends HTMLElement {
 
@@ -76,12 +90,27 @@ export class PuzzleElement extends HTMLElement {
         removeIcons.alt = "edit";
         remove.appendChild(removeIcons);
 
+        const share = document.createElement("div");
+        share.className = "share";
+        share.addEventListener("click", function() {
+            const data = encodePuzzle(puzzleId);
+            navigator.clipboard.writeText(data);
+            alert("Puzzle Code copied to clipboard.");
+        });
+        const shareIcons = document.createElement("img");
+        shareIcons.src = "./assets/share.svg";
+        shareIcons.className = "icon";
+        shareIcons.alt = "edit";
+        share.appendChild(shareIcons);
+
+
         shadow.appendChild(style);
         wrapper.appendChild(block2);
         wrapper.appendChild(bestTime);
         bigWrapper.appendChild(wrapper);
         bigWrapper.appendChild(edit);
         bigWrapper.appendChild(remove);
+        bigWrapper.appendChild(share);
         shadow.appendChild(bigWrapper);
 
         wrapper.addEventListener("click", function() {
@@ -104,3 +133,24 @@ if (puzzles) {
         puzzles.appendChild(elem);
     }
 }
+
+importButton.addEventListener("click", function() {
+    const code = prompt("Enter a puzzle code: ");
+    if (!code) {
+        return;
+    }
+
+    // Get data out of the string
+    const binaryString = atob(code);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    const pdata = String.fromCharCode(...unzip(bytes));
+    // TODO: Validate the puzzle
+    const puzzle: Level = JSON.parse(pdata);
+    updatePuzzle(puzzle.name, function (e) {
+        return puzzle;
+    })
+    location.reload();
+})

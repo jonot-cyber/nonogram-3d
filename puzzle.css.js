@@ -7,7 +7,6 @@ export default `.big-wrapper {
 .edit {
     background-color: #ea565f;
     --shadow-color: #a5314d;
-    color: white;
     box-shadow: 8px 8px 0px var(--shadow-color);
     padding: 8px;
     font-family: sans-serif;
@@ -35,7 +34,6 @@ export default `.big-wrapper {
 .remove {
     background-color: #567dea;
     --shadow-color: #404bcd;
-    color: white;
     box-shadow: 8px 8px 0px var(--shadow-color);
     padding: 8px;
     font-family: sans-serif;
@@ -51,6 +49,28 @@ export default `.big-wrapper {
 }
 
 .remove:active {
+    box-shadow: 0px 0px 0px var(--shadow-color);
+    transform: translate(8px, 8px);
+}
+
+.share {
+    background-color: #f3bb2e;
+    --shadow-color: #a7830c;
+    box-shadow: 8px 8px 0px var(--shadow-color);
+    padding: 8px;
+    font-family: sans-serif;
+    display: block;
+    aspect-ratio: 1 / 1;
+    height: 128px;
+    text-decoration: none;
+}
+
+.share:hover {
+    box-shadow: 6px 6px 0px var(--shadow-color);
+    transform: translate(2px, 2px);
+}
+
+.share:active {
     box-shadow: 0px 0px 0px var(--shadow-color);
     transform: translate(8px, 8px);
 }

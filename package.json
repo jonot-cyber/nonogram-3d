@@ -5,10 +5,12 @@
     "build": "vite build"
   },
   "dependencies": {
+    "gzip-js": "^0.3.2",
     "three": "^0.156.0"
   },
   "devDependencies": {
     "@types/three": "^0.155.1",
+    "@types/gzip-js": "^0.3.4",
     "vite": "^4.4.9",
     "vite-plugin-static-copy": "^0.17.0",
     "vitest": "^0.34.3"
