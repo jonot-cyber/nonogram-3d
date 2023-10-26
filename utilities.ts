@@ -1,4 +1,4 @@
-import { Hint, Hints, Puzzle } from "./puzzle";
+import { Hint, Hints, Puzzle, createHints, createSliceHint } from "./puzzle";
 import { CoolMesh, Level, XRay } from "./types";
 import { TextureLoader, Shader, MeshLambertMaterial, Vector3, Scene, Camera, Mesh, Vector2, Color, ImageLoader, Loader } from "three";
 
@@ -17,7 +17,7 @@ function onBeforeCompile(shader: Shader) {
         "#include <alphatest_fragment>",
         `float a = 1.0 - diffuseColor.a;
         if (diffuseColor.a > 0.5 && diffuse.r == 0.0) {
-            diffuseColor = vec4(0.0, 0.3, 0.3, 1.0);
+            diffuseColor = vec4(0.0, 0.75, 0.75, 1.0);
         } else {
             diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);
         }
@@ -60,17 +60,22 @@ export function updateMaterial(mesh: CoolMesh, loader: TextureLoader, createMode
         if (hints) {
             const meshPosition = mesh.qPos ?? new Vector3(0, 0, 0);
             const color: number = mesh.qFlag ? 0x00ffff : 0xffffff;
-            let hintCompleted = false; // TODO
+            if (!mesh.qCompleted) {
+                return;
+            }
+            let hintCompletedX: boolean = mesh.qCompleted[0];
+            let hintCompletedY: boolean = mesh.qCompleted[1];
+            let hintCompletedZ: boolean = mesh.qCompleted[2];
             const xTexture = loader.load(getAssetURL(hints.x[meshPosition.y][meshPosition.z], mesh.qBroken));
             const yTexture = loader.load(getAssetURL(hints.y[meshPosition.x][meshPosition.z], mesh.qBroken));
             const zTexture = loader.load(getAssetURL(hints.z[meshPosition.x][meshPosition.y], mesh.qBroken));
             mesh.material = [
-                new MeshLambertMaterial({ color: color, map: xTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
-                new MeshLambertMaterial({ color: color, map: xTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
-                new MeshLambertMaterial({ color: color, map: yTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
-                new MeshLambertMaterial({ color: color, map: yTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
-                new MeshLambertMaterial({ color: color, map: zTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
-                new MeshLambertMaterial({ color: color, map: zTexture, onBeforeCompile: hintCompleted ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: xTexture, onBeforeCompile: hintCompletedX ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: xTexture, onBeforeCompile: hintCompletedX ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: yTexture, onBeforeCompile: hintCompletedY ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: yTexture, onBeforeCompile: hintCompletedY ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: zTexture, onBeforeCompile: hintCompletedZ ? onBeforeCompile : onBeforeCompile2 }),
+                new MeshLambertMaterial({ color: color, map: zTexture, onBeforeCompile: hintCompletedZ ? onBeforeCompile : onBeforeCompile2 }),
             ];
         } else {
             if (!mesh.qSticker) {
@@ -296,4 +301,86 @@ export function smallDistance(end: Vector2, start: Vector2): boolean {
     const xDistance = end.x - start.x;
     const yDistance = end.y - start.y;
     return Math.abs(xDistance) < 0.05 && Math.abs(yDistance) < 0.05;
+}
+
+export function isSliceCompleted(cubes: CoolMesh[], origin: CoolMesh, direction: string, hints: Hints): boolean {
+    if (!origin.qPos) {
+        return false;
+    }
+    let correctHint: Hint | undefined = undefined;
+    let slice: CoolMesh[] = [];
+    let newSlice: boolean[] = [];
+    let hint: Hint | undefined = undefined;
+    switch (direction) {
+        case "x":
+            correctHint = hints.x[origin.qPos?.y][origin.qPos?.z];
+            for (const cube of cubes) {
+                if (!cube.qPos) {
+                    return false;
+                }
+                if (cube.qPos.y == origin.qPos.y && cube.qPos.z == origin.qPos.z) {
+                    slice.push(cube);
+                }
+            }
+            newSlice = slice.map(i => false);
+            for (const cube of slice) {
+                let idx = cube.qPos?.x ?? 0;
+                if (cube.qDestroy) {
+                    newSlice[idx] = false
+                } else if (cube.qFlag) {
+                    newSlice[idx] = true;
+                } else {
+                    return false;
+                }
+            }
+            hint = createSliceHint(newSlice);
+            break;
+        case "y":
+            correctHint = hints.y[origin.qPos?.x][origin.qPos?.z];
+            for (const cube of cubes) {
+                if (!cube.qPos) {
+                    return false;
+                }
+                if (cube.qPos.x == origin.qPos.x && cube.qPos.z == origin.qPos.z) {
+                    slice.push(cube);
+                }
+            }
+            newSlice = slice.map(i => false);
+            for (const cube of slice) {
+                let idx = cube.qPos?.y ?? 0;
+                if (cube.qDestroy) {
+                    newSlice[idx] = false
+                } else if (cube.qFlag) {
+                    newSlice[idx] = true;
+                } else {
+                    return false;
+                }
+            }
+            hint = createSliceHint(newSlice);
+            break;
+        case "z":
+            correctHint = hints.z[origin.qPos?.x][origin.qPos?.y];
+            for (const cube of cubes) {
+                if (!cube.qPos) {
+                    return false;
+                }
+                if (cube.qPos.x == origin.qPos.x && cube.qPos.y == origin.qPos.y) {
+                    slice.push(cube);
+                }
+            }
+            newSlice = slice.map(i => false);
+            for (const cube of slice) {
+                let idx = cube.qPos?.z ?? 0;
+                if (cube.qDestroy) {
+                    newSlice[idx] = false
+                } else if (cube.qFlag) {
+                    newSlice[idx] = true;
+                } else {
+                    return false;
+                }
+            }
+            hint = createSliceHint(newSlice);
+            break;
+    }
+    return hint?.count == correctHint?.count && hint?.type == correctHint?.type;
 }

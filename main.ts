@@ -4,7 +4,7 @@ import { Hints, Puzzle } from './puzzle';
 import { puzzleTable } from './library/lookup';
 import { clamp, lerp } from 'three/src/math/MathUtils';
 import { State, CoolMesh, XRay, Level } from './types';
-import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, getPuzzle, renderStars, resetXHandle, resetZHandle, secondsToTime, smallDistance, updateMaterial, updatePuzzleResults, updateVisibility } from './utilities';
+import { areZeroes, checkDone, clearZeroes, colorCubes, facingX, getPuzzle, isSliceCompleted, renderStars, resetXHandle, resetZHandle, secondsToTime, smallDistance, updateMaterial, updatePuzzleResults, updateVisibility } from './utilities';
 import { enableClock } from './clock';
 
 // HTML elements that matter
@@ -259,6 +259,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
                 cube.qFlag = false;
                 cube.qDestroy = false;
                 cube.qColor = color[x][y][z];
+                cube.qCompleted = [false, false, false];
                 if (stickers && stickers.length > 0) {
                     cube.qSticker = stickers[x][y][z];
                 }
@@ -522,6 +523,7 @@ function flag() {
     updateMaterial(object, loader, false, hints);
     lastChange = object.qFlag ?? true;
     setState("continueFlag");
+    updateCompleted(object);
 }
 
 // Actions when flagging and dragging
@@ -539,6 +541,43 @@ function continueFlag() {
     if (object.qFlag != lastChange) {
         object.qFlag = lastChange;
         updateMaterial(object, loader, false, hints);
+    }
+    updateCompleted(object);
+}
+
+function updateCompleted(object: CoolMesh) {
+    if (isSliceCompleted(cubes, object, "x", hints)) {
+        for (const cube of cubes) {
+            if (cube.qPos?.y == object.qPos?.y && cube.qPos?.z == object.qPos?.z) {
+                if (!cube.qCompleted) {
+                    return;
+                }
+                cube.qCompleted[0] = true;
+                updateMaterial(cube, loader, false, hints);
+            }
+        }
+    }
+    if (isSliceCompleted(cubes, object, "y", hints)) {
+        for (const cube of cubes) {
+            if (cube.qPos?.x == object.qPos?.x && cube.qPos?.z == object.qPos?.z) {
+                if (!cube.qCompleted) {
+                    return;
+                }
+                cube.qCompleted[1] = true;
+                updateMaterial(cube, loader, false, hints);
+            }
+        }
+    }
+    if (isSliceCompleted(cubes, object, "z", hints)) {
+        for (const cube of cubes) {
+            if (cube.qPos?.x == object.qPos?.x && cube.qPos?.y == object.qPos?.y) {
+                if (!cube.qCompleted) {
+                    return;
+                }
+                cube.qCompleted[2] = true;
+                updateMaterial(cube, loader, false, hints);
+            }
+        }
     }
 }
 
@@ -594,6 +633,7 @@ function remove() {
     removeDirection = intersects[0].normal ?? new Vector3();
     removePos = object.qPos ?? new Vector3();
     setState("continueRemove");
+    updateCompleted(object);
 }
 
 function continueRemove() {
@@ -662,6 +702,7 @@ function continueRemove() {
             setState("end");
         }
     }
+    updateCompleted(object);
 }
 
 function updateClock() {
