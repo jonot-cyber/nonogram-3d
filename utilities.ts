@@ -15,21 +15,18 @@ function getAssetURL(hint: Hint, broken: boolean = false): string {
 function onBeforeCompile(shader: Shader) {
     shader.fragmentShader = shader.fragmentShader.replace(
         "#include <alphatest_fragment>",
-        `float a = 1.0 - diffuseColor.a;
-        if (diffuseColor.a > 0.5 && diffuse.r == 0.0) {
-            diffuseColor = vec4(0.0, 0.75, 0.75, 1.0);
-        } else {
-            diffuseColor = vec4(diffuse.r * a + diffuseColor.r * diffuseColor.a, diffuse.g * a + diffuseColor.g * diffuseColor.a, diffuse.b * a + diffuseColor.b * diffuseColor.a, 1.0);
-        }
+        `vec4 col1 = vec4(0.0, 0.33, 0.33, 1.0);
+        vec4 col2 = vec4(diffuse.r, diffuse.g, diffuse.b, 1.0);
+        diffuseColor = col1 * diffuseColor.a + col2 * (1.0 - diffuseColor.a);
         `);
 }
 
 function onBeforeCompile2(shader: Shader) {
     shader.fragmentShader = shader.fragmentShader.replace(
         "#include <alphatest_fragment>",
-        `diffuseColor.r = diffuseColor.r * diffuseColor.a + diffuse.r * (1.0 - diffuseColor.a);
-        diffuseColor.g = diffuseColor.g * diffuseColor.a + diffuse.g * (1.0 - diffuseColor.a);
-        diffuseColor.b = diffuseColor.b * diffuseColor.a + diffuse.b * (1.0 - diffuseColor.a);
+        `
+        vec4 textureColor = texture2D(map, vMapUv);
+        diffuseColor.rgb = textureColor.rgb * diffuseColor.a + diffuse * (1.0 - diffuseColor.a);
         diffuseColor.a = 1.0;
         `);
 }

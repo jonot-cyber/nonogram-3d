@@ -69,7 +69,7 @@ function createStickerPicker() {
         let elem = document.createElement("img");
         elem.src = iSticker;
         elem.addEventListener("click", function () {
-            sticker = this.src;
+            sticker = this.getAttribute("src");
             stickerDialog.close();
         })
         stickerDialog.appendChild(elem);
@@ -809,6 +809,7 @@ function stick() {
     }
     const stickerIndex = normalToStickerIndex(normal);
     object.qSticker[stickerIndex] = sticker;
+    console.log(object.qSticker);
     updateMaterial(object, loader, true);
 }
 

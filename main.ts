@@ -231,7 +231,7 @@ async function createPuzzle(): Promise<Level> {
         const puzzle: Puzzle = json.puzzle;
         const hints: Hints = json.hints;
         puzzleId = puzzleName;
-        return { puzzle, hints, color: json.color, name: json.name, thumbnail: "", stickers: [] };
+        return { puzzle, hints, color: json.color, name: json.name, thumbnail: "", stickers: json.stickers ?? [] };
     } else if (puzzleLocal) {
         isBuiltin = false;
         puzzleId = puzzleLocal;
@@ -248,7 +248,7 @@ const distance = puzzleSize.length();
 camera.position.z = distance;
 const cubes: CoolMesh[] = [];
 
-function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) {
+function createCubes(size: { x: number, y: number, z: number }) {
     for (let x = 0; x < size.x; x++) {
         for (let y = 0; y < size.y; y++) {
             for (let z = 0; z < size.z; z++) {
@@ -271,7 +271,7 @@ function createCubes(size: { x: number, y: number, z: number }, puzzle: Puzzle) 
         }
     }
 }
-createCubes(puzzleSize, puzzle);
+createCubes(puzzleSize);
 
 // Minimum and maximum positions of X slider
 const handleMinX = -puzzleSize.x / 2 - 1;
