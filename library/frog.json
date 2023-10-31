@@ -1,0 +1,640 @@
+{
+    "puzzle": [
+        [
+            [
+                true,
+                false,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ]
+        ],
+        [
+            [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ]
+        ],
+        [
+            [
+                true,
+                false,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                false,
+                false,
+                false,
+                false
+            ],
+            [
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ],
+            [
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+            ]
+        ]
+    ],
+    "hints": {
+        "x": [
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ],
+        "y": [
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 2
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                },
+                {
+                    "type": "normal",
+                    "count": 1
+                }
+            ],
+            [
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                }
+            ]
+        ],
+        "z": [
+            [
+                {
+                    "type": "circle",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "count": 0,
+                    "type": "none"
+                },
+                {
+                    "type": "normal",
+                    "count": 7
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ],
+            [
+                {
+                    "type": "circle",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                },
+                {
+                    "type": "normal",
+                    "count": 4
+                },
+                {
+                    "type": "normal",
+                    "count": 3
+                }
+            ]
+        ]
+    },
+    "color": [
+        [
+            [
+                5614080,
+                0,
+                5614080,
+                5614080,
+                0,
+                0,
+                0
+            ],
+            [
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                5614080,
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0
+            ]
+        ],
+        [
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                5614080,
+                16777215,
+                16777215,
+                5614080,
+                16711765,
+                16711765,
+                16711765
+            ],
+            [
+                0,
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0
+            ]
+        ],
+        [
+            [
+                5614080,
+                0,
+                5614080,
+                5614080,
+                0,
+                0,
+                0
+            ],
+            [
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                5614080,
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                5614080,
+                5614080,
+                5614080,
+                0,
+                0,
+                0
+            ]
+        ]
+    ],
+    "name": "Frog",
+    "thumbnail": "",
+    "stickers": [
+        [
+            [
+                null,
+                [],
+                null,
+                null,
+                [],
+                [],
+                []
+            ],
+            [
+                null,
+                null,
+                null,
+                [],
+                [],
+                [],
+                []
+            ],
+            [
+                null,
+                null,
+                null,
+                null,
+                [],
+                [],
+                []
+            ],
+            [
+                [],
+                null,
+                null,
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "./assets/stickers/eye.png",
+                    "",
+                    ""
+                ],
+                [],
+                [],
+                []
+            ]
+        ],
+        [
+            [
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                []
+            ],
+            [
+                null,
+                null,
+                null,
+                [],
+                [],
+                [],
+                []
+            ],
+            [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            [
+                [],
+                null,
+                null,
+                null,
+                [],
+                [],
+                []
+            ]
+        ],
+        [
+            [
+                null,
+                [],
+                null,
+                null,
+                [],
+                [],
+                []
+            ],
+            [
+                null,
+                null,
+                null,
+                [],
+                [],
+                [],
+                []
+            ],
+            [
+                null,
+                null,
+                null,
+                null,
+                [],
+                [],
+                []
+            ],
+            [
+                [],
+                null,
+                null,
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "./assets/stickers/eye.png",
+                    "",
+                    ""
+                ],
+                [],
+                [],
+                []
+            ]
+        ]
+    ]
+}
